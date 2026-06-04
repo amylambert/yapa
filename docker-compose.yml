@@ -3,28 +3,26 @@ services:
     image: postgres:15-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    # We still need to map POSTGRES_ vars because the Postgres image expects them
     environment:
-      - POSTGRES_DB=yapa_db
-      - POSTGRES_USER=yapa_user
-      - POSTGRES_PASSWORD=yapa_secure_password
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     ports:
       - "5432:5432"
 
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c "python manage.py migrate && 
+             python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app
     ports:
       - "8000:8000"
     depends_on:
       - db
-    environment:
-      - DB_NAME=yapa_db
-      - DB_USER=yapa_user
-      - DB_PASSWORD=yapa_secure_password
-      - DB_HOST=db
-      - DB_PORT=5432
-
-volumes:
-  postgres_data:
+    env_file:
+      - .env
