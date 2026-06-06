@@ -25,10 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
 # Allowed host headers for routing validation
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "workspaces.apps.WorkspacesConfig",
 ]
 
 MIDDLEWARE = [
@@ -60,9 +61,9 @@ ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],  # look for global templates directory
+        "APP_DIRS": True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -129,3 +130,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# routing paths
+LOGIN_REDIRECT_URL = "workspace-list"
+LOGOUT_REDIRECT_URL = "login"

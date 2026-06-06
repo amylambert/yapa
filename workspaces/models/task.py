@@ -40,9 +40,8 @@ class Task(models.Model):
 
     class Meta:
         """Metadata options for the Task model."""
-
         ordering = ["due_date", "priority"]
+        app_label = "workspaces"
 
     def __str__(self) -> str:
-        """Return a string representation of the task."""
         return str(self.title)

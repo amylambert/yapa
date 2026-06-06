@@ -3,7 +3,7 @@ from django.db import models
 
 
 class Workspace(models.Model):
-    """Represents an isolated organizational workspace for tasks."""
+    """Represents an isolated organizational workspace."""
 
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
@@ -15,10 +15,9 @@ class Workspace(models.Model):
     )
 
     class Meta:
-        """Metadata options for the Workspace model."""
-
+        """Model configuration and metadata options."""
+        app_label = "workspaces"
         ordering = ["-created_at"]
 
-    def __str__(self) -> str:
-        """Return a string representation of the workspace."""
+    def __str__(self):
         return str(self.name)

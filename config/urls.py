@@ -15,8 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from workspaces.views import RegisterView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
+    path("accounts/", include("django.contrib.auth.urls")),
+    path("accounts/register/", RegisterView.as_view(), name="register"),
+    # Anchor the workspaces sub-router directly to the root path
+    path("", include("workspaces.urls")),
 ]
