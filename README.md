@@ -28,3 +28,19 @@ Using Powershell
 Copy-Item .env.example .env
 ```
 **Default credentials work but it is recomended to modify them!**
+
+## 🛠️ Start the application
+
+**The app will run on the following address: http://localhost:8000**
+
+### First time start
+
+```bash
+docker compose up build
+```
+
+### Afterwards
+
+```bash
+docker compose up
+```
