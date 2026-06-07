@@ -22,13 +22,15 @@
         
         {% if workspaces %}
             <ul>
-                {% for space in workspaces %}
-                    <li>
-                        <strong>{{ space.name }}</strong> 
-                        <small>(Created: {{ space.created_at|date:"Y-m-d" }})</small>
-                        <p>{{ space.description|default:"No description provided." }}</p>
-                    </li>
-                {% endfor %}
+            {% for space in workspaces %}
+                <li>
+                    <a href="{% url 'workspace-detail' space.id %}">
+                        <strong>{{ space.name }}</strong>
+                    </a>
+                    <small>(Created: {{ space.created_at|date:"Y-m-d" }})</small>
+                    <p>{{ space.description|default:"No description provided." }}</p>
+                </li>
+            {% endfor %}
             </ul>
         {% else %}
             <p>You haven't created any workspaces yet!</p>

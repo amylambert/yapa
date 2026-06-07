@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>YAPA - {{ workspace.name }}</title>
+</head>
+<body>
+    <header>
+        <p><a href="{% url 'workspace-list' %}">← Back to Dashboard</a></p>
+        <h1>{{ workspace.name }}</h1>
+        <p>{{ workspace.description|default:"No description provided." }}</p>
+    </header>
+    <hr>
+    <main>
+        <h2>Tasks</h2>
+        <p><a href="#">+ Add Task to Workspace (Coming Soon)</a></p>
+        
+        {% if workspace.tasks.all %}
+            <ul>
+            {% for task in workspace.tasks.all %}
+                <li>
+                    <strong>[{ { task.status }}]</strong> {{ task.title }} 
+                    <em>(Priority: {{ task.priority }})</em>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No tasks inside this workspace yet!</p>
+        {% endif %}
+    </main>
+</body>
+</html>
