@@ -24,3 +24,16 @@ class WorkspaceListView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         """Filter workspaces to ensure users only see their own records."""
         return Workspace.objects.filter(owner=self.request.user)
+    
+class WorkspaceCreateView(LoginRequiredMixin, generic.CreateView):
+    """Controller for creating a new workspace under the current user."""
+
+    model = Workspace
+    fields = ["name", "description"]
+    template_name = "workspaces/workspace_form.html"
+    success_url = reverse_lazy("workspace-list")
+
+    def form_valid(self, form):
+        """Automatically assign the logged-in user as the owner."""
+        form.instance.owner = self.request.user
+        return super().form_valid(form)

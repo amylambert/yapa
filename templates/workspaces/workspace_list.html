@@ -16,15 +16,19 @@
     
     <main>
         <h2>Your Workspaces</h2>
+        <p>
+            <a href="{% url 'workspace-create' %}">+ Create New Workspace</a>
+        </p>
+        
         {% if workspaces %}
             <ul>
-            {% for space in workspaces %}
-                <li>
-                    <strong>{{ space.name }}</strong> 
-                    <small>(Created: {{ space.created_at|date:"Y-m-d" }})</small>
-                    <p>{{ space.description|default:"No description provided." }}</p>
-                </li>
-            {% endfor %}
+                {% for space in workspaces %}
+                    <li>
+                        <strong>{{ space.name }}</strong> 
+                        <small>(Created: {{ space.created_at|date:"Y-m-d" }})</small>
+                        <p>{{ space.description|default:"No description provided." }}</p>
+                    </li>
+                {% endfor %}
             </ul>
         {% else %}
             <p>You haven't created any workspaces yet!</p>
