@@ -48,3 +48,27 @@ class WorkspaceDetailView(LoginRequiredMixin, generic.DetailView):
     def get_queryset(self):
         """Ensure users can only access their own workspaces."""
         return Workspace.objects.filter(owner=self.request.user)
+
+class WorkspaceUpdateView(LoginRequiredMixin, generic.UpdateView):
+    """Controller to edit an existing workspace configuration."""
+
+    model = Workspace
+    fields = ["name", "description"]
+    template_name = "workspaces/workspace_form.html"
+    success_url = reverse_lazy("workspace-list")
+
+    def get_queryset(self):
+        """Ensure users can only edit their own workspaces."""
+        return Workspace.objects.filter(owner=self.request.user)
+
+
+class WorkspaceDeleteView(LoginRequiredMixin, generic.DeleteView):
+    """Controller to safely delete an existing workspace."""
+
+    model = Workspace
+    template_name = "workspaces/workspace_confirm_delete.html"
+    success_url = reverse_lazy("workspace-list")
+
+    def get_queryset(self):
+        """Ensure users can only delete their own workspaces."""
+        return Workspace.objects.filter(owner=self.request.user)
