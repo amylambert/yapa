@@ -19,7 +19,7 @@
     <hr>
     <main>
         <h2>Tasks</h2>
-        <p><a href="#">+ Add Task to Workspace (Coming Soon)</a></p>
+        <p><a href="{% url 'task-create' workspace.id %}">+ Add Task to Workspace</a></p>
         
         {% if workspace.tasks.all %}
             <ul>

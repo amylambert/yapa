@@ -22,6 +22,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
     path("accounts/register/", RegisterView.as_view(), name="register"),
-    # Anchor the workspaces sub-router directly to the root path
     path("", include("workspaces.urls")),
+    path("", include("tasks.urls")),
 ]
