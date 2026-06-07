@@ -1,38 +1,36 @@
 from django.urls import path
 from .views import (
     WorkspaceCreateView,
-    WorkspaceListView,
-    WorkspaceDetailView,
-    WorkspaceUpdateView,
     WorkspaceDeleteView,
+    WorkspaceDetailView,
+    WorkspaceListView,
+    WorkspaceUpdateView,
 )
 
 urlpatterns = [
-    # Workspace list, create, and detail views
+    # workspace list
     path(
         "workspaces/",
         WorkspaceListView.as_view(),
         name="workspace-list",
     ),
-    # Workspace creation page
+
+    # workspace CRUD
     path(
         "workspaces/create/",
         WorkspaceCreateView.as_view(),
         name="workspace-create",
     ),
-    # Workspace detail page
     path(
         "workspaces/<int:pk>/",
         WorkspaceDetailView.as_view(),
         name="workspace-detail",
     ),
-    # Workspace update page
     path(
-        "workspaces/<int:pk>/update/",
+        "workspaces/<int:pk>/edit/",
         WorkspaceUpdateView.as_view(),
-        name="workspace-update",
+        name="workspace-edit",
     ),
-    # Workspace delete page
     path(
         "workspaces/<int:pk>/delete/",
         WorkspaceDeleteView.as_view(),
