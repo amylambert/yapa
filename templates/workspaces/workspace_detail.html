@@ -25,7 +25,7 @@
             <ul>
             {% for task in workspace.tasks.all %}
                 <li>
-                    <strong>[{ { task.status }}]</strong> {{ task.title }} 
+                    <strong>[{{ task.status }}]</strong> {{ task.title }} 
                     <em>(Priority: {{ task.priority }})</em>
                 </li>
             {% endfor %}
