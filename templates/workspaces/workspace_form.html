@@ -1,24 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>YAPA - Create Workspace</title>
-</head>
-<body>
-    <header>
-        <h2>Create a New Workspace</h2>
-    </header>
-    
-    <main>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Save Workspace</button>
-        </form>
-    </main>
-    
-    <footer>
-        <p><a href="{% url 'workspace-list' %}">Cancel and Go Back</a></p>
-    </footer>
-</body>
-</html>
+{% extends 'base.html' %} {% block title %}Workspace Settings - YAPA{% endblock
+%} {% block content %}
+<h2>Workspace Settings</h2>
+<form method="post">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit">Save Workspace</button>
+</form>
+<p><a href="{% url 'workspace-list' %}">Cancel and Go Back</a></p>
+{% endblock %}

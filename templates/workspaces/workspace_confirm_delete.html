@@ -1,26 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>YAPA - Delete Workspace</title>
-</head>
-<body>
-    <header>
-        <h2>Delete Workspace</h2>
-    </header>
-    <main>
-        <p>Are you sure you want to delete <strong>{{ workspace.name }}</strong>?</p>
-        <blockquote>
-            Warning: This action is permanent and will remove all tasks inside it.
-        </blockquote>
-        
-        <form method="post">
-            {% csrf_token %}
-            <button type="submit">Yes, Delete Permanently</button>
-        </form>
-    </main>
-    <footer>
-        <p><a href="{% url 'workspace-detail' workspace.id %}">Cancel and Go Back</a></p>
-    </footer>
-</body>
-</html>
+{% extends 'base.html' %} {% block title %}Delete Workspace - YAPA{% endblock %}
+{% block content %}
+<h2>Delete Workspace</h2>
+<p>
+    Are you sure you want to delete
+    <strong>{{ workspace.name }}</strong>?
+</p>
+<blockquote>
+    Warning: This action is permanent and removes all containing tasks.
+</blockquote>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, Delete Permanently</button>
+</form>
+<p>
+    <a href="{% url 'workspace-detail' workspace.id %}"> Cancel and Go Back </a>
+</p>
+{% endblock %}

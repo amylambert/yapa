@@ -1,16 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>YAPA - Add Task</title>
-</head>
-<body>
-    <h2>Add Task to Workspace</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Create Task</button>
-    </form>
-    <p><a href="javascript:history.back()">Cancel and Go Back</a></p>
-</body>
-</html>
+{% extends 'base.html' %} {% block title %}Add Task - YAPA{% endblock %} {%
+block content %}
+<h2>Add Task to Workspace</h2>
+<form method="post">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit">Create Task</button>
+</form>
+<p><a href="javascript:history.back()">Cancel and Go Back</a></p>
+{% endblock %}
