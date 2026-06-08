@@ -14,4 +14,10 @@ urlpatterns = [
         views.TaskDetailView.as_view(),
         name="task-detail",
     ),
+    # Sub-task creation linked to parent task
+    path(
+        "workspaces/<int:workspace_pk>/tasks/<int:parent_pk>/subtasks/new/",
+        views.SubTaskCreateView.as_view(),
+        name="subtask-create",
+    ),
 ]

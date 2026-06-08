@@ -21,3 +21,8 @@ class Workspace(models.Model):
 
     def __str__(self):
         return str(self.name)
+    
+    @property
+    def root_tasks(self):
+        """Retrieve only top-level workspace tasks, filtering out sub-tasks."""
+        return self.tasks.filter(parent__isnull=True)

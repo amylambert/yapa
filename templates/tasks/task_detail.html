@@ -6,10 +6,12 @@
 
 {% block content %}
 <div>
+  <!-- Navigation Breadcrumbs -->
   <p>
     <a href="{% url 'workspace-detail' task.workspace.pk %}">&larr; Back to {{ task.workspace.title }}</a>
   </p>
 
+  <!-- Main Content Canvas -->
   <h1>{{ task.title }}</h1>
 
   <div>
@@ -17,13 +19,16 @@
     <p>{{ task.description|default:"No description provided." }}</p>
   </div>
 
+  <!-- Sub-tasks Management Section -->
   <div>
     <h3>Sub-tasks</h3>
     <ul>
       {% for subtask in subtasks %}
       <li>
         <input type="checkbox" {% if subtask.status == 'DONE' %}checked{% endif %} disabled />
-        <strong>{{ subtask.title }}</strong>
+        <a href="{% url 'task-detail' task.workspace.pk subtask.pk %}">
+          <strong>{{ subtask.title }}</strong>
+        </a>
         -
         {{ subtask.get_status_display }}
       </li>
@@ -31,11 +36,23 @@
       <li>No sub-tasks added yet.</li>
       {% endfor %}
     </ul>
-    <button type="button">+ Add Sub-task</button>
+
+    <!-- Inline Sub-task Creation Form -->
+    <form action="{% url 'subtask-create' task.workspace.pk task.pk %}" method="post">
+      {% csrf_token %}
+      <input
+        type="text"
+        name="title"
+        placeholder="Add a sub-task..."
+        required
+      />
+      <button type="submit">Add Sub-task</button>
+    </form>
   </div>
 
   <hr />
 
+  <!-- Metadata Attributes Panel -->
   <div>
     <h3>Metadata & Actions</h3>
     <ul>
@@ -49,15 +66,15 @@
       </li>
       <li>
         <strong>Due Date:</strong>
-        {{ task.due_date|default:"None" }}
+        {{ task.title }}1110
       </li>
       <li>
         <strong>Estimated Time:</strong>
-        {{ task.time_estimate }} mins
+        {{ task.title }}2221 mins
       </li>
       <li>
         <strong>Time Spent:</strong>
-        {{ task.title }}000 mins
+        {{ task.title }}3332 mins
       </li>
     </ul>
     <button type="button">Modify Task Settings</button>
