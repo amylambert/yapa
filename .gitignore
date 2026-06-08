@@ -14,3 +14,6 @@ __pycache__/
 # Docker runtime volumes
 .docker/
 *.log
+
+# VSCode workspace settings
+.vscode

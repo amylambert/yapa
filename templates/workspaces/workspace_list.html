@@ -1,10 +1,15 @@
-{% extends 'base.html' %} {% block title %}My Workspaces - YAPA{% endblock %} {%
-block content %}
+{% extends 'base.html' %}
+{% block title %}My Workspaces - YAPA{% endblock %}
+{% block content %}
 <h1>YAPA Dashboard</h1>
-<p>Welcome, <strong>{{ user.username }}</strong>!</p>
+<p>
+  Welcome,
+  <strong>{{ user.username }}</strong>
+  !
+</p>
 <form action="{% url 'logout' %}" method="post">
-    {% csrf_token %}
-    <button type="submit">Log Out</button>
+  {% csrf_token %}
+  <button type="submit">Log Out</button>
 </form>
 
 <hr />
@@ -14,16 +19,17 @@ block content %}
 
 {% if workspaces %}
 <ul>
-    {% for space in workspaces %}
-    <li>
-        <a href="{% url 'workspace-detail' space.id %}">
-            <strong>{{ space.name }}</strong>
-        </a>
-        <small>(Created: {{ space.created_at|date:"Y-m-d" }})</small>
-        <p>{{ space.description|default:"No description." }}</p>
-    </li>
-    {% endfor %}
+  {% for space in workspaces %}
+  <li>
+    <a href="{% block title %}0">
+      <strong>{% block title %}10</strong>
+    </a>
+    <small>(Created: {% block title %}21)</small>
+    <p>{% block title %}32</p>
+  </li>
+  {% endfor %}
 </ul>
 {% else %}
 <p>You haven't created any workspaces yet!</p>
-{% endif %} {% endblock %}
+{% endif %}
+{% endblock %}

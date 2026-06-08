@@ -1,10 +1,9 @@
-{% extends 'base.html' %} {% block title %}{{ task.title }} - Task Control
-Panel{% endblock %} {% block content %}
+{% extends 'base.html' %}
+{% block title %}{{ task.title }} - Task Control Panel{% endblock %}
+{% block content %}
 <div>
   <p>
-    <a href="{% url 'workspace-detail' task.workspace.pk %}">
-      &larr; Back to {{ task.workspace.title }}
-    </a>
+    <a href="{% url 'workspace-detail' task.workspace.pk %}">&larr; Back to {{ task.workspace.title }}</a>
   </p>
 
   <h1>{{ task.title }}</h1>
@@ -30,7 +29,8 @@ Panel{% endblock %} {% block content %}
           %}
           disabled
         />
-        <strong>{{ subtask.title }}</strong> - {{ subtask.get_status_display }}
+        <strong>{% block title %}00</strong>
+        - {% block title %}11
       </li>
       {% empty %}
       <li>No sub-tasks added yet.</li>
@@ -44,11 +44,26 @@ Panel{% endblock %} {% block content %}
   <div>
     <h3>Metadata & Actions</h3>
     <ul>
-      <li><strong>Status:</strong> {{ task.get_status_display }}</li>
-      <li><strong>Priority:</strong> {{ task.get_priority_display }}</li>
-      <li><strong>Due Date:</strong> {{ task.due_date|default:"None" }}</li>
-      <li><strong>Estimated Time:</strong> {{ task.time_estimate }} mins</li>
-      <li><strong>Time Spent:</strong> {{ task.time_spent }} mins</li>
+      <li>
+        <strong>Status:</strong>
+        {% block title %}44
+      </li>
+      <li>
+        <strong>Priority:</strong>
+        {% block title %}55
+      </li>
+      <li>
+        <strong>Due Date:</strong>
+        {% block title %}66
+      </li>
+      <li>
+        <strong>Estimated Time:</strong>
+        {% block title %}77 mins
+      </li>
+      <li>
+        <strong>Time Spent:</strong>
+        {% block title %}88 mins
+      </li>
     </ul>
     <button type="button">Modify Task Settings</button>
   </div>
