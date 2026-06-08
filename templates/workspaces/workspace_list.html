@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
-{% block title %}My Workspaces - YAPA{% endblock %}
+
+{% block title %}
+My Workspaces - YAPA
+{% endblock %}
+
 {% block content %}
 <h1>YAPA Dashboard</h1>
 <p>
@@ -7,6 +11,7 @@
   <strong>{{ user.username }}</strong>
   !
 </p>
+
 <form action="{% url 'logout' %}" method="post">
   {% csrf_token %}
   <button type="submit">Log Out</button>
@@ -21,11 +26,11 @@
 <ul>
   {% for space in workspaces %}
   <li>
-    <a href="{% block title %}0">
-      <strong>{% block title %}10</strong>
+    <a href="{% url 'workspace-detail' space.id %}">
+      <strong>{{ space.name }}</strong>
     </a>
-    <small>(Created: {% block title %}21)</small>
-    <p>{% block title %}32</p>
+    <small>(Created: {{ space.created_at|date:"Y-m-d" }})</small>
+    <p>{{ space.description|default:"No description." }}</p>
   </li>
   {% endfor %}
 </ul>

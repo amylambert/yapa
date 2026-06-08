@@ -1,13 +1,19 @@
 {% extends 'base.html' %}
-{% block title %}YAPA - {{ workspace.name }}{% endblock %}
+
+{% block title %}
+YAPA - {{ workspace.name }}
+{% endblock %}
+
 {% block content %}
-<p><a href="{% url 'workspace-list' %}">← Back to Dashboard</a></p>
+<p>
+  <a href="{% url 'workspace-list' %}">← Back to Dashboard</a>
+</p>
 <h1>{{ workspace.name }}</h1>
 
 <p>
   <a href="{% url 'workspace-edit' workspace.id %}">⚙️ Edit Settings</a>
   |
-  <a href="{% url 'workspace-delete' workspace.id %}">🗑️ Delete</a>
+  <a href="{% url 'workspace-delete' workspace.id %}">🗑️ Delete Workspace</a>
 </p>
 <p>{{ workspace.description|default:"No description provided." }}</p>
 
@@ -15,7 +21,7 @@
 
 <h2>Tasks</h2>
 <p>
-  <a href="{% block title %}0">+ Add Task to Workspace</a>
+  <a href="{% url 'task-create' workspace.id %}">+ Add Task to Workspace</a>
 </p>
 
 {% if workspace.tasks.all %}
@@ -23,11 +29,11 @@
   {% for task in workspace.tasks.all %}
   <li>
     <h3>
-      <a href="{% block title %}32">
+      <a href="{% url 'task-detail' workspace.pk task.pk %}">
         {{ task.title }}
       </a>
     </h3>
-    <p>Priority: {% block title %}54 | Status: {% block title %}6</p>
+    <p>Priority: {{ task.get_priority_display }} | Status: {{ task.get_status_display }}</p>
   </li>
   {% empty %}
   <li>No tasks created for this workspace yet.</li>
