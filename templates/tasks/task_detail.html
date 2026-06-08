@@ -1,72 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ task.title }} - Control Center</title>
-</head>
-<body>
-    <div>
-        <p>
-            <a href="{% url 'workspace-detail' task.workspace.pk %}">
-                &larr; Back to {{ task.workspace.title }}
-            </a>
-        </p>
+{% extends 'base.html' %} {% block title %}{{ task.title }} - Task Control
+Panel{% endblock %} {% block content %}
+<div>
+  <p>
+    <a href="{% url 'workspace-detail' task.workspace.pk %}">
+      &larr; Back to {{ task.workspace.title }}
+    </a>
+  </p>
 
-        <div>
-            <div>
-                <h1>{{ task.title }}</h1>
-                
-                <div>
-                    <h3>Description</h3>
-                    <p>{{ task.description|default:"No description provided." }}</p>
-                </div>
+  <h1>{{ task.title }}</h1>
 
-                <div>
-                    <h3>Sub-tasks</h3>
-                    <ul>
-                        {% for subtask in subtasks %}
-                            <li>
-                                <input type="checkbox" {% if subtask.status == 'DONE' %}checked{% endif %} disabled>
-                                <strong>{{ subtask.title }}</strong>
-                                <span>
-                                    {{ subtask.get_status_display }}
-                                </span>
-                            </li>
-                        {% empty %}
-                            <li>
-                                No sub-tasks added yet.
-                            </li>
-                        {% endfor %}
-                    </ul>
+  <div>
+    <h3>Description</h3>
+    <p>{{ task.description|default:"No description provided." }}</p>
+  </div>
 
-                    <div>
-                        <button>
-                            + Add Sub-task
-                        </button>
-                    </div>
-                </div>
-            </div>
+  <div>
+    <h3>Sub-tasks</h3>
+    <ul>
+      {% for subtask in subtasks %}
+      <li>
+        <input
+          type="checkbox"
+          {%
+          if
+          subtask.status=""
+          ="DONE"
+          %}checked{%
+          endif
+          %}
+          disabled
+        />
+        <strong>{{ subtask.title }}</strong> - {{ subtask.get_status_display }}
+      </li>
+      {% empty %}
+      <li>No sub-tasks added yet.</li>
+      {% endfor %}
+    </ul>
+    <button type="button">+ Add Sub-task</button>
+  </div>
 
-            <div>
-                <h4>
-                    Metadata & Actions
-                </h4>
-                <p><strong>Status:</strong> {{ task.get_status_display }}</p>
-                <p><strong>Priority:</strong> {{ task.get_priority_display }}</p>
-                <p><strong>Due Date:</strong> {{ task.due_date|default:"No Deadline" }}</p>
-                
-                <hr>
-                
-                <p><strong>Estimated Time:</strong> {{ task.time_estimate }} mins</p>
-                <p><strong>Time Spent:</strong> {{ task.time_spent }} mins</p>
+  <hr />
 
-                <div>
-                    <button>
-                        Modify Task Settings
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
+  <div>
+    <h3>Metadata & Actions</h3>
+    <ul>
+      <li><strong>Status:</strong> {{ task.get_status_display }}</li>
+      <li><strong>Priority:</strong> {{ task.get_priority_display }}</li>
+      <li><strong>Due Date:</strong> {{ task.due_date|default:"None" }}</li>
+      <li><strong>Estimated Time:</strong> {{ task.time_estimate }} mins</li>
+      <li><strong>Time Spent:</strong> {{ task.time_spent }} mins</li>
+    </ul>
+    <button type="button">Modify Task Settings</button>
+  </div>
+</div>
+{% endblock %}
