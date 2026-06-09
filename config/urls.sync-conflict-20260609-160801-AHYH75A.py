@@ -17,17 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from workspaces.views import RegisterView
-from django.views.generic import RedirectView
 
 urlpatterns = [
-    # Route the empty root domain directly to the workspace list dashboard
-    path(
-        "",
-        RedirectView.as_view(
-            pattern_name="workspace-list",
-            permanent=False,
-        ),
-    ),
     path("admin/", admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),
     path("accounts/register/", RegisterView.as_view(), name="register"),

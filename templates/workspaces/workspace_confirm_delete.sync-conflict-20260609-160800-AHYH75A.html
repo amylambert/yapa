@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Delete Workspace - YAPA
+{% endblock %}
+
+{% block content %}
+<h2>Delete Workspace</h2>
+<p>
+  Are you sure you want to delete
+  <strong>{{ workspace.name }}</strong>
+  ?
+</p>
+<blockquote>
+  Warning: This action is permanent and will remove all tasks inside it.
+</blockquote>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Yes, Delete Permanently</button>
+</form>
+<p>
+  <a href="{% url 'workspace-detail' workspace.id %}">Cancel and Go Back</a>
+</p>
+{% endblock %}

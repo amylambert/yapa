@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{{ task.title }} - Task Control Panel
+{% endblock %}
+
+{% block content %}
+<div>
+  <p>
+    <a href="{% url 'workspace-detail' task.workspace.pk %}">&larr; Back to {{ task.workspace.title }}</a>
+    {% if task.parent %}
+    |
+    <a href="{% url 'task-detail' task.workspace.pk task.parent.pk %}">&uarr; Up to Parent: {{ task.parent.title }}</a>
+    {% endif %}
+  </p>
+
+  <h1
+    class="editable"
+    data-field="title"
+    data-type="text"
+    data-csrf="{{ csrf_token }}"
+    data-url="{% url 'task-inline-update' task.workspace.pk task.pk %}"
+  >
+    {{ task.title }}
+  </h1>
+
+  <div>
+    <h3>Description</h3>
+    <p
+      class="editable"
+      data-field="description"
+      data-type="textarea"
+      data-csrf="{{ csrf_token }}"
+      data-url="{% url 'task-inline-update' task.workspace.pk task.pk %}"
+    >
+      {{ task.description|default:"No description provided. Double click to add one." }}
+    </p>
+  </div>
+
+  <div>
+    <h3>Sub-tasks</h3>
+    <ul>
+      {% for subtask in subtasks %}
+      <li>
+        <input
+          type="checkbox"
+          class="status-toggle"
+          data-url="{% url 'task-inline-update' task.workspace.pk subtask.pk %}"
+          data-csrf="{{ csrf_token }}"
+          {% if subtask.status == 'DONE' %}checked{% endif %}
+        />
+
+        <a href="{% url 'task-detail' task.workspace.pk subtask.pk %}">
+          <strong>{{ subtask.title }}</strong>
+        </a>
+        -
+        <span class="subtask-status">{{ subtask.get_status_display }}</span>
+      </li>
+      {% empty %}
+      <li>No sub-tasks added yet.</li>
+      {% endfor %}
+    </ul>
+
+    <form action="{% url 'subtask-create' task.workspace.pk task.pk %}" method="post">
+      {% csrf_token %}
+      <input
+        type="text"
+        name="title"
+        placeholder="Add a sub-task..."
+        required
+      />
+      <button type="submit">Add Sub-task</button>
+    </form>
+  </div>
+
+  <hr />
+
+  <div>
+    <h3>Metadata & Actions (Double click value to edit)</h3>
+    <ul>
+      <li>
+        <strong>Status:</strong>
+        <span
+          class="editable"
+          data-field="status"
+          data-type="select"
+          data-csrf="{{ task.title }}0"
+          data-url="{{ task.title }}1"
+          data-options='{"TODO":"To Do","DOING":"In Progress","DONE":"Done"}'
+        >
+          {{ task.get_status_display }}
+        </span>
+      </li>
+      <li>
+        <strong>Priority:</strong>
+        <span
+          class="editable"
+          data-field="priority"
+          data-type="select"
+          data-csrf="{{ task.title }}3"
+          data-url="{{ task.title }}4"
+          data-options='{"LOW":"Low","MEDIUM":"Medium","HIGH":"High"}'
+        >
+          {{ task.get_priority_display }}
+        </span>
+      </li>
+      <li>
+        <strong>Due Date:</strong>
+        {{ task.title }}6
+      </li>
+      <li>
+        <strong>Estimated Time:</strong>
+        {{ task.title }}7 mins
+      </li>
+      <li>
+        <strong>Time Spent:</strong>
+        {{ task.title }}8 mins
+      </li>
+    </ul>
+  </div>
+</div>
+
+<script src="{% static 'tasks/js/task_inline_update.js' %}" defer></script>
+<script src="{% static 'tasks/js/task_status_toggle.js' %}" defer></script>
+{% endblock %}
