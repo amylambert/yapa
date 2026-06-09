@@ -9,6 +9,10 @@
 <div>
   <p>
     <a href="{% url 'workspace-detail' task.workspace.pk %}">&larr; Back to {{ task.workspace.title }}</a>
+    {% if task.parent %}
+    |
+    <a href="{% url 'task-detail' task.workspace.pk task.parent.pk %}">&uarr; Up to Parent: {{ task.parent.title }}</a>
+    {% endif %}
   </p>
 
   <h1
@@ -39,12 +43,19 @@
     <ul>
       {% for subtask in subtasks %}
       <li>
-        <input type="checkbox" {% if subtask.status == 'DONE' %}checked{% endif %} disabled />
+        <input
+          type="checkbox"
+          class="status-toggle"
+          data-url="{% url 'task-inline-update' task.workspace.pk subtask.pk %}"
+          data-csrf="{{ csrf_token }}"
+          {% if subtask.status == 'DONE' %}checked{% endif %}
+        />
+
         <a href="{% url 'task-detail' task.workspace.pk subtask.pk %}">
           <strong>{{ subtask.title }}</strong>
         </a>
         -
-        {{ subtask.get_status_display }}
+        <span class="subtask-status">{{ subtask.get_status_display }}</span>
       </li>
       {% empty %}
       <li>No sub-tasks added yet.</li>
@@ -74,8 +85,8 @@
           class="editable"
           data-field="status"
           data-type="select"
-          data-csrf="{{ csrf_token }}"
-          data-url="{% url 'task-inline-update' task.workspace.pk task.pk %}"
+          data-csrf="{{ task.title }}0"
+          data-url="{{ task.title }}1"
           data-options='{"TODO":"To Do","DOING":"In Progress","DONE":"Done"}'
         >
           {{ task.get_status_display }}
@@ -87,8 +98,8 @@
           class="editable"
           data-field="priority"
           data-type="select"
-          data-csrf="{{ csrf_token }}"
-          data-url="{% url 'task-inline-update' task.workspace.pk task.pk %}"
+          data-csrf="{{ task.title }}3"
+          data-url="{{ task.title }}4"
           data-options='{"LOW":"Low","MEDIUM":"Medium","HIGH":"High"}'
         >
           {{ task.get_priority_display }}
@@ -96,20 +107,20 @@
       </li>
       <li>
         <strong>Due Date:</strong>
-        {{ task.title }}
+        {{ task.title }}6
       </li>
       <li>
         <strong>Estimated Time:</strong>
-        {{ task.title }} mins
+        {{ task.title }}7 mins
       </li>
       <li>
         <strong>Time Spent:</strong>
-        {{ task.title }} mins
+        {{ task.title }}8 mins
       </li>
     </ul>
   </div>
 </div>
 
-
 <script src="{% static 'tasks/js/task_inline_update.js' %}" defer></script>
+<script src="{% static 'tasks/js/task_status_toggle.js' %}" defer></script>
 {% endblock %}
