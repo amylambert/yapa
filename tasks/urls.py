@@ -20,4 +20,10 @@ urlpatterns = [
         views.SubTaskCreateView.as_view(),
         name="subtask-create",
     ),
+    # Inline asynchronous partial task updates
+    path(
+        "workspaces/<int:workspace_pk>/tasks/<int:pk>/update/",
+        views.TaskInlineUpdateView.as_view(),
+        name="task-inline-update",
+    ),
 ]
