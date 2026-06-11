@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Delete Task - YAPA
+{% endblock %}
+
+{% block content %}
+<h2>Delete Task</h2>
+<p>
+  Are you sure you want to delete
+  <strong>{{ task.title }}</strong>?
+</p>
+<blockquote>
+  Warning: This action is permanent and will remove all nested sub-tasks.
+</blockquote>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Yes, Delete Permanently</button>
+</form>
+<p>
+  <a href="{% url 'task-detail' task.workspace.id task.id %}">
+    Cancel and Go Back
+  </a>
+</p>
+{% endblock %}

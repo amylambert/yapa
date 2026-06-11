@@ -26,4 +26,10 @@ urlpatterns = [
         views.TaskInlineUpdateView.as_view(),
         name="task-inline-update",
     ),
+    # Permanent destruction confirmation of tasks
+    path(
+        "workspaces/<int:workspace_pk>/tasks/<int:pk>/delete/",
+        views.TaskDeleteView.as_view(),
+        name="task-delete",
+    ),
 ]

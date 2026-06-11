@@ -97,6 +97,12 @@
       <li><strong>Due Date:</strong> {{ task.due_date|default:"None" }}</li>
       <li><strong>Estimated Time:</strong> {{ task.time_estimate }} mins</li>
       <li><strong>Time Spent:</strong> {{ task.time_spent }} mins</li>
+      <li>
+        <strong>Actions:</strong>
+        <a href="{% url 'task-delete' task.workspace.pk task.pk %}">
+          🗑️ Delete Task Permanently
+        </a>
+      </li>
     </ul>
   </div>
 </div>
