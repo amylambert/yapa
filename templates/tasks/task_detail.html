@@ -8,33 +8,40 @@
 {% block content %}
 <div>
   <p>
-    <a href="{% url 'workspace-detail' task.workspace.pk %}">&larr; Back to {{ task.workspace.title }}</a>
+    <a href="{% url 'workspace-detail' task.workspace.pk %}">
+      &larr; Back to {{ task.workspace.title }}
+    </a>
     {% if task.parent %}
     |
-    <a href="{% url 'task-detail' task.workspace.pk task.parent.pk %}">&uarr; Up to Parent: {{ task.parent.title }}</a>
+    <a href="{% url 'task-detail' task.workspace.pk task.parent.pk %}">
+      &uarr; Up to Parent: {{ task.parent.title }}
+    </a>
     {% endif %}
   </p>
 
-  <h1
-    class="editable"
-    data-field="title"
-    data-type="text"
-    data-csrf="{{ csrf_token }}"
-    data-url="{% url 'task-inline-update' task.workspace.pk task.pk %}"
-  >
-    {{ task.title }}
-  </h1>
+  {# Pre-compute main routes to guarantee lines stay under 80 characters #}
+  {% url 'task-inline-update' task.workspace.pk task.pk as main_url %}
+
+  <div class="task-title-container">
+    {# Node-level split isolates attributes from formatter line wrapping #}
+    {% if task.status == 'DONE' %}
+    <input type="checkbox" class="status-toggle main-task-toggle" data-url="{{ main_url }}" data-csrf="{{ csrf_token }}"
+      checked />
+    {% else %}
+    <input type="checkbox" class="status-toggle main-task-toggle" data-url="{{ main_url }}"
+      data-csrf="{{ csrf_token }}" />
+    {% endif %}
+
+    <h1 class="editable" data-field="title" data-type="text" data-csrf="{{ csrf_token }}" data-url="{{ main_url }}">
+      {{ task.title }}
+    </h1>
+  </div>
 
   <div>
     <h3>Description</h3>
-    <p
-      class="editable"
-      data-field="description"
-      data-type="textarea"
-      data-csrf="{{ csrf_token }}"
-      data-url="{% url 'task-inline-update' task.workspace.pk task.pk %}"
-    >
-      {{ task.description|default:"No description provided. Double click to add one." }}
+    <p class="editable" data-field="description" data-type="textarea" data-csrf="{{ csrf_token }}"
+      data-url="{{ main_url }}">
+      {{ task.description|default:"No description. Double click to add." }}
     </p>
   </div>
 
@@ -42,19 +49,18 @@
     <h3>Sub-tasks</h3>
     <ul>
       {% for subtask in subtasks %}
+      {# Pre-compute sub-task routes inside loop boundaries safely #}
+      {% url 'task-inline-update' task.workspace.pk subtask.pk as sub_url %}
       <li>
-        <input
-          type="checkbox"
-          class="status-toggle"
-          data-url="{% url 'task-inline-update' task.workspace.pk subtask.pk %}"
-          data-csrf="{{ csrf_token }}"
-          {% if subtask.status == 'DONE' %}checked{% endif %}
-        />
+        {% if subtask.status == 'DONE' %}
+        <input type="checkbox" class="status-toggle" data-url="{{ sub_url }}" data-csrf="{{ csrf_token }}" checked />
+        {% else %}
+        <input type="checkbox" class="status-toggle" data-url="{{ sub_url }}" data-csrf="{{ csrf_token }}" />
+        {% endif %}
 
         <a href="{% url 'task-detail' task.workspace.pk subtask.pk %}">
           <strong>{{ subtask.title }}</strong>
-        </a>
-        -
+        </a> -
         <span class="subtask-status">{{ subtask.get_status_display }}</span>
       </li>
       {% empty %}
@@ -62,14 +68,9 @@
       {% endfor %}
     </ul>
 
-    <form action="{% url 'subtask-create' task.workspace.pk task.pk %}" method="post">
+    <form method="post" action="{% url 'subtask-create' task.workspace.pk task.pk %}">
       {% csrf_token %}
-      <input
-        type="text"
-        name="title"
-        placeholder="Add a sub-task..."
-        required
-      />
+      <input type="text" name="title" placeholder="Add sub-task..." required />
       <button type="submit">Add Sub-task</button>
     </form>
   </div>
@@ -81,46 +82,28 @@
     <ul>
       <li>
         <strong>Status:</strong>
-        <span
-          class="editable"
-          data-field="status"
-          data-type="select"
-          data-csrf="{{ task.title }}0"
-          data-url="{{ task.title }}1"
-          data-options='{"TODO":"To Do","DOING":"In Progress","DONE":"Done"}'
-        >
+        <span class="editable main-task-status" data-field="status" data-type="select" data-csrf="{{ csrf_token }}"
+          data-url="{{ main_url }}" data-options='{"TODO":"To Do","DOING":"In Progress","DONE":"Done"}'>
           {{ task.get_status_display }}
         </span>
       </li>
       <li>
         <strong>Priority:</strong>
-        <span
-          class="editable"
-          data-field="priority"
-          data-type="select"
-          data-csrf="{{ task.title }}3"
-          data-url="{{ task.title }}4"
-          data-options='{"LOW":"Low","MEDIUM":"Medium","HIGH":"High"}'
-        >
+        <span class="editable" data-field="priority" data-type="select" data-csrf="{{ csrf_token }}"
+          data-url="{{ main_url }}" data-options='{"LOW":"Low","MEDIUM":"Medium","HIGH":"High"}'>
           {{ task.get_priority_display }}
         </span>
       </li>
-      <li>
-        <strong>Due Date:</strong>
-        {{ task.title }}6
-      </li>
-      <li>
-        <strong>Estimated Time:</strong>
-        {{ task.title }}7 mins
-      </li>
-      <li>
-        <strong>Time Spent:</strong>
-        {{ task.title }}8 mins
-      </li>
+      <li><strong>Due Date:</strong> {{ task.due_date|default:"None" }}</li>
+      <li><strong>Estimated Time:</strong> {{ task.time_estimate }} mins</li>
+      <li><strong>Time Spent:</strong> {{ task.time_spent }} mins</li>
     </ul>
   </div>
 </div>
 
-<script src="{% static 'tasks/js/task_inline_update.js' %}" defer></script>
-<script src="{% static 'tasks/js/task_status_toggle.js' %}" defer></script>
+<script src="{% static 'tasks/js/task_inline_update.js' %}" defer>
+</script>
+
+<script src="{% static 'tasks/js/task_status_toggle.js' %}" defer>
+</script>
 {% endblock %}
