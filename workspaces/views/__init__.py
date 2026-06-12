@@ -4,3 +4,4 @@ from .workspace_delete import WorkspaceDeleteView
 from .workspace_detail import WorkspaceDetailView
 from .workspace_list import WorkspaceListView
 from .workspace_update import WorkspaceUpdateView
+from .workspace_inline_update import WorkspaceInlineUpdateView

@@ -5,6 +5,7 @@ from .views import (
     WorkspaceDetailView,
     WorkspaceListView,
     WorkspaceUpdateView,
+    WorkspaceInlineUpdateView,
 )
 
 urlpatterns = [
@@ -35,5 +36,11 @@ urlpatterns = [
         "workspaces/<int:pk>/delete/",
         WorkspaceDeleteView.as_view(),
         name="workspace-delete",
+    ),
+    # Asynchronous background partial modifications for workspaces
+    path(
+        "workspaces/<int:pk>/inline-update/",
+        WorkspaceInlineUpdateView.as_view(),
+        name="workspace-inline-update",
     ),
 ]
