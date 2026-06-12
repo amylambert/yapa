@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Workspace Settings - YAPA
+Create Workspace - YAPA
 {% endblock %}
 
 {% block content %}
-<h2>Workspace Settings</h2>
+<h2>Create New Workspace</h2>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit">Save Workspace</button>
+  <button type="submit">Create Workspace</button>
 </form>
 <p><a href="{% url 'workspace-list' %}">Cancel and Go Back</a></p>
 {% endblock %}

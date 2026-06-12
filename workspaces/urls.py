@@ -4,7 +4,6 @@ from .views import (
     WorkspaceDeleteView,
     WorkspaceDetailView,
     WorkspaceListView,
-    WorkspaceUpdateView,
     WorkspaceInlineUpdateView,
 )
 
@@ -26,11 +25,6 @@ urlpatterns = [
         "workspaces/<int:pk>/",
         WorkspaceDetailView.as_view(),
         name="workspace-detail",
-    ),
-    path(
-        "workspaces/<int:pk>/edit/",
-        WorkspaceUpdateView.as_view(),
-        name="workspace-edit",
     ),
     path(
         "workspaces/<int:pk>/delete/",
