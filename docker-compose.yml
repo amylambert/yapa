@@ -1,17 +1,19 @@
 services:
   db:
-    image: postgres:15-alpine
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    env_file:
-      - .env
-    # We still need to map POSTGRES_ vars because the Postgres image expects them
+    image: postgres:15
+    # Explicitly map your custom .env keys to what Postgres expects
     environment:
-      - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-    ports:
-      - "5432:5432"
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # Ensures Postgres lets us know when it is actually ready
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   web:
     build: .
@@ -22,10 +24,12 @@ services:
       - .:/app
     ports:
       - "8000:8000"
-    depends_on:
-      - db
     env_file:
       - .env
+    # Enforce waiting until the database healthcheck returns successful
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
   postgres_data:

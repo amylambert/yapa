@@ -21,6 +21,10 @@ YAPA - {{ workspace.name }}
   <a href="{% url 'workspace-delete' workspace.id %}">🗑️ Delete Workspace</a>
 </p>
 
+<p>
+  <a href="{% url 'note-create' workspace.id %}">📝 Create New Note</a>
+</p>
+
 <p class="editable" data-field="description" data-type="textarea" data-csrf="{{ csrf_token }}"
   data-url="{{ update_url }}">
   {{ workspace.description|default:"No description provided." }}

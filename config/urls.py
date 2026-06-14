@@ -33,4 +33,5 @@ urlpatterns = [
     path("accounts/register/", RegisterView.as_view(), name="register"),
     path("", include("workspaces.urls")),
     path("", include("tasks.urls")),
+    path("", include("notes.urls")),
 ]
