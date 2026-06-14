@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Note: {{ note.title }} - YAPA
+{% endblock %}
+
+{% block content %}
+<p>
+    <a href="{% url 'workspace-detail' note.workspace.id %}">
+        ⬅️ Back to Workspace Dashboard
+    </a>
+</p>
+
+<hr />
+
+<h1 class="editable" data-field="title" data-type="text" data-csrf="{{ csrf_token }}"
+    data-url="{% url 'note-inline-update' note.id %}">
+    {{ note.title }}
+</h1>
+
+<div class="editable" data-field="content" data-type="textarea" data-csrf="{{ csrf_token }}"
+    data-url="{% url 'note-inline-update' note.id %}">
+    {{ note.content|default:"Empty note canvas. Double-click to write." }}
+</div>
+
+<hr />
+
+<div>
+    <small>Created: {{ note.created_at|date:"M d, Y H:i" }}</small><br />
+    <small>Modified: {{ note.updated_at|date:"M d, Y H:i" }}</small>
+</div>
+
+<hr />
+
+<form action="{% url 'note-delete' note.id %}" method="post">
+    {% csrf_token %}
+    <button type="submit" onclick="return confirm('Are you sure you want to permanently delete this note?');">
+        🗑️ Delete This Note Permanently
+    </button>
+</form>
+
+<script src="{% static 'js/inline_update.js' %}" defer></script>
+{% endblock %}

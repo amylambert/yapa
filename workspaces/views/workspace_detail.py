@@ -4,12 +4,15 @@ from ..models import Workspace
 
 
 class WorkspaceDetailView(LoginRequiredMixin, generic.DetailView):
-    """Controller to display a workspace and its associated tasks."""
+    """Renders the comprehensive operations dashboard for a single workspace."""
 
     model = Workspace
     template_name = "workspaces/workspace_detail.html"
     context_object_name = "workspace"
 
     def get_queryset(self):
-        """Ensure users can only access their own workspaces."""
-        return Workspace.objects.filter(owner=self.request.user)
+        """Return the user's workspace optimized for related components."""
+        return (
+            Workspace.objects.filter(owner=self.request.user)
+            .prefetch_related("tasks", "notes")
+        )

@@ -21,14 +21,36 @@ YAPA - {{ workspace.name }}
   <a href="{% url 'workspace-delete' workspace.id %}">🗑️ Delete Workspace</a>
 </p>
 
-<p>
-  <a href="{% url 'note-create' workspace.id %}">📝 Create New Note</a>
-</p>
-
 <p class="editable" data-field="description" data-type="textarea" data-csrf="{{ csrf_token }}"
   data-url="{{ update_url }}">
   {{ workspace.description|default:"No description provided." }}
 </p>
+
+<hr />
+
+<h2>Notes</h2>
+<p>
+  <a href="{% url 'note-create' workspace.id %}">📝 Create New Note</a>
+</p>
+
+{% if workspace.notes.all %}
+<div class="notes-container">
+  {% for note in workspace.notes.all %}
+  <div class="note-card">
+    <h3>
+      <a href="{% url 'note-detail' note.id %}">
+        {{ note.title }}
+      </a>
+    </h3>
+    <p>{{ note.content|truncatewords:30|linebreaks }}</p>
+    <small>Last updated: {{ note.updated_at|date:"M d, Y H:i" }}</small>
+  </div>
+  <hr />
+  {% endfor %}
+</div>
+{% else %}
+<p>No notes have been written in this workspace yet.</p>
+{% endif %}
 
 <hr />
 
