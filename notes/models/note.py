@@ -3,24 +3,22 @@ from workspaces.models import Workspace
 
 
 class Note(models.Model):
-    """Represents a dedicated documentation or text file inside a workspace."""
+    """Represents an atomic document supporting hierarchical nesting."""
 
-    title = models.CharField(max_length=150)
-    content = models.TextField(blank=True, null=True)
     workspace = models.ForeignKey(
-        Workspace,
-        on_delete=models.CASCADE,
-        related_name="notes",
+        Workspace, on_delete=models.CASCADE, related_name="notes"
     )
+    parent = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="children",
+    )
+    title = models.CharField(max_length=200)
+    content = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        """Database indexing configurations and collection sorting options."""
-
-        app_label = "notes"
-        ordering = ["-updated_at"]
-
     def __str__(self):
-        """Return a clean string normalization of the note identifier."""
-        return str(self.title)
+        return self.title

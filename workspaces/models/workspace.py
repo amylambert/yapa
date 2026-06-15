@@ -26,3 +26,8 @@ class Workspace(models.Model):
     def root_tasks(self):
         """Retrieve only top-level workspace tasks, filtering out sub-tasks."""
         return self.tasks.filter(parent__isnull=True)
+    
+    @property
+    def root_notes(self):
+        """Retrieve only top-level notes to build the base hierarchy."""
+        return self.notes.filter(parent__isnull=True)

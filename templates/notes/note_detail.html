@@ -6,11 +6,21 @@ Note: {{ note.title }} - YAPA
 {% endblock %}
 
 {% block content %}
-<p>
-    <a href="{% url 'workspace-detail' note.workspace.id %}">
-        ⬅️ Back to Workspace Dashboard
-    </a>
-</p>
+<nav class="note-navigation">
+    <p>
+        <a href="{% url 'workspace-detail' note.workspace.id %}">
+            ⬅️ Back to Workspace Dashboard
+        </a>
+    </p>
+
+    {% if note.parent %}
+    <p>
+        <a href="{% url 'note-detail' note.parent.id %}">
+            ⬆️ Up to Parent Note: <strong>{{ note.parent.title }}</strong>
+        </a>
+    </p>
+    {% endif %}
+</nav>
 
 <hr />
 
@@ -30,6 +40,30 @@ Note: {{ note.title }} - YAPA
     <small>Created: {{ note.created_at|date:"M d, Y H:i" }}</small><br />
     <small>Modified: {{ note.updated_at|date:"M d, Y H:i" }}</small>
 </div>
+
+<hr />
+
+<h3>Sub-Notes & Nested Documents</h3>
+<p>
+    <a href="{% url 'note-create' note.workspace.id %}?parent={{ note.id }}">
+        ➕ Create Sub-Note Inside This Document
+    </a>
+</p>
+
+{% if note.children.all %}
+<ul>
+    {% for child in note.children.all %}
+    <li style="margin-bottom: 8px;">
+        <a href="{% url 'note-detail' child.id %}">
+            <strong>{{ child.title }}</strong>
+        </a>
+        <small>(Modified: {{ child.updated_at|date:"M d, Y" }})</small>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No sub-notes are nested under this canvas yet.</p>
+{% endif %}
 
 <hr />
 

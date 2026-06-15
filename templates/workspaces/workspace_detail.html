@@ -33,7 +33,7 @@ YAPA - {{ workspace.name }}
   <a href="{% url 'note-create' workspace.id %}">📝 Create New Note</a>
 </p>
 
-{% if workspace.notes.all %}
+{% if workspace.root_notes %}
 <div class="notes-container">
   {% for note in workspace.notes.all %}
   <div class="note-card">
