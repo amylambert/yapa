@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "workspaces.apps.WorkspacesConfig",
     "tasks.apps.TasksConfig",
-    "notes",
+    "notes.apps.NotesConfig",
+    "core.apps.CoreConfig"
 ]
 
 MIDDLEWARE = [

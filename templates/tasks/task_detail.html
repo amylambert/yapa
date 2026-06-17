@@ -46,27 +46,50 @@
   </div>
 
   <div>
-    <h3>Sub-tasks</h3>
+    <h2>Contained Items</h2>
+    
+    <div class="actions-hub" style="margin-bottom: 20px;">
+      <a href="{% url 'task-create' task.workspace.id %}?parent={{ task.id }}">
+        ✅ Create Sub-Task
+      </a>
+      &nbsp;|&nbsp;
+      <a href="{% url 'note-create' task.workspace.id %}?task_parent={{ task.id }}">
+        📝 Create Sub-Note Documentation
+      </a>
+    </div>
+    
+    <!-- Category A: Sub-Tasks Breakdown -->
+    <div class="nested-section">
+      <h3>Sub-Tasks Breakdown ({% firstof task.subtasks.count "0" %})</h3>
+      {% if task.subtasks.all %}
     <ul>
-      {% for subtask in subtasks %}
-      {# Pre-compute sub-task routes inside loop boundaries safely #}
-      {% url 'task-inline-update' task.workspace.pk subtask.pk as sub_url %}
+      {% for sub in task.subtasks.all %}
       <li>
-        {% if subtask.status == 'DONE' %}
-        <input type="checkbox" class="status-toggle" data-url="{{ sub_url }}" data-csrf="{{ csrf_token }}" checked />
-        {% else %}
-        <input type="checkbox" class="status-toggle" data-url="{{ sub_url }}" data-csrf="{{ csrf_token }}" />
-        {% endif %}
+          <strong>[{{ sub.get_status_display }}]</strong>
+          <a href="{% url 'task-detail' task.workspace.id sub.id %}">{{ sub.title }}</a>
+          </li>
+          {% endfor %}
+          </ul>
+          {% else %}
+    <p style="color: gray;"><small>No nested sub-tasks track mapped.</small></p>
+    {% endif %}
+    </div>
 
-        <a href="{% url 'task-detail' task.workspace.pk subtask.pk %}">
-          <strong>{{ subtask.title }}</strong>
-        </a> -
-        <span class="subtask-status">{{ subtask.get_status_display }}</span>
-      </li>
-      {% empty %}
-      <li>No sub-tasks added yet.</li>
-      {% endfor %}
-    </ul>
+    <!-- Category B: Connected Context Sub-Notes Documentation -->
+    <div class="nested-section" style="margin-top: 20px;">
+      <h3>Linked Support Documentation ({% firstof task.sub_notes.count "0" %})</h3>
+      {% if task.sub_notes.all %}
+      <ul>
+        {% for document in task.sub_notes.all %}
+        <li>
+          <a href="{% url 'note-detail' document.id %}">{{ document.title }}</a>
+        </li>
+          {% endfor %}
+          </ul>
+      {% else %}
+      <p style="color: gray;"><small>No attached documentation notes found.</small></p>
+      {% endif %}
+      </div>
 
     <form method="post" action="{% url 'subtask-create' task.workspace.pk task.pk %}">
       {% csrf_token %}

@@ -1,8 +1,9 @@
 from django.db import models
+from core.models.schedulable import SchedulableModel
 from workspaces.models import Workspace
 
 
-class Task(models.Model):
+class Task(SchedulableModel):
     """Represents an actionable task or nested note within a workspace."""
 
     STATUS_CHOICES = [
@@ -29,6 +30,14 @@ class Task(models.Model):
         null=True,
         blank=True,
         related_name="subtasks",
+    )
+    # Cross-relational reference enabling notes to contain sub-tasks
+    related_note = models.ForeignKey(
+        "notes.Note",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="sub_tasks",
     )
 
     title = models.CharField(max_length=200)
