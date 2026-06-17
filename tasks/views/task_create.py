@@ -11,15 +11,24 @@ class TaskCreateView(LoginRequiredMixin, generic.CreateView):
     """Handles secure creation of tasks, sub-tasks, and note-tasks."""
 
     model = Task
-    # Generate the form automatically using explicit model fields
-    fields = ["title", "status", "deadline"]
+    # Whitelist form fields explicitly to avoid model layer exposure
+    fields = ["title", "status", "deadline", "priority", "description"]
     template_name = "tasks/task_form.html"
+
+    def _get_workspace_id(self) -> int:
+        """Extract workspace identifier from URL arguments safely."""
+        return (
+            self.kwargs.get("workspace_pk")
+            or self.kwargs.get("workspace_id")
+            or self.kwargs.get("pk")
+        )
 
     def form_valid(self, form):
         """Bind task to workspace, parent task, or parent note context."""
+        workspace_id = self._get_workspace_id()
         workspace = get_object_or_404(
             Workspace,
-            pk=self.kwargs["workspace_id"],
+            pk=workspace_id,
             owner=self.request.user,
         )
         form.instance.workspace = workspace
@@ -40,14 +49,11 @@ class TaskCreateView(LoginRequiredMixin, generic.CreateView):
             )
             form.instance.related_note = related_note
 
-            # Inherit the deadline from the parent note if applicable
-            if related_note.deadline and not form.instance.deadline:
-                form.instance.deadline = related_note.deadline
-
         return super().form_valid(form)
 
     def get_success_url(self):
         """Redirect the user back to the exact originating detail page."""
+        workspace_id = self._get_workspace_id()
         note_parent_id = self.request.GET.get("note_parent")
         if note_parent_id:
             return reverse("note-detail", kwargs={"pk": note_parent_id})
@@ -57,12 +63,12 @@ class TaskCreateView(LoginRequiredMixin, generic.CreateView):
             return reverse(
                 "task-detail",
                 kwargs={
-                    "workspace_id": self.kwargs["workspace_id"],
+                    "workspace_id": workspace_id,
                     "pk": parent_id,
                 },
             )
 
         return reverse(
             "workspace-detail",
-            kwargs={"pk": self.kwargs["workspace_id"]},
+            kwargs={"pk": workspace_id},
         )
