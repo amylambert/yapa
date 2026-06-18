@@ -47,7 +47,7 @@
 
   <div>
     <h2>Contained Items</h2>
-    
+
     <div class="actions-hub" style="margin-bottom: 20px;">
       <a href="{% url 'task-create' task.workspace.id %}?parent={{ task.id }}">
         ✅ Create Sub-Task
@@ -57,22 +57,22 @@
         📝 Create Sub-Note Documentation
       </a>
     </div>
-    
+
     <!-- Category A: Sub-Tasks Breakdown -->
     <div class="nested-section">
       <h3>Sub-Tasks Breakdown ({% firstof task.subtasks.count "0" %})</h3>
       {% if task.subtasks.all %}
-    <ul>
-      {% for sub in task.subtasks.all %}
-      <li>
+      <ul>
+        {% for sub in task.subtasks.all %}
+        <li>
           <strong>[{{ sub.get_status_display }}]</strong>
           <a href="{% url 'task-detail' task.workspace.id sub.id %}">{{ sub.title }}</a>
-          </li>
-          {% endfor %}
-          </ul>
-          {% else %}
-    <p style="color: gray;"><small>No nested sub-tasks track mapped.</small></p>
-    {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p style="color: gray;"><small>No nested sub-tasks track mapped.</small></p>
+      {% endif %}
     </div>
 
     <!-- Category B: Connected Context Sub-Notes Documentation -->
@@ -84,12 +84,12 @@
         <li>
           <a href="{% url 'note-detail' document.id %}">{{ document.title }}</a>
         </li>
-          {% endfor %}
-          </ul>
+        {% endfor %}
+      </ul>
       {% else %}
       <p style="color: gray;"><small>No attached documentation notes found.</small></p>
       {% endif %}
-      </div>
+    </div>
 
     <form method="post" action="{% url 'subtask-create' task.workspace.pk task.pk %}">
       {% csrf_token %}
@@ -130,9 +130,7 @@
   </div>
 </div>
 
-<script src="{% static 'tasks/js/task_inline_update.js' %}" defer>
-</script>
+<script src="{% static 'js/inline_update.js' %}" defer></script>
 
-<script src="{% static 'tasks/js/task_status_toggle.js' %}" defer>
-</script>
+<script src="{% static 'tasks/js/task_status_toggle.js' %}" defer></script>
 {% endblock %}

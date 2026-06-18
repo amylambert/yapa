@@ -7,24 +7,23 @@ Note: {{ note.title }} - YAPA
 
 {% block content %}
 <nav class="note-navigation">
-<p>
-    <a href="{% url 'workspace-detail' note.workspace.id %}">
-        ⬅️ Back to Workspace Dashboard
-    </a>
-</p>
-{% if note.parent %}
     <p>
-    <a href="{% url 'note-detail' note.parent.id %}">
-        ⬆️ Up to Parent Note: <strong>{{ note.parent.title }}</strong>
-    </a>
+        <a href="{% url 'workspace-detail' note.workspace.id %}">
+            ⬅️ Back to Workspace Dashboard
+        </a>
     </p>
-{% endif %}
+    {% if note.parent %}
+    <p>
+        <a href="{% url 'note-detail' note.parent.id %}">
+            Up to Parent Note: <strong>{{ note.parent.title }}</strong>
+        </a>
+    </p>
+    {% endif %}
 </nav>
 
 <hr />
 
-<!-- Contextual Deadline Tracker Component -->
-<div class="deadline-block" style="background: #f9f9f9; padding: 10px;">
+<div class="note-deadline-card">
     ⏰ <strong>Deadline (Double-click to set):</strong>
     <span class="editable" data-field="deadline" data-type="datetime-local" data-csrf="{{ csrf_token }}"
         data-url="{% url 'note-inline-update' note.id %}">
@@ -44,66 +43,68 @@ Note: {{ note.title }} - YAPA
 
 <hr />
 
-<!-- =================================================================== -->
-<!-- Unified Manifest Container (Shows everything nested inside)        -->
-<!-- =================================================================== -->
 <h2>Contained Items</h2>
 
-<div class="actions-hub" style="margin-bottom: 20px;">
-    <!-- Direct query action targets -->
+<div class="note-actions-hub">
     <a href="{% url 'note-create' note.workspace.id %}?parent={{ note.id }}">
-    📝 Nest a Sub-Note
+        📝 Nest a Sub-Note
     </a>
-&nbsp;|&nbsp;
-<a href="{% url 'task-create' note.workspace.id %}?note_parent={{ note.id }}">
-    ✅ Nest a Task Link
-</a>
+    &nbsp;|&nbsp;
+    <a href="{% url 'task-create' note.workspace.id %}?note_parent={{ note.id }}">
+        ✅ Nest a Task Link
+    </a>
 </div>
 
-<!-- Category A: Sub-Notes Breakdown -->
-<div class="nested-section">
+<div class="note-nested-section">
     <h3>Nested Documents ({% firstof note.children.count "0" %})</h3>
-{% if note.children.all %}
-<ul>
-    {% for child in note.children.all %}
+    {% if note.children.all %}
+    <ul>
+        {% for child in note.children.all %}
         <li>
             <a href="{% url 'note-detail' child.id %}">{{ child.title }}</a>
-            {% if child.deadline %}<small>⏰ {{ child.deadline|date:"M d" }}</small>{% endif %}
+            {% if child.deadline %}
+            <small>⏰ {{ child.deadline|date:"M d" }}</small>
+            {% endif %}
         </li>
         {% endfor %}
-        </ul>
-        {% else %}
-        <p style="color: gray;"><small>No nested sub-notes present.</small></p>
-        {% endif %}
-        </div>
-        
-        <!-- Category B: Embedded Sub-Tasks Breakdown -->
-        <div class="nested-section" style="margin-top: 20px;">
-            <h3>Actionable Tasks ({% firstof note.sub_tasks.count "0" %})</h3>
-            {% if note.sub_tasks.all %}
-            <ul>
-                {% for task in note.sub_tasks.all %}
-                <li>
-                    <strong>[{{ task.get_status_display }}]</strong>
-                    <a href="{% url 'task-detail' note.workspace.id task.id %}">{{ task.title }}</a>
-                    {% if task.deadline %}<small>⏰ {{ task.deadline|date:"M d" }}</small>{% endif %}
-                </li>
-                {% endfor %}
-            </ul>
-            {% else %}
-    <p style="color: gray;"><small>No action tasks embedded here yet.</small></p>
+    </ul>
+    {% else %}
+    <p class="note-empty-notice">
+        <small>No nested sub-notes present.</small>
+    </p>
     {% endif %}
 </div>
 
-<!-- Future blocks (e.g., Files, Links) can cleanly slide right in here -->
+<div class="note-nested-section note-spaced-top">
+    <h3>Actionable Tasks ({% firstof note.sub_tasks.count "0" %})</h3>
+    {% if note.sub_tasks.all %}
+    <ul>
+        {% for task in note.sub_tasks.all %}
+        <li>
+            <strong>[{{ task.get_status_display }}]</strong>
+            <a href="{% url 'task-detail' note.workspace.id task.id %}">
+                {{ task.title }}
+            </a>
+            {% if task.deadline %}
+            <small>⏰ {{ task.deadline|date:"M d" }}</small>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="note-empty-notice">
+        <small>No action tasks embedded here yet.</small>
+    </p>
+    {% endif %}
+</div>
 
 <hr />
 
-<form action="{% url 'note-delete' note.id %}" method="post">
-{% csrf_token %}
-<button type="submit" onclick="return confirm('Permanently delete this note?');">
-    🗑️ Delete This Note
-</button>
+<form action="{% url 'note-delete' note.id %}" method="post" id="secure-delete-form">
+    {% csrf_token %}
+    <button type="submit" class="btn-danger">
+        🗑️ Delete This Note
+    </button>
 </form>
 
 <script src="{% static 'js/inline_update.js' %}" defer></script>

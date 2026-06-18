@@ -1,50 +1,37 @@
-import json
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ValidationError
-from django.http import JsonResponse
-from django.views import generic
 from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from django.views import View
+from django.utils.dateparse import parse_datetime
 from ..models import Note
 
 
-class NoteInlineUpdateView(LoginRequiredMixin, generic.View):
-    """Asynchronously modifies note attributes via partial AJAX streams."""
+class NoteInlineUpdateView(LoginRequiredMixin, View):
+    """Handles secure, asynchronous generic updates for note attributes."""
 
     def post(self, request, *args, **kwargs):
-        """Validate ownership rules and execute partial attribute updates."""
+        """Process generic field/value payloads from the client safely."""
         note = get_object_or_404(
             Note,
-            pk=self.kwargs["pk"],
+            pk=self.kwargs.get("pk"),
             workspace__owner=request.user,
         )
 
-        try:
-            data = json.loads(request.body)
-            field = data.get("field")
-            value = data.get("value")
-        except (json.JSONDecodeError, TypeError):
-            return JsonResponse(
-                {"error": "Malformed configuration payload."}, status=400
-            )
+        field = request.POST.get("field")
+        value = request.POST.get("value", "").strip()
 
-        # Allow deadline modifications alongside core text blocks
+        # Strict security whitelist to block unauthorized model injection
         if field not in ["title", "content", "deadline"]:
-            return JsonResponse(
-                {"error": "Target attribute modification restricted."},
-                status=400,
-            )
+            return JsonResponse({"status": "error"}, status=400)
 
-        # Sanitize empty datetime values for database compatibility
-        if field == "deadline" and value == "":
-            value = None
-
-        try:
+        # Handle unique attribute types cleanly
+        if field == "deadline":
+            if not value or value.startswith("No"):
+                note.deadline = None
+            else:
+                note.deadline = parse_datetime(value)
+        else:
             setattr(note, field, value)
-            note.full_clean()
-            note.save()
-        except ValidationError as error:
-            return JsonResponse({"error": error.message_dict}, status=400)
 
-        # Format return value for clean frontend UI substitution
-        display_val = value if value else "No deadline set."
-        return JsonResponse({"status": "success", "value": display_val})
+        note.save()
+        return JsonResponse({"status": "success"})

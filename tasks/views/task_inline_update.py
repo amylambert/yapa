@@ -1,9 +1,9 @@
-import json
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.views import generic
 from django.shortcuts import get_object_or_404
+from django.utils.dateparse import parse_datetime
 from ..models import Task
 
 
@@ -18,25 +18,28 @@ class TaskInlineUpdateView(LoginRequiredMixin, generic.View):
             workspace__owner=request.user,
         )
 
-        try:
-            data = json.loads(request.body)
-            field = data.get("field")
-            value = data.get("value")
-        except (json.JSONDecodeError, TypeError):
-            return JsonResponse(
-                {"error": "Malformed configuration payload."}, status=400
-            )
+        field = request.POST.get("field")
+        value = request.POST.get("value", "").strip()
 
-        # Allow deadline modifications alongside core task blocks
-        if field not in ["title", "status", "deadline"]:
+        # Expand whitelist to fully match all editable template fields securely
+        if field not in [
+            "title",
+            "status",
+            "description",
+            "priority",
+            "deadline",
+        ]:
             return JsonResponse(
                 {"error": "Target attribute modification restricted."},
                 status=400,
             )
 
         # Sanitize empty datetime values for database compatibility
-        if field == "deadline" and value == "":
-            value = None
+        if field == "deadline":
+            if not value or value.startswith("No"):
+                value = None
+            else:
+                value = parse_datetime(value)
 
         try:
             setattr(task, field, value)
@@ -45,10 +48,4 @@ class TaskInlineUpdateView(LoginRequiredMixin, generic.View):
         except ValidationError as error:
             return JsonResponse({"error": error.message_dict}, status=400)
 
-        # Format return value for clean frontend UI substitution
-        if field == "status":
-            display_val = task.get_status_display()
-        else:
-            display_val = value if value else "No deadline set."
-
-        return JsonResponse({"status": "success", "value": display_val})
+        return JsonResponse({"status": "success"})

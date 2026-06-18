@@ -1,61 +1,39 @@
 /**
- * Task Inline Update Engine
+ * Unified Inline Update Engine
  *
- * Handles double-click interactions to turn plain text fields into
- * editable input fields, textareas, or dropdown selectors. Saves
- * changes asynchronously via AJAX fetch requests to the Django backend.
+ * Handles double-click event streams to transform plain text elements into
+ * actionable form elements, processing database changes asynchronously.
  */
 
-// Find all elements marked as editable on the page
+// Initialize event listeners across all designated editable text zones
 document.querySelectorAll(".editable").forEach((element) => {
     element.addEventListener("dblclick", function () {
-        // If an input already exists, do nothing
-        if (
-            this.querySelector("input") ||
-            this.querySelector("textarea") ||
-            this.querySelector("select")
-        ) {
-            return;
-        }
+        // Halt processing if an input field is already actively rendered
+        if (this.querySelector("input, textarea, select")) return;
 
-        // Extract tracking parameters from HTML data attributes
         const currentText = this.innerText.trim();
-        const fieldName = this.getAttribute("data-field");
-        const fieldType = this.getAttribute("data-type") || "text";
-        const updateUrl = this.getAttribute("data-url");
-        const csrfToken = this.getAttribute("data-csrf");
+        const field = this.getAttribute("data-field");
+        const type = this.getAttribute("data-type") || "text";
+        const url = this.getAttribute("data-url");
+        const token = this.getAttribute("data-csrf");
 
-        // Instantiate the correct input control via function
-        const input = createInputElement(this, fieldType, currentText);
+        const input = createInputElement(type, currentText, this);
 
-        // Wipe existing text nodes and mount new input control.
         this.replaceChildren(input);
         input.focus();
 
-        // Define the execution closure for saving the modified value
-        const saveHandler = () => {
-            sendDatabaseUpdate(
-                this,
-                input,
-                currentText,
-                fieldName,
-                updateUrl,
-                csrfToken,
-            );
+        const save = () => {
+            sendUpdate(this, input, currentText, field, url, token);
         };
 
-        // Configure event listeners based on the interactive control type
-        if (fieldType === "select") {
-            // For dropdowns, save immediately upon user selection change
-            input.addEventListener("change", saveHandler);
-            input.addEventListener("blur", saveHandler);
+        if (type === "select") {
+            input.addEventListener("change", save);
+            input.addEventListener("blur", save);
         } else {
-            // For regular inputs, save when clicking away
-            input.addEventListener("blur", saveHandler);
-            // For single-line inputs, also save when pressing the Enter key
-            if (fieldType !== "textarea") {
+            input.addEventListener("blur", save);
+            if (type !== "textarea") {
                 input.addEventListener("keydown", (e) => {
-                    if (e.key === "Enter") saveHandler();
+                    if (e.key === "Enter") save();
                 });
             }
         }
@@ -63,104 +41,97 @@ document.querySelectorAll(".editable").forEach((element) => {
 });
 
 /**
- * Factory function to create the appropriate form element.
+ * Factory function to instantiate configured HTML form elements.
  *
- * @param {HTMLElement} element - The original editable wrapper element.
- * @param {string} fieldType - The targeted layout type (text/textarea/select).
- * @param {string} currentText - The existing text value inside the node.
- * @returns {HTMLElement} The configured HTML input/textarea/select node.
+ * @param {string} type - System interface target layout type.
+ * @param {string} text - Existing text node values.
+ * @param {HTMLElement} el - Wrapper element context.
+ * @returns {HTMLElement} Form management component node.
  */
-function createInputElement(element, fieldType, currentText) {
-    // Handle long text content fields (e.g., descriptions)
-    if (fieldType === "textarea") {
-        const textarea = document.createElement("textarea");
-        const fallback = "No description provided. Double click to add one.";
-        textarea.rows = 4;
-        textarea.cols = 50;
-        // Clear out the placeholder text if it matches the default message
-        textarea.value = currentText === fallback ? "" : currentText;
-        return textarea;
-    }
+function createInputElement(type, text, el) {
+    let input;
 
-    // Handle choice-based selection fields (e.g., status, priority)
-    if (fieldType === "select") {
-        const select = document.createElement("select");
-        // Parse the JSON mapping options configured inside the HTML attribute
-        const rawOptions = element.getAttribute("data-options");
-        const optionsMap = JSON.parse(rawOptions || "{}");
+    if (type === "textarea") {
+        input = document.createElement("textarea");
+        input.rows = 4;
+        input.cols = 50;
+    } else if (type === "select") {
+        input = document.createElement("select");
+        const rawOpts = el.getAttribute("data-options") || "{}";
+        const options = JSON.parse(rawOpts);
 
-        // Dynamically generate option nodes from the JSON key-value map
-        for (const [key, label] of Object.entries(optionsMap)) {
+        for (const [key, label] of Object.entries(options)) {
             const opt = document.createElement("option");
             opt.value = key;
-            opt.textContent = label; // Securely text-encoded value assignment
-            // Pre-select the option that matches the current displayed state
-            if (label === currentText) {
-                opt.selected = true;
-            }
-            select.appendChild(opt);
+            opt.textContent = label;
+            if (label === text) opt.selected = true;
+            input.appendChild(opt);
         }
-        return select;
+        return input;
+    } else {
+        input = document.createElement("input");
+        input.type = type;
     }
 
-    // Default fallback: Create a standard single-line text input
-    const input = document.createElement("input");
-    input.type = "text";
-    input.value = currentText;
+    // Clean out default template display placeholders safely
+    const isFallback = text.startsWith("No ") || text.includes("Empty");
+    input.value = isFallback ? "" : text.replace(" ", "T");
     return input;
 }
 
 /**
- * Sends the updated value to the Django backend using an AJAX Fetch request.
+ * Dispatches the updated parameters securely to the backend framework.
  *
- * @param {HTMLElement} element - The original wrapper element to update.
- * @param {HTMLElement} input - The active input element holding the new value.
- * @param {string} oldText - The original value before editing started.
- * @param {string} field - The model field name being modified.
- * @param {string} url - The backend endpoint URL processing the POST payload.
- * @param {string} token - The CSRF security token for request authentication.
+ * @param {HTMLElement} el - Element wrapper tracking states.
+ * @param {HTMLElement} input - Active input node holding values.
+ * @param {string} oldText - Text state before editing.
+ * @param {string} field - Model attribute identifier string.
+ * @param {string} url - Target routing path for database saving.
+ * @param {string} token - CSRF structural protection value.
  */
-function sendDatabaseUpdate(element, input, oldText, field, url, token) {
-    let newValue = input.value.trim();
-    let displayValue = newValue;
+function sendUpdate(el, input, oldText, field, url, token) {
+    const newValue = input.value.trim();
+    let display = newValue;
 
-    // For selection dropdowns, display user-friendly text label
     if (input.tagName === "SELECT") {
-        displayValue = input.options[input.selectedIndex].text;
+        display = input.options[input.selectedIndex].text;
     }
 
-    // Exit early if the input is empty or if no modifications were made
-    if (newValue === "" || displayValue === oldText) {
-        element.textContent = oldText; // Secure text restoration
+    // Stop execution if no content was changed or added
+    if (newValue === "" || display === oldText) {
+        el.textContent = oldText;
         return;
     }
 
-    // Package the updated state data into standard form parameters
     const formData = new FormData();
     formData.append("field", field);
     formData.append("value", newValue);
     formData.append("csrfmiddlewaretoken", token);
 
-    // Transmit the payload to the server asynchronously
     fetch(url, {
         method: "POST",
         body: formData,
         headers: { "X-Requested-With": "XMLHttpRequest" },
     })
-        .then((response) => response.json())
+        .then((res) => res.json())
         .then((data) => {
-            if (data.status === "success") {
-                // Permanently render the new text using secure plain text assignment
-                element.textContent = displayValue;
-            } else {
-                // Revert to old value if the backend validation fails
-                element.textContent = oldText;
-                alert("Error saving modifications.");
-            }
+            el.textContent = data.status === "success" ? display : oldText;
+            if (data.status !== "success") alert("Error saving changes.");
         })
         .catch(() => {
-            // Revert to old value if a network connectivity failure occurs
-            element.textContent = oldText;
+            el.textContent = oldText;
             alert("Connection failure.");
         });
 }
+
+// Global contextual confirmation dialog for structural delete actions
+document.addEventListener("DOMContentLoaded", () => {
+    const deleteForm = document.getElementById("secure-delete-form");
+    if (deleteForm) {
+        deleteForm.addEventListener("submit", (e) => {
+            if (!confirm("Permanently delete this item?")) {
+                e.preventDefault();
+            }
+        });
+    }
+});
