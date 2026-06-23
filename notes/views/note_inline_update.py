@@ -1,8 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404
+from django.core.exceptions import ValidationError
 from django.http import JsonResponse
-from django.views import View
+from django.shortcuts import get_object_or_404
 from django.utils.dateparse import parse_datetime
+from django.views import View
 from ..models import Note
 
 
@@ -22,7 +23,13 @@ class NoteInlineUpdateView(LoginRequiredMixin, View):
 
         # Strict security whitelist to block unauthorized model injection
         if field not in ["title", "content", "deadline"]:
-            return JsonResponse({"status": "error"}, status=400)
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "Field modification restricted.",
+                },
+                status=400,
+            )
 
         # Handle unique attribute types cleanly
         if field == "deadline":
@@ -33,5 +40,11 @@ class NoteInlineUpdateView(LoginRequiredMixin, View):
         else:
             setattr(note, field, value)
 
-        note.save()
-        return JsonResponse({"status": "success"})
+        try:
+            note.save()
+            return JsonResponse({"status": "success"})
+        except ValidationError as error:
+            return JsonResponse(
+                {"status": "error", "message": error.message_dict},
+                status=400,
+            )

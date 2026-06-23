@@ -106,7 +106,7 @@
       <li>
         <strong>Status:</strong>
         <span class="editable main-task-status" data-field="status" data-type="select" data-csrf="{{ csrf_token }}"
-          data-url="{{ main_url }}" data-options='{"TODO":"To Do","DOING":"In Progress","DONE":"Done"}'>
+          data-url="{{ main_url }}" data-options='{"TODO":"To Do","IN_PROGRESS":"In Progress","DONE":"Done"}'>
           {{ task.get_status_display }}
         </span>
       </li>

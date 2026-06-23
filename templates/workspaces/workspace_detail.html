@@ -35,7 +35,7 @@ YAPA - {{ workspace.name }}
 
 {% if workspace.root_notes %}
 <div class="notes-container">
-  {% for note in workspace.notes.all %}
+  {% for note in workspace.root_notes %}
   <div class="note-card">
     <h3>
       <a href="{% url 'note-detail' note.id %}">
@@ -51,8 +51,6 @@ YAPA - {{ workspace.name }}
 {% else %}
 <p>No notes have been written in this workspace yet.</p>
 {% endif %}
-
-<hr />
 
 <h2>Tasks</h2>
 <p>

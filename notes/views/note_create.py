@@ -15,31 +15,39 @@ class NoteCreateView(LoginRequiredMixin, generic.CreateView):
     form_class = NoteForm
     template_name = "notes/note_form.html"
 
-    def form_valid(self, form):
-        """Bind note to workspace, parent note, or parent task context."""
+    def post(self, request, *args, **kwargs):
+        """Bind relationships before form validation executes."""
+        self.object = None
+        form = self.get_form()
+
+        # Resolve and bind workspace before validation checks run
         workspace = get_object_or_404(
             Workspace,
             pk=self.kwargs["workspace_id"],
-            owner=self.request.user,
+            owner=request.user,
         )
         form.instance.workspace = workspace
 
-        # Scenario A: Nested under another note
-        parent_id = self.request.GET.get("parent")
+        # Resolve and bind parent note hierarchy if present
+        parent_id = request.GET.get("parent")
         if parent_id:
-            parent_note = get_object_or_404(
+            form.instance.parent = get_object_or_404(
                 Note, pk=parent_id, workspace=workspace
             )
-            form.instance.parent = parent_note
 
-        # Scenario B: Nested under a task element
-        task_parent_id = self.request.GET.get("task_parent")
+        # Resolve and bind related task anchor if present
+        task_parent_id = request.GET.get("task_parent")
         if task_parent_id:
-            related_task = get_object_or_404(
+            form.instance.related_task = get_object_or_404(
                 Task, pk=task_parent_id, workspace=workspace
             )
-            form.instance.related_task = related_task
 
+        if form.is_valid():
+            return self.form_valid(form)
+        return self.form_invalid(form)
+
+    def form_valid(self, form):
+        """Save the securely pre-populated model instance."""
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -49,7 +57,7 @@ class NoteCreateView(LoginRequiredMixin, generic.CreateView):
             return reverse(
                 "task-detail",
                 kwargs={
-                    "workspace_id": self.kwargs["workspace_id"],
+                    "workspace_pk": self.kwargs["workspace_id"],
                     "pk": task_parent_id,
                 },
             )

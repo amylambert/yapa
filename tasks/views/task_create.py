@@ -63,7 +63,7 @@ class TaskCreateView(LoginRequiredMixin, generic.CreateView):
             return reverse(
                 "task-detail",
                 kwargs={
-                    "workspace_id": workspace_id,
+                    "workspace_pk": workspace_id,
                     "pk": parent_id,
                 },
             )

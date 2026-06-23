@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from core.models.schedulable import SchedulableModel
 from workspaces.models import Workspace
 
@@ -74,3 +75,35 @@ class Task(SchedulableModel):
 
     def __str__(self) -> str:
         return str(self.title)
+
+    def clean(self):
+        """Ensure task deadlines fit within workspace macro schedules."""
+        super().clean()
+
+        # Safely resolve workspace context during form validation stages
+        workspace = None
+        try:
+            workspace = self.workspace
+        except Task.workspace.RelatedObjectDoesNotExist:
+            # Fallback to the parent task's workspace if creating a subtask
+            try:
+                workspace = self.parent.workspace if self.parent else None
+            except Task.parent.RelatedObjectDoesNotExist:
+                workspace = None
+
+        # Only run boundary validations if the workspace context is available
+        if workspace and getattr(self, "deadline", None):
+            task_date = self.deadline.date()
+            if workspace.start_date and task_date < workspace.start_date:
+                raise ValidationError(
+                    {"deadline": "Task cannot precede workspace start."}
+                )
+            if workspace.end_date and task_date > workspace.end_date:
+                raise ValidationError(
+                    {"deadline": "Task cannot exceed workspace end."}
+                )
+
+    def save(self, *args, **kwargs):
+        """Force complete model validation before database commits."""
+        self.full_clean()
+        super().save(*args, **kwargs)
