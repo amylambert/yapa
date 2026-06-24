@@ -1,0 +1,50 @@
+.login-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100vh - 30px); /* Accounts for body padding */
+    width: 100%;
+    margin: 0 auto;
+}
+
+.login-body {
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* --- Fluid Type Scaling System --- */
+.login-body h2 {
+    font-size: clamp(1.4rem, 6vw, 2.2rem);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    word-wrap: break-word;
+}
+
+.form-footer {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 1rem;
+}
+
+.form-footer a {
+    color: #b13ee6;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/* --- Desktop Structural Adaptations --- */
+@media (min-width: 768px) {
+    .login-wrapper {
+        max-width: 460px;
+        min-height: auto;
+        margin: 10vh auto;
+    }
+
+    .login-body {
+        padding: 32px;
+    }
+}

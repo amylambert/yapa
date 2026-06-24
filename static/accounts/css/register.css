@@ -1,0 +1,153 @@
+.register-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: calc(100vh - 30px);
+    width: 100%;
+    margin: 0 auto;
+}
+
+.register-body {
+    padding: 20px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* --- Fluid Type Scaling System --- */
+.register-body h2 {
+    font-size: clamp(1.35rem, 5.5vw, 2.2rem);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    word-wrap: break-word;
+}
+
+/* --- Form Hint Component Isolation --- */
+.helptext {
+    font-size: 0.95rem;
+    color: #4a3e5c;
+    line-height: 1.4;
+    margin-top: 4px;
+}
+
+/* Targets the standard Django password validation policy listing */
+.helptext ul {
+    list-style-position: inside;
+    padding-left: 4px;
+    margin-top: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.helptext li {
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+.register-footer {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 1rem;
+    padding-bottom: 20px;
+}
+
+.register-footer a {
+    color: #b13ee6;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/* --- Dynamic Progress Indicator Setup --- */
+.indicator-wrapper {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.meter-track {
+    background-color: #120224;
+    border: 2px solid var(--border-thick);
+    height: 18px;
+    width: 100%;
+    padding: 2px;
+}
+
+.meter-fill {
+    height: 100%;
+    width: 0%;
+    transition:
+        width 0.3s ease,
+        background-color 0.3s ease;
+}
+
+/* Retrowave strength tier states called by the JS engine */
+.fill-weak {
+    background-color: #ff3366;
+}
+.fill-fair {
+    background-color: #ff9933;
+}
+.fill-good {
+    background-color: #ffcc00;
+}
+.fill-strong {
+    background-color: #00ffcc;
+}
+
+/* --- Dynamic Rule Checklist --- */
+.criteria-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.criteria-item {
+    font-size: 0.95rem;
+    color: #4a3e5c;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.criteria-item::before {
+    content: "⬡";
+    font-family: monospace;
+}
+
+/* Interactive crossed-out state rule */
+.criteria-item.is-met {
+    text-decoration: line-through;
+    opacity: 0.5;
+    color: var(--text-main);
+}
+
+.criteria-item.is-met::before {
+    content: "⬢";
+}
+
+/* --- Desktop Structural Adaptations --- */
+@media (min-width: 992px) {
+    .register-wrapper {
+        max-width: 800px;
+        min-height: auto;
+        margin: 5vh auto;
+    }
+
+    .register-body {
+        padding: 40px;
+    }
+
+    .helptext ul {
+        padding-left: 16px;
+    }
+
+    .register-footer {
+        padding-bottom: 0;
+    }
+}

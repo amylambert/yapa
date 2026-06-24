@@ -1,14 +1,127 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block title %}Register - YAPA{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'accounts/css/register.css' %}">
+{% endblock %}
+
 {% block content %}
-<h2>Create Your YAPA Account</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Register</button>
-</form>
-<p>
-  Already have an account?
-  <a href="{% url 'login' %}">Log In</a>
-</p>
+<style>
+  .indicator-wrapper {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .meter-track {
+    background-color: #120224;
+    border: 2px solid #4a3e5c;
+    height: 18px;
+    width: 100%;
+    padding: 2px;
+  }
+
+  .meter-fill {
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease, background-color 0.3s ease;
+  }
+
+  /* System operational states called by the JS evaluation loop */
+  .fill-weak {
+    background-color: #ff3366;
+  }
+
+  .fill-fair {
+    background-color: #ff9933;
+  }
+
+  .fill-good {
+    background-color: #ffcc00;
+  }
+
+  .fill-strong {
+    background-color: #00bd98;
+  }
+
+  .criteria-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .criteria-item {
+    font-size: 0.95rem;
+    color: #6e5c8a;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .criteria-item::before {
+    content: "⬡";
+    font-family: monospace;
+  }
+
+  /* Active validation states appended during field evaluations */
+  .criteria-item.is-met {
+    text-decoration: line-through;
+    opacity: 0.5;
+    color: #005947;
+  }
+
+  .criteria-item.is-met::before {
+    content: "⬢";
+  }
+</style>
+
+<div class="register-wrapper">
+  <div class="window-frame">
+    <div class="window-titlebar">
+      <span class="titlebar-text">YAPA.exe - Registration Wizard</span>
+      <div class="titlebar-controls">
+        <button type="button" class="control-button minimize">_</button>
+        <button type="button" class="control-button">◰</button>
+        <button type="button" class="control-button">×</button>
+      </div>
+    </div>
+    <div class="register-body">
+      <h2>Create Your YAPA Account</h2>
+      <form method="post" class="interactive-form">
+        {% csrf_token %}
+        <p>
+          <label for="{{ form.username.id_for_label }}">
+            Username:
+          </label>
+          {{ form.username }}
+        </p>
+        <p>
+          <label for="{{ form.password1.id_for_label }}">
+            Password:
+          </label>
+          {{ form.password1 }}
+
+        <div id="password-requirements-feedback" class="password-js-feedback"></div>
+        </p>
+        <p>
+          <label for="{{ form.password2.id_for_label }}">
+            Confirm Password:
+          </label>
+          {{ form.password2 }}
+        </p>
+        <button type="submit" class="submit-button">Register</button>
+      </form>
+      <p class="register-footer">
+        Already registered? <a href="{% url 'accounts:login' %}">Log In</a>
+      </p>
+    </div>
+  </div>
+</div>
+<script src="{% static 'accounts/js/register.js' %}" defer></script>
 {% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - YAPA{% endblock %}
+
+{% block content %}
+<div class="dashboard-container" style="font-family: Arial, sans-serif; padding: 20px;">
+
+    <header
+        style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px;">
+        <h1 style="margin: 0; font-size: 24px;">Welcome, {{ user.username }}!</h1>
+
+        <form action="{% url 'accounts:logout' %}" method="post" style="margin: 0;">
+            {% csrf_token %}
+            <button type="submit" style="cursor: pointer; padding: 8px 12px;">Log Out</button>
+        </form>
+    </header>
+
+    <div style="display: flex; gap: 30px;">
+
+        <aside style="width: 240px; min-height: 400px; border-right: 1px dashed #ccc;">
+        </aside>
+
+        <main style="flex: 1;">
+            <p style="color: #666; font-style: italic;">Your operational environment workspace is ready.</p>
+        </main>
+
+    </div>
+</div>
+{% endblock %}
