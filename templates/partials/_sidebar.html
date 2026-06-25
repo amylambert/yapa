@@ -75,7 +75,10 @@
             <div class="modal-actions-grid">
                 <button type="button" class="submit-button link-btn-fix">☑ TASK</button>
                 <button type="button" class="submit-button link-btn-fix">🖹 NOTE</button>
-                <button type="button" class="submit-button link-btn-fix">⬡ PROJECT</button>
+
+                <a href="{% url 'project-create' %}" class="submit-button link-btn-fix">
+                    ⬡ PROJECT
+                </a>
             </div>
         </div>
     </div>

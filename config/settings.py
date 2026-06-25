@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "workspaces.apps.WorkspacesConfig",
+    "projects.apps.ProjectsConfig",
     "tasks.apps.TasksConfig",
     "notes.apps.NotesConfig",
     "core.apps.CoreConfig"

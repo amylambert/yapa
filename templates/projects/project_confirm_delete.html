@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Delete Project - YAPA
+{% endblock %}
+
+{% block content %}
+<div class="window-frame basic-form-margin">
+  <div class="window-titlebar">
+    <span class="titlebar-text">Confirm Destruction Sequence</span>
+  </div>
+  <div class="modal-body">
+    <h2>Delete Project</h2>
+    <p>Are you sure you want to delete <strong>{{ project.name }}</strong>?</p>
+    <blockquote>
+      Warning: This action is permanent and will remove all nested objects.
+    </blockquote>
+
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="submit-button">Yes, Delete Permanently</button>
+    </form>
+    <p>
+      <a href="{% url 'project-detail' project.id %}">Cancel and Go Back</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

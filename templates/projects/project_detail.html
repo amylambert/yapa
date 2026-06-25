@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+YAPA - {{ project.name }}
+{% endblock %}
+
+{% block content %}
+{% url 'project-inline-update' project.id as update_url %}
+
+<p>
+  <a href="{% url 'dashboard' %}">← Back to Dashboard</a>
+</p>
+
+<h1 class="editable" data-field="name" data-type="text" data-csrf="{{ csrf_token }}" data-url="{{ update_url }}">
+  {{ project.name }}
+</h1>
+
+<p>
+  <a href="{% url 'project-delete' project.id %}">🗑️ Delete Project</a>
+</p>
+
+<p class="editable" data-field="description" data-type="textarea" data-csrf="{{ csrf_token }}"
+  data-url="{{ update_url }}">
+  {{ project.description|default:"No description provided." }}
+</p>
+
+<hr />
+
+<h2>Notes</h2>
+<p>
+  <a href="{% url 'note-create' project.id %}">📝 Create New Note</a>
+</p>
+
+{% if project.root_notes %}
+<div class="notes-container">
+  {% for note in project.root_notes %}
+  <div class="note-card">
+    <h3>
+      <a href="{% url 'note-detail' note.id %}">{{ note.title }}</a>
+    </h3>
+    <p>{{ note.content|truncatewords:30|linebreaks }}</p>
+    <small>Last updated: {{ note.updated_at|date:"M d, Y H:i" }}</small>
+  </div>
+  <hr />
+  {% endfor %}
+</div>
+{% else %}
+<p>No notes have been written in this project yet.</p>
+{% endif %}
+
+<h2>Tasks</h2>
+<p>
+  <a href="{% url 'task-create' project.id %}">+ Add Task to Project</a>
+</p>
+
+{% if project.root_tasks %}
+<ul>
+  <h3>Tasks Checklist</h3>
+  <ul>
+    {% for task in project.root_tasks %}
+    <li>
+      <input type="checkbox" class="status-toggle" data-url="{% url 'task-inline-update' project.pk task.pk %}"
+        data-csrf="{{ csrf_token }}" {% if task.status=='DONE' %}checked{% endif %} />
+      <a href="{% url 'task-detail' project.pk task.pk %}">
+        <strong>{{ task.title }}</strong>
+      </a>
+      - {{ task.get_status_display }}
+    </li>
+    {% empty %}
+    <li>No tasks created for this project yet.</li>
+    {% endfor %}
+  </ul>
+</ul>
+{% else %}
+<p>No tasks inside this project yet!</p>
+{% endif %}
+
+<script src="{% static 'global/js/inline_update.js' %}" defer></script>
+{% endblock %}

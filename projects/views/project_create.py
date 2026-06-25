@@ -1,16 +1,16 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic
-from ..models import Workspace
+from ..models import Project
 
 
-class WorkspaceCreateView(LoginRequiredMixin, generic.CreateView):
-    """Controller for creating a new workspace under the current user."""
+class ProjectCreateView(LoginRequiredMixin, generic.CreateView):
+    """Controller for creating a new project under the current user."""
 
-    model = Workspace
+    model = Project
     fields = ["name", "description"]
-    template_name = "workspaces/workspace_form.html"
-    success_url = reverse_lazy("workspace-list")
+    template_name = "projects/project_form.html"
+    success_url = reverse_lazy("dashboard") # Redirect back to main dashboard frame
 
     def form_valid(self, form):
         """Automatically assign the logged-in user as the owner."""

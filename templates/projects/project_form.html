@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Create Project - YAPA
+{% endblock %}
+
+{% block content %}
+<div class="window-frame basic-form-margin">
+  <div class="window-titlebar">
+    <span class="titlebar-text">Project Initialization Wizard</span>
+  </div>
+  <div class="modal-body">
+    <h2>Create New Project Target</h2>
+    <form method="post" class="interactive-form">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="submit-button">Initialize Project</button>
+    </form>
+    <p><a href="{% url 'dashboard' %}">Cancel and Go Back</a></p>
+  </div>
+</div>
+{% endblock %}

@@ -4,16 +4,16 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils.dateparse import parse_date
 from django.views import generic
-from ..models import Workspace
+from ..models import Project
 
 
-class WorkspaceInlineUpdateView(LoginRequiredMixin, generic.View):
-    """Controller handling asynchronous background edits for workspaces."""
+class ProjectInlineUpdateView(LoginRequiredMixin, generic.View):
+    """Controller handling asynchronous background edits for projects."""
 
     def post(self, request, *args, **kwargs):
-        """Process partial workspace fields sent via AJAX fetch requests."""
-        workspace = get_object_or_404(
-            Workspace,
+        """Process partial project fields sent via AJAX fetch requests."""
+        project = get_object_or_404(
+            Project,
             pk=self.kwargs["pk"],
             owner=request.user,
         )
@@ -21,10 +21,8 @@ class WorkspaceInlineUpdateView(LoginRequiredMixin, generic.View):
         field = request.POST.get("field")
         value = request.POST.get("value", "").strip()
 
-        # Explicit whitelist safeguard to prevent unauthorized mutations
         allowed_fields = ["name", "description", "start_date", "end_date"]
         if field in allowed_fields:
-            # Sanitize and parse incoming date parameters safely
             if field in ["start_date", "end_date"]:
                 if not value or value.startswith("No"):
                     value = None
@@ -32,8 +30,8 @@ class WorkspaceInlineUpdateView(LoginRequiredMixin, generic.View):
                     value = parse_date(value)
 
             try:
-                setattr(workspace, field, value)
-                workspace.save()
+                setattr(project, field, value)
+                project.save()
                 return JsonResponse({"status": "success"})
             except ValidationError as error:
                 return JsonResponse(

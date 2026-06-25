@@ -3,8 +3,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 
-class Workspace(models.Model):
-    """Represents an isolated organizational workspace with timelines."""
+class Project(models.Model):
+    """Represents an isolated organizational project with timelines."""
 
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
@@ -17,13 +17,13 @@ class Workspace(models.Model):
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="workspaces",
+        related_name="projects",
     )
 
     class Meta:
         """Model configuration and metadata options."""
 
-        app_label = "workspaces"
+        app_label = "projects"
         ordering = ["-created_at"]
 
     def __str__(self):
@@ -45,7 +45,7 @@ class Workspace(models.Model):
 
     @property
     def root_tasks(self):
-        """Retrieve top-level workspace tasks, filtering out sub-tasks."""
+        """Retrieve top-level project tasks, filtering out sub-tasks."""
         return self.tasks.filter(parent__isnull=True)
 
     @property
