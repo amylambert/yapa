@@ -17,7 +17,7 @@
 }
 
 body {
-    width: 100vw;
+    width: 100%;
     min-height: 100vh;
     background-color: var(--page-bg);
     font-family: "MS Sans Serif", Tahoma, Arial, sans-serif;
@@ -75,8 +75,7 @@ body {
     outline: none;
 }
 
-/* --- AAA High Contrast Focus Markers --- */
-.submit-button:focus,
+/* --- Focus Markers --- */
 .navigation-link:focus,
 .interactive-form input:focus {
     outline: 4px dashed var(--border-thick);
@@ -96,10 +95,10 @@ body {
     box-shadow: 4px 4px 0 0 var(--border-thick);
     display: block;
     text-align: center;
-    width: 100%;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-bottom: 10px;
+    width: calc(100% - 6px);
 }
 
 .submit-button:active {

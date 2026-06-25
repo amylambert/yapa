@@ -1,0 +1,221 @@
+/* ==========================================================================
+   Sidebar Drawer Structure & Desktop Height Lockdowns
+   ========================================================================== */
+
+/* Universal Mobile Highlight Reset */
+.mobile-system-window,
+.sidebar-window,
+.modal-overlay,
+.submit-button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-system-window {
+    margin-bottom: 5px;
+}
+
+.text-btn-fix {
+    width: auto !important;
+    padding: 0 8px !important;
+    font-size: 0.9rem !important;
+}
+
+.profile-btn-fix {
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.system-bar-title {
+    font-family: monospace;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+}
+
+/* Sliding Navigation Structure Layout */
+.sidebar-window {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    max-height: 100vh;
+    z-index: 1000;
+    transform: translateX(-110%);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sidebar-window.is-active {
+    transform: translateX(0);
+}
+
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(23, 13, 40, 0.7);
+    backdrop-filter: blur(3px);
+    z-index: 999;
+    display: none;
+}
+
+.sidebar-overlay.is-active {
+    display: block;
+}
+
+/* Interior Scrollable Content Management Container */
+.sidebar-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex-grow: 1;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.quick-actions,
+.view-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.single-line-fix {
+    white-space: nowrap !important;
+}
+
+.link-btn-fix {
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 12px;
+}
+
+.separator {
+    border: none;
+    border-top: 3px dashed var(--border-thick);
+    margin: 5px 0;
+    flex-shrink: 0;
+}
+
+.projects-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100px;
+}
+
+.projects-container h3 {
+    text-transform: uppercase;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+}
+
+.projects-list {
+    list-style: none;
+    padding: 0;
+    overflow-y: auto;
+}
+
+.projects-list li a {
+    color: var(--text-main);
+    text-decoration: underline;
+    display: block;
+    padding: 6px 4px;
+    font-weight: bold;
+}
+
+.user-settings-anchor {
+    margin-top: auto;
+    padding-top: 10px;
+    flex-shrink: 0;
+}
+
+.settings-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-name-txt {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 4px;
+}
+
+/* ==========================================================================
+   Popup Dialog Architecture
+   ========================================================================== */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(23, 13, 40, 0.85);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-overlay.is-active {
+    display: flex;
+}
+
+.modal-window {
+    max-width: 420px;
+    width: 100%;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modal-instruction {
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 0.95rem;
+    letter-spacing: 0.05em;
+    text-align: center;
+}
+
+.modal-actions-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* ==========================================================================
+   Desktop Grid Engine Conversions
+   ========================================================================== */
+
+@media (min-width: 992px) {
+    .mobile-system-window,
+    .sidebar-overlay {
+        display: none !important;
+    }
+
+    .sidebar-window {
+        position: static;
+        width: 260px;
+        /* Matches layout canvas exactly without spilling outside browser heights */
+        height: calc(100vh - 50px);
+        transform: none;
+        flex-shrink: 0;
+    }
+
+    .sidebar-body {
+        /* Prevents the internal body nodes from expanding the outer frame bounds */
+        max-height: calc(100% - 40px);
+    }
+}

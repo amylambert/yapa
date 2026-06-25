@@ -1,29 +1,65 @@
 {% extends 'base.html' %}
-
-{% block title %}Dashboard - YAPA{% endblock %}
+{% load static %}
 
 {% block content %}
-<div class="dashboard-container" style="font-family: Arial, sans-serif; padding: 20px;">
+<link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}">
+<script src="{% static 'dashboard/js/dashboard.js' %}" defer></script>
 
-    <header
-        style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px;">
-        <h1 style="margin: 0; font-size: 24px;">Welcome, {{ user.username }}!</h1>
+<div class="dashboard-wrapper">
+    {% include 'partials/_sidebar.html' %}
 
-        <form action="{% url 'accounts:logout' %}" method="post" style="margin: 0;">
-            {% csrf_token %}
-            <button type="submit" style="cursor: pointer; padding: 8px 12px;">Log Out</button>
-        </form>
-    </header>
+    <main class="main-window window-frame">
+        <div class="window-titlebar">
+            <span class="titlebar-text">YAPA - Main Terminal</span>
+            <div class="titlebar-controls">
+                <button class="control-button minimize" aria-label="Minimize">_</button>
+                <button class="control-button" aria-label="Maximize">⬖</button>
+                <button class="control-button" aria-label="Close">×</button>
+            </div>
+        </div>
 
-    <div style="display: flex; gap: 30px;">
+        <div class="main-body">
+            <header class="dashboard-header">
+                <h1>Welcome back, {{ request.user.username }}.</h1>
+            </header>
 
-        <aside style="width: 240px; min-height: 400px; border-right: 1px dashed #ccc;">
-        </aside>
+            <div class="content-grid">
+                <section class="dashboard-module calendar-module">
+                    <h2>System Calendar</h2>
+                    <div class="calendar-placeholder">
+                        [ Calendar Engine Will Render Here ]
+                    </div>
+                </section>
 
-        <main style="flex: 1;">
-            <p style="color: #666; font-style: italic;">Your operational environment workspace is ready.</p>
-        </main>
+                <section class="dashboard-module pinned-module">
+                    <h2>Pinned Objects</h2>
+                    <ul class="item-list">
+                        {% for item in pinned_items %}
+                        <li class="list-item">{{ item.title }}</li>
+                        {% empty %}
+                        <li class="empty-state">No pinned items.</li>
+                        {% endfor %}
+                    </ul>
+                </section>
 
-    </div>
+                <section class="dashboard-module deadline-module">
+                    <h2>Approaching Deadlines</h2>
+                    <ul class="item-list" id="deadline-list">
+                        {% for task in urgent_tasks %}
+                        <li class="list-item deadline-item">
+                            <span class="task-title">{{ task.title }}</span>
+                            <span class="task-date">{{ task.date }}</span>
+                        </li>
+                        {% empty %}
+                        <li class="empty-state">No urgent tasks.</li>
+                        {% endfor %}
+                    </ul>
+                    <button type="button" id="toggle-deadlines-btn" class="expand-btn hidden">
+                        Show More ↓
+                    </button>
+                </section>
+            </div>
+        </div>
+    </main>
 </div>
 {% endblock %}

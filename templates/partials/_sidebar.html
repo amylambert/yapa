@@ -1,0 +1,82 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'partials/css/sidebar.css' %}">
+<script src="{% static 'partials/js/sidebar.js' %}" defer></script>
+
+<div class="mobile-system-window window-frame">
+    <div class="window-titlebar">
+        <button type="button" id="mobile-menu-toggle" class="control-button text-btn-fix"
+            aria-label="Toggle System Menu">
+            ☰ Menu
+        </button>
+        <span class="system-bar-title">YAPA.exe</span>
+        <a href="#" class="control-button profile-btn-fix" title="Settings">
+            ⚙️
+        </a>
+    </div>
+</div>
+
+<aside class="sidebar-window window-frame" id="sidebar-drawer">
+    <div class="window-titlebar">
+        <span class="titlebar-text">YAPA Menu</span>
+        <div class="titlebar-controls">
+            <button type="button" id="mobile-menu-close" class="control-button" aria-label="Close Menu">×</button>
+        </div>
+    </div>
+
+    <div class="sidebar-body">
+        <nav class="quick-actions">
+            <button type="button" id="global-create-btn" class="submit-button single-line-fix">
+                ✚ Create New...
+            </button>
+        </nav>
+
+        <hr class="separator">
+
+        <nav class="view-links">
+            <a href="#" class="submit-button link-btn-fix">▶ Task View</a>
+            <a href="#" class="submit-button link-btn-fix">▶ Notes View</a>
+        </nav>
+
+        <hr class="separator">
+
+        <div class="projects-container">
+            <h3>Active Projects</h3>
+            <ul class="projects-list">
+                {% for project in projects %}
+                <li><a href="#">{{ project.name }}</a></li>
+                {% empty %}
+                <li class="empty-state">No active projects.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="user-settings-anchor">
+            <a href="#" class="submit-button link-btn-fix settings-btn">
+                <span class="user-name-txt">User: {{ request.user.username }}</span>
+                <span>⚙️</span>
+            </a>
+        </div>
+    </div>
+</aside>
+
+<div class="sidebar-overlay" id="menu-overlay"></div>
+
+<div id="create-modal-overlay" class="modal-overlay">
+    <div class="window-frame modal-window">
+        <div class="window-titlebar">
+            <span class="titlebar-text">System Deployment Wizard</span>
+            <div class="titlebar-controls">
+                <button type="button" id="modal-close-btn" class="control-button" aria-label="Close Dialog">×</button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <p class="modal-instruction">SELECT CREATION TARGET DIRECTORY:</p>
+            <div class="modal-actions-grid">
+                <button type="button" class="submit-button link-btn-fix">☑ TASK</button>
+                <button type="button" class="submit-button link-btn-fix">🖹 NOTE</button>
+                <button type="button" class="submit-button link-btn-fix">⬡ PROJECT</button>
+            </div>
+        </div>
+    </div>
+</div>
