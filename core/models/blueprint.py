@@ -1,12 +1,13 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from .fields import EncryptedTextField
 
 
 class ComponentBlueprint(models.Model):
     """
-    Abstract base architectural model sharing core systemic attributes.
-    Ensures zero database-level JOIN overhead during model instantiation.
+    Abstract architecture sharing core properties with encrypted properties.
+    Ensures zero database-level JOIN overhead during execution loops.
     """
 
     class PriorityChoices(models.TextChoices):
@@ -14,8 +15,8 @@ class ComponentBlueprint(models.Model):
         MEDIUM = "MEDIUM", "Medium"
         HIGH = "HIGH", "High"
 
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True, null=True)
+    name = EncryptedTextField(max_length=255)
+    description = EncryptedTextField(blank=True, null=True)
     
     priority = models.CharField(
         max_length=10,
@@ -23,7 +24,6 @@ class ComponentBlueprint(models.Model):
         default=PriorityChoices.MEDIUM,
     )
 
-    # Chronological lifecycle tracking anchors
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -31,19 +31,16 @@ class ComponentBlueprint(models.Model):
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        # related_name is dynamically evaluated using subclass app identifiers
         related_name="%(app_label)s_%(class)s_related",
     )
 
     class Meta:
-        """Declares this class as a code-only abstraction layout structural model."""
         abstract = True
 
     def __str__(self):
         return str(self.name)
 
     def clean(self):
-        """Enforce standard chronological validation across all child modules."""
         super().clean()
         if self.start_date and self.end_date:
             if self.start_date > self.end_date:
