@@ -1,3 +1,8 @@
+"""
+core/models/blueprint.py
+Defines the primary structural abstract archetype for multi-app model inheritance.
+"""
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -6,7 +11,7 @@ from .fields import EncryptedTextField
 
 class ComponentBlueprint(models.Model):
     """
-    Abstract architecture sharing core properties with encrypted properties.
+    Abstract architecture sharing core properties with encrypted parameters.
     Ensures zero database-level JOIN overhead during execution loops.
     """
 
@@ -15,6 +20,7 @@ class ComponentBlueprint(models.Model):
         MEDIUM = "MEDIUM", "Medium"
         HIGH = "HIGH", "High"
 
+    # Encryption hooks activated directly at the core blueprint root
     name = EncryptedTextField(max_length=255)
     description = EncryptedTextField(blank=True, null=True)
     
@@ -35,12 +41,14 @@ class ComponentBlueprint(models.Model):
     )
 
     class Meta:
+        """Declares this class as a code-only abstraction layout structural model."""
         abstract = True
 
     def __str__(self):
         return str(self.name)
 
     def clean(self):
+        """Enforce standard chronological validation across all child modules."""
         super().clean()
         if self.start_date and self.end_date:
             if self.start_date > self.end_date:
