@@ -219,3 +219,71 @@
         max-height: calc(100% - 40px);
     }
 }
+
+/* Update these targeting blocks inside static/partials/css/sidebar.css */
+
+.projects-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    /* Lock the container parent to prevent push bounds stretching */
+    min-height: 150px;
+    max-height: 350px;
+    overflow: hidden;
+}
+
+.projects-container h3 {
+    text-transform: uppercase;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+}
+
+/* Independent Internal Scrolling Frame */
+.projects-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto; /* Active local scrollbar toggle */
+    max-height: 100%;
+    border: 2px inset var(--border-thick); /* Retro inset window feel */
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 4px;
+}
+
+.projects-list li {
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+}
+
+.projects-list li:last-child {
+    border-bottom: none;
+}
+
+.projects-list li a {
+    color: var(--text-main);
+    text-decoration: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 6px;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+.projects-list li a:hover {
+    background-color: #ffbbf4;
+}
+
+.sidebar-deadline {
+    font-family: monospace;
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+.empty-state {
+    padding: 10px;
+    font-style: italic;
+    color: #666;
+    font-size: 0.9rem;
+}

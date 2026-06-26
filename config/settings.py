@@ -46,8 +46,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "projects.apps.ProjectsConfig",
-    "tasks.apps.TasksConfig",
-    "notes.apps.NotesConfig",
+    #"tasks.apps.TasksConfig",
+    #"notes.apps.NotesConfig",
     "core.apps.CoreConfig"
 ]
 
@@ -74,6 +74,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'projects.context_processors.active_projects_processor',
             ],
         },
     },

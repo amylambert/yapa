@@ -43,12 +43,12 @@ class Project(models.Model):
         self.full_clean()
         super().save(*args, **kwargs)
 
-    @property
-    def root_tasks(self):
-        """Retrieve top-level project tasks, filtering out sub-tasks."""
-        return self.tasks.filter(parent__isnull=True)
+    #@property
+    #def root_tasks(self):
+    #    """Retrieve top-level project tasks, filtering out sub-tasks."""
+    #    return self.tasks.filter(parent__isnull=True)
 
-    @property
-    def root_notes(self):
-        """Retrieve only top-level notes to build the base hierarchy."""
-        return self.notes.filter(parent__isnull=True)
+    #@property
+    #def root_notes(self):
+    #    """Retrieve only top-level notes to build the base hierarchy."""
+    #    return self.notes.filter(parent__isnull=True)

@@ -3,16 +3,15 @@ from .views import (
     ProjectCreateView,
     ProjectDeleteView,
     ProjectDetailView,
-    ProjectListView,
     ProjectInlineUpdateView,
 )
+# Import your master dashboard view here
+# from dashboard.views import DashboardView 
 
 urlpatterns = [
-    path(
-        "projects/",
-        ProjectListView.as_view(),
-        name="project-list",
-    ),
+    # Re-route the old list view directly to the dashboard view instead
+    # path("projects/", DashboardView.as_view(), name="project-list"),
+    
     path(
         "projects/create/",
         ProjectCreateView.as_view(),

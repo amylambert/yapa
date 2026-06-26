@@ -43,10 +43,17 @@
         <div class="projects-container">
             <h3>Active Projects</h3>
             <ul class="projects-list">
-                {% for project in projects %}
-                <li><a href="#">{{ project.name }}</a></li>
+                {% for project in sidebar_projects %}
+                <li>
+                    <a href="{% url 'project-detail' project.id %}">
+                        📁 {{ project.name }}
+                        {% if project.end_date %}
+                        <span class="sidebar-deadline">[{{ project.end_date|date:"M d" }}]</span>
+                        {% endif %}
+                    </a>
+                </li>
                 {% empty %}
-                <li class="empty-state">No active projects.</li>
+                <li class="empty-state">No active projects loaded.</li>
                 {% endfor %}
             </ul>
         </div>
