@@ -8,9 +8,9 @@ class ProjectCreateView(LoginRequiredMixin, generic.CreateView):
     """Controller for creating a new project under the current user."""
 
     model = Project
-    fields = ["name", "description"]
+    fields = ["name", "description", "priority", "start_date", "end_date"]
     template_name = "projects/project_form.html"
-    success_url = reverse_lazy("dashboard") # Redirect back to main dashboard frame
+    success_url = reverse_lazy("core:dashboard")
 
     def form_valid(self, form):
         """Automatically assign the logged-in user as the owner."""

@@ -9,7 +9,7 @@ YAPA - {{ project.name }}
 {% url 'project-inline-update' project.id as update_url %}
 
 <p>
-  <a href="{% url 'dashboard' %}">← Back to Dashboard</a>
+  <a href="{% url 'core:dashboard' %}">← Back to Dashboard</a>
 </p>
 
 <h1 class="editable" data-field="name" data-type="text" data-csrf="{{ csrf_token }}" data-url="{{ update_url }}">
