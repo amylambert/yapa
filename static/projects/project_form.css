@@ -1,0 +1,140 @@
+/* Container bounds constraint */
+.project-wizard-container {
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+/* Base structural layout for modal bodies */
+.modal-body {
+    padding: 10px;
+}
+
+.form-title {
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+}
+
+/* Remove underline from titlebar text anchor buttons */
+.close-link-anchor {
+    text-decoration: none;
+}
+
+/* Fix 1: Restrict the Name Field width from extending infinitely */
+.form-input-constrained {
+    max-width: 360px !important;
+}
+
+/* Textarea styling matching your input rules exactly */
+.form-textarea-styled {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.2rem;
+    font-family: inherit;
+    background-color: #ffffff;
+    color: #000000;
+    border: 3px solid var(--border-thick);
+    outline: none;
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-textarea-styled:focus {
+    outline: 4px dashed var(--border-thick);
+    outline-offset: 4px;
+}
+
+/* Fix 2: Priority dropdown custom styling matching the theme */
+.select-wrapper-styled {
+    display: inline-block;
+    position: relative;
+    max-width: 280px;
+    width: 100%;
+}
+
+.custom-select-element {
+    width: 100%;
+    padding: 14px 40px 14px 14px;
+    font-size: 1.1rem;
+    font-family: inherit;
+    font-weight: bold;
+    background-color: #ffffff;
+    color: #000000;
+    border: 3px solid var(--border-thick);
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    outline: none;
+}
+
+.custom-select-element:focus {
+    outline: 4px dashed var(--border-thick);
+    outline-offset: 4px;
+}
+
+/* Retro pure-text selector dropdown arrow indicator */
+.select-wrapper-styled::after {
+    content: "▼";
+    font-size: 0.8rem;
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--text-main);
+}
+
+/* Fix 3: Handle native date selectors and side-by-side spacing */
+.form-row-split-dates {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+}
+
+.split-field-item {
+    flex: 1;
+}
+
+.date-picker-styled {
+    max-width: 220px !important;
+    cursor: pointer;
+}
+
+/* Action alignment constraints */
+.form-actions-footer {
+    margin-top: 10px;
+    padding-top: 15px;
+    border-top: 2px dashed rgba(18, 2, 36, 0.2);
+}
+
+.cancel-navigation-container {
+    margin: 0;
+    text-align: center;
+}
+
+.cancel-link {
+    color: var(--text-main);
+    font-weight: bold;
+}
+
+.field-error {
+    color: #ff3333;
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-top: -12px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+/* Responsive Adaptive Viewport Collapse for small screens */
+@media (max-width: 500px) {
+    .form-row-split-dates {
+        flex-direction: column;
+        gap: 0;
+    }
+    .form-input-constrained,
+    .select-wrapper-styled,
+    .date-picker-styled {
+        max-width: 100% !important;
+    }
+}
