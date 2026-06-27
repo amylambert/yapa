@@ -1,14 +1,15 @@
 from django.core.exceptions import ValidationError
 from django.db import models
-from core.models.schedulable import SchedulableModel
-from workspaces.models import Workspace
+from core.models.blueprint import ComponentBlueprint
+from projects.models import Project
+from .tag import Tag
 
 
-class Note(SchedulableModel):
+class Note(ComponentBlueprint):
     """Represents an atomic document supporting hierarchical nesting."""
 
-    workspace = models.ForeignKey(
-        Workspace,
+    project = models.ForeignKey(
+        Project,
         on_delete=models.CASCADE,
         related_name="notes",
     )
@@ -19,29 +20,25 @@ class Note(SchedulableModel):
         blank=True,
         related_name="children",
     )
-    title = models.CharField(max_length=200)
-    content = models.TextField(blank=True)
-    
-    created_at = models.DateTimeField(auto_now_add=True)
+    tags = models.ManyToManyField(Tag, blank=True, related_name="notes")
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.title
-
     def clean(self):
-        """Ensure note deadlines fall within macro workspace ranges."""
+        """Ensure note scheduling matches macro project parameters."""
         super().clean()
-        if self.workspace and self.deadline:
-            ws = self.workspace
-            note_date = self.deadline.date()
-            
-            if ws.start_date and note_date < ws.start_date:
+        if not self.project:
+            return
+
+        proj = self.project
+        if self.start_date and proj.start_date:
+            if self.start_date < proj.start_date:
                 raise ValidationError(
-                    {"deadline": "Deadline cannot precede workspace start."}
+                    {"start_date": "Start date precedes project start."}
                 )
-            if ws.end_date and note_date > ws.end_date:
+        if self.end_date and proj.end_date:
+            if self.end_date > proj.end_date:
                 raise ValidationError(
-                    {"deadline": "Deadline cannot exceed workspace end."}
+                    {"end_date": "End date exceeds project boundary."}
                 )
 
     def save(self, *args, **kwargs):

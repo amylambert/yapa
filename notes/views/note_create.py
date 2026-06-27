@@ -2,71 +2,74 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.views import generic
 from django.urls import reverse
-from workspaces.models import Workspace
+from projects.models import Project
 from tasks.models import Task
-from ..models import Note
-from ..forms import NoteForm
+from ..models import Note, Tag
 
 
 class NoteCreateView(LoginRequiredMixin, generic.CreateView):
-    """Handles secure creation of root notes, sub-notes, and task-notes."""
+    """Handles structural creation of root notes and sub-notes."""
 
     model = Note
-    form_class = NoteForm
+    fields = ["name", "description", "priority", "start_date", "end_date"]
     template_name = "notes/note_form.html"
 
-    def post(self, request, *args, **kwargs):
-        """Bind relationships before form validation executes."""
-        self.object = None
-        form = self.get_form()
-
-        # Resolve and bind workspace before validation checks run
-        workspace = get_object_or_404(
-            Workspace,
-            pk=self.kwargs["workspace_id"],
-            owner=request.user,
+    def form_valid(self, form):
+        """Bind relational objects and process custom metadata tags."""
+        project_instance = get_object_or_404(
+            Project,
+            pk=self.kwargs["project_id"],
+            owner=self.request.user,
         )
-        form.instance.workspace = workspace
+        form.instance.project = project_instance
+        form.instance.owner = self.request.user
 
-        # Resolve and bind parent note hierarchy if present
-        parent_id = request.GET.get("parent")
+        parent_id = self.request.GET.get("parent")
         if parent_id:
             form.instance.parent = get_object_or_404(
-                Note, pk=parent_id, workspace=workspace
+                Note, pk=parent_id, project=project_instance
             )
 
-        # Resolve and bind related task anchor if present
-        task_parent_id = request.GET.get("task_parent")
+        task_parent_id = self.request.GET.get("task_parent")
         if task_parent_id:
             form.instance.related_task = get_object_or_404(
-                Task, pk=task_parent_id, workspace=workspace
+                Task, pk=task_parent_id, project=project_instance
             )
 
-        if form.is_valid():
-            return self.form_valid(form)
-        return self.form_invalid(form)
+        response = super().form_valid(form)
 
-    def form_valid(self, form):
-        """Save the securely pre-populated model instance."""
-        return super().form_valid(form)
+        # Collect custom tag inputs straight from POST stream
+        tag_data = self.request.POST.get("custom_tags", "")
+        if tag_data:
+            tag_names = [
+                t.strip().lower()
+                for t in tag_data.split(",")
+                if t.strip()
+            ]
+            for name in tag_names:
+                tag_obj, _ = Tag.objects.get_or_create(
+                    name=name, owner=self.request.user
+                )
+                self.object.tags.add(tag_obj)
+
+        return response
 
     def get_success_url(self):
-        """Redirect the author back to the exact originating detail page."""
+        """Redirect back to the correct macro structural context."""
+        project_id = self.kwargs["project_id"]
+        
         task_parent_id = self.request.GET.get("task_parent")
         if task_parent_id:
             return reverse(
                 "task-detail",
-                kwargs={
-                    "workspace_pk": self.kwargs["workspace_id"],
-                    "pk": task_parent_id,
-                },
+                kwargs={"project_pk": project_id, "pk": task_parent_id},
             )
 
         parent_id = self.request.GET.get("parent")
         if parent_id:
-            return reverse("note-detail", kwargs={"pk": parent_id})
+            return reverse(
+                "note-detail",
+                kwargs={"project_id": project_id, "pk": parent_id},
+            )
 
-        return reverse(
-            "workspace-detail",
-            kwargs={"pk": self.kwargs["workspace_id"]},
-        )
+        return reverse("project-detail", kwargs={"pk": project_id})

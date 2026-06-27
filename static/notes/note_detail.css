@@ -1,0 +1,99 @@
+.app-layout-container {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.main-content-area {
+    flex: 1;
+    min-width: 0;
+}
+
+.inner-layout-padding {
+    padding: 12px;
+}
+
+.navigation-trail-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.deadline-indicator-badge {
+    border: 3px solid var(--border-thick);
+    background-color: #ffffff;
+    padding: 10px 14px;
+    display: inline-block;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.tag-cloud-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 15px 0 25px 0;
+}
+
+.pill-tag-item {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    padding: 4px 10px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    border: 2px solid var(--border-thick);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.editable-canvas-area {
+    background-color: #ffffff;
+    border: 3px solid var(--border-thick);
+    padding: 16px;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    min-height: 150px;
+    margin-top: 10px;
+}
+
+.section-divider-line {
+    border: none;
+    border-top: 3px dashed var(--border-thick);
+    margin: 30px 0;
+}
+
+.subitems-grid-section {
+    margin: 20px 0;
+}
+
+.action-links-cluster {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.metadata-list-group {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.metadata-list-group li {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.danger-action-link {
+    color: #ff3333;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .app-layout-container {
+        flex-direction: column;
+    }
+}

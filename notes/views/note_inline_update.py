@@ -2,45 +2,47 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from django.utils.dateparse import parse_datetime
+from django.utils.dateparse import parse_date
 from django.views import View
 from ..models import Note
 
 
 class NoteInlineUpdateView(LoginRequiredMixin, View):
-    """Handles secure, asynchronous generic updates for note attributes."""
+    """Asynchronously updates distinct note field keys via AJAX requests."""
 
     def post(self, request, *args, **kwargs):
-        """Process generic field/value payloads from the client safely."""
+        """Process field/value update payloads securely from clients."""
         note = get_object_or_404(
             Note,
             pk=self.kwargs.get("pk"),
-            workspace__owner=request.user,
+            project__owner=request.user,
         )
 
         field = request.POST.get("field")
         value = request.POST.get("value", "").strip()
 
-        # Strict security whitelist to block unauthorized model injection
-        if field not in ["title", "content", "deadline"]:
+        if field not in [
+            "name",
+            "description",
+            "priority",
+            "start_date",
+            "end_date",
+        ]:
             return JsonResponse(
-                {
-                    "status": "error",
-                    "message": "Field modification restricted.",
-                },
+                {"status": "error", "message": "Modification restricted."},
                 status=400,
             )
 
-        # Handle unique attribute types cleanly
-        if field == "deadline":
-            if not value or value.startswith("No"):
-                note.deadline = None
+        if field in ["start_date", "end_date"]:
+            if not value or value.startswith("No") or value == "None":
+                value = None
             else:
-                note.deadline = parse_datetime(value)
+                value = parse_date(value)
         else:
             setattr(note, field, value)
 
         try:
+            note.full_clean()
             note.save()
             return JsonResponse({"status": "success"})
         except ValidationError as error:

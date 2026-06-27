@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Delete Document - YAPA{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/note_delete.css' %}" />
+
+<div class="app-layout-container">
+    {% include 'partials/_sidebar.html' %}
+
+    <main class="main-content-area">
+        <div class="window-frame window-width-bound">
+            <div class="window-titlebar">
+                <span class="titlebar-text">Document Destruction Terminal</span>
+                <div class="titlebar-controls">
+                    <button type="button" class="control-button minimize">_</button>
+                    <button type="button" class="control-button">❑</button>
+                    <a href="{% url 'note-detail' note.project.id note.id %}" class="control-button">×</a>
+                </div>
+            </div>
+
+            <div class="destructive-modal-padding">
+                <h2>Delete Note</h2>
+                <p>Are you sure you want to completely erase <strong>{{ note.title }}</strong>?</p>
+
+                <div class="warning-callout-panel">
+                    Warning: This operations is fully terminal. Any child notes nested below this document structural
+                    node will be broken or purged.
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="submit-button">Yes, Wipe Document Node</button>
+                </form>
+
+                <p class="cancel-center-link">
+                    <a href="{% url 'note-detail' note.project.id note.id %}" class="navigation-link">
+                        Abort Action
+                    </a>
+                </p>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

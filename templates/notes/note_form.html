@@ -1,21 +1,77 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}
-Create Note - YAPA
-{% endblock %}
+{% block title %}Compose Note - YAPA{% endblock %}
 
 {% block content %}
-<h2>Compose New Note</h2>
+<link rel="stylesheet" href="{% static 'css/note_form.css' %}" />
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save Note</button>
-</form>
+<div class="app-layout-container">
+    {% include 'partials/_sidebar.html' %}
 
-<p>
-    <a href="{% url 'workspace-detail' view.kwargs.workspace_id %}">
-        Cancel and Go Back
-    </a>
-</p>
+    <main class="main-content-area">
+        <div class="window-frame note-window-modifier">
+            <div class="window-titlebar">
+                <span class="titlebar-text">Documentation Composer Engine</span>
+                <div class="titlebar-controls">
+                    <button type="button" class="control-button minimize">_</button>
+                    <button type="button" class="control-button">❑</button>
+                    <a href="javascript:history.back()" class="control-button">×</a>
+                </div>
+            </div>
+
+            <div class="modal-interior-padding">
+                <h2 class="form-title-spacing">Compose New Project Document</h2>
+
+                <form method="post" class="interactive-form">
+                    {% csrf_token %}
+
+                    <p>
+                        <label for="id_name">Document Title:</label>
+                        <input type="text" name="name" id="id_name" required />
+                    </p>
+
+                    <p>
+                        <label for="id_custom_tags">Categorization Tags:</label>
+                        <input type="text" name="custom_tags" id="id_custom_tags"
+                            placeholder="backend, urgent, design" />
+                    </p>
+
+                    <p>
+                        <label for="id_priority">Priority Assignment:</label>
+                        <span class="select-wrapper-styled">
+                            <select name="priority" id="id_priority" class="custom-select-element">
+                                <option value="LOW">Low</option>
+                                <option value="MEDIUM" selected>Medium</option>
+                                <option value="HIGH">High</option>
+                            </select>
+                        </span>
+                    </p>
+
+                    <div class="form-row-split-dates" style="display: flex; gap: 16px;">
+                        <p style="flex: 1;">
+                            <label for="id_start_date">Start Date:</label>
+                            <input type="date" name="start_date" id="id_start_date" />
+                        </p>
+                        <p style="flex: 1;">
+                            <label for="id_end_date">End Date:</label>
+                            <input type="date" name="end_date" id="id_end_date" />
+                        </p>
+                    </div>
+
+                    <p>
+                        <label for="id_description">Note Canvas Content:</label>
+                        <textarea name="description" id="id_description" class="note-textarea-expandable"></textarea>
+                    </p>
+
+                    <button type="submit" class="submit-button">Save Documentation Node</button>
+                </form>
+
+                <p class="text-centered-row">
+                    <a href="javascript:history.back()" class="navigation-link">Discard and Return</a>
+                </p>
+            </div>
+        </div>
+    </main>
+</div>
 {% endblock %}

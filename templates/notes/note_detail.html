@@ -1,111 +1,150 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}
-Note: {{ note.title }} - YAPA
-{% endblock %}
+{% block title %}Note: {{ note.name }} - YAPA{% endblock %}
 
 {% block content %}
-<nav class="note-navigation">
-    <p>
-        <a href="{% url 'workspace-detail' note.workspace.id %}">
-            ⬅️ Back to Workspace Dashboard
-        </a>
-    </p>
-    {% if note.parent %}
-    <p>
-        <a href="{% url 'note-detail' note.parent.id %}">
-            Up to Parent Note: <strong>{{ note.parent.title }}</strong>
-        </a>
-    </p>
-    {% endif %}
-</nav>
+<link rel="stylesheet" href="{% static 'css/note_detail.css' %}" />
 
-<hr />
+<div class="app-layout-container">
+    {% include 'partials/_sidebar.html' %}
 
-<div class="note-deadline-card">
-    ⏰ <strong>Deadline (Double-click to set):</strong>
-    <span class="editable" data-field="deadline" data-type="datetime-local" data-csrf="{{ csrf_token }}"
-        data-url="{% url 'note-inline-update' note.id %}">
-        {{ note.deadline|date:"Y-m-d H:i"|default:"No deadline set." }}
-    </span>
+    <main class="main-content-area">
+        <div class="window-frame">
+            <div class="window-titlebar">
+                <span class="titlebar-text">Note Dashboard Console [Node: #{{ note.pk }}]</span>
+                <div class="titlebar-controls">
+                    <button type="button" class="control-button minimize">_</button>
+                    <button type="button" class="control-button">❑</button>
+                    <a href="{% url 'project-detail' note.project.id %}" class="control-button">×</a>
+                </div>
+            </div>
+
+            <div class="inner-layout-padding">
+                <nav class="navigation-trail-row">
+                    <a href="{% url 'project-detail' note.project.id %}" class="navigation-link">
+                        &larr; Back to {{ note.project.name }} Dashboard
+                    </a>
+                    {% if note.parent %}
+                    <span>|</span>
+                    <a href="{% url 'note-detail' note.project.id note.parent.id %}" class="navigation-link">
+                        &uarr; Up to Parent: {{ note.parent.name }}
+                    </a>
+                    {% endif %}
+                </nav>
+
+                {% url 'note-inline-update' note.project.id note.pk as update_endpoint %}
+
+                <div class="deadline-indicator-badge">
+                    📅 Timeline Target Limits:
+                    <span class="editable" data-field="start_date" data-type="date" data-csrf="{{ csrf_token }}"
+                        data-url="{{ update_endpoint }}">
+                        {{ note.start_date|date:"Y-m-d"|default:"No start set" }}
+                    </span>
+                    to
+                    <span class="editable" data-field="end_date" data-type="date" data-csrf="{{ csrf_token }}"
+                        data-url="{{ update_endpoint }}">
+                        {{ note.end_date|date:"Y-m-d"|default:"No end set" }}
+                    </span>
+                </div>
+
+                <h1 class="editable" data-field="name" data-type="text" data-csrf="{{ csrf_token }}"
+                    data-url="{{ update_endpoint }}">
+                    {{ note.name }}
+                </h1>
+
+                {% if note.tags.all %}
+                <div class="tag-cloud-container">
+                    {% for label in note.tags.all %}
+                    <span class="pill-tag-item">#{{ label.name }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="editable editable-canvas-area" data-field="description" data-type="textarea"
+                    data-csrf="{{ csrf_token }}" data-url="{{ update_endpoint }}">
+                    {{ note.description|default:"Empty note canvas. Double-click here to edit content." }}
+                </div>
+
+                <hr class="section-divider-line" />
+
+                <div class="subitems-grid-section">
+                    <h2>Contained Documentation Nodes</h2>
+                    <div class="action-links-cluster">
+                        <a href="{% url 'note-create' note.project.id %}?parent={{ note.id }}" class="navigation-link">
+                            📝 Nest a Sub-Note
+                        </a>
+                        <span>|</span>
+                        <a href="{% url 'task-create' note.project.id %}?note_parent={{ note.id }}"
+                            class="navigation-link">
+                            ✅ Nest an Action Item Task
+                        </a>
+                    </div>
+
+                    <div class="subitems-grid-section">
+                        <h3>Nested Sub-documents ({{ subnotes.count }})</h3>
+                        {% if subnotes %}
+                        <ul>
+                            {% for child in subnotes %}
+                            <li>
+                                <a href="{% url 'note-detail' note.project.id child.id %}" class="navigation-link">{{
+                                    child.name }}</a>
+                                {% if child.end_date %}
+                                <small>⏰ {{ child.end_date|date:"M d" }}</small>
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <p><small>No nested sub-notes mapped to this terminal location.</small></p>
+                        {% endif %}
+                    </div>
+
+                    <div class="subitems-grid-section">
+                        <h3>Actionable Task Items ({{ subtasks.count }})</h3>
+                        {% if subtasks %}
+                        <ul>
+                            {% for task in subtasks %}
+                            <li>
+                                <strong>[{{ task.get_status_display }}]</strong>
+                                <a href="{% url 'task-detail' note.project.id task.id %}" class="navigation-link">{{
+                                    task.name }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <p><small>No tasks nested inside this document channel.</small></p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <hr class="section-divider-line" />
+
+                <div>
+                    <h3>System Ledger</h3>
+                    <ul class="metadata-list-group">
+                        <li>
+                            <strong>Priority:</strong>
+                            <span class="editable" data-field="priority" data-type="select" data-csrf="{{ csrf_token }}"
+                                data-url="{{ update_endpoint }}"
+                                data-options='{"LOW":"Low","MEDIUM":"Medium","HIGH":"High"}'>
+                                {{ note.get_priority_display }}
+                            </span>
+                        </li>
+                        <li><strong>Created Timestamp:</strong> {{ note.created_at|date:"Y-m-d H:i" }}</li>
+                        <li><strong>Latest delta modification:</strong> {{ note.updated_at|date:"Y-m-d H:i" }}</li>
+                        <li class="subitems-grid-section">
+                            <a href="{% url 'note-delete' note.project.id note.id %}"
+                                class="navigation-link danger-action-link">
+                                🗑️ Delete This Note Permanently
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
 </div>
-
-<h1 class="editable" data-field="title" data-type="text" data-csrf="{{ csrf_token }}"
-    data-url="{% url 'note-inline-update' note.id %}">
-    {{ note.title }}
-</h1>
-
-<div class="editable" data-field="content" data-type="textarea" data-csrf="{{ csrf_token }}"
-    data-url="{% url 'note-inline-update' note.id %}">
-    {{ note.content|default:"Empty note canvas. Double-click to write." }}
-</div>
-
-<hr />
-
-<h2>Contained Items</h2>
-
-<div class="note-actions-hub">
-    <a href="{% url 'note-create' note.workspace.id %}?parent={{ note.id }}">
-        📝 Nest a Sub-Note
-    </a>
-    &nbsp;|&nbsp;
-    <a href="{% url 'task-create' note.workspace.id %}?note_parent={{ note.id }}">
-        ✅ Nest a Task Link
-    </a>
-</div>
-
-<div class="note-nested-section">
-    <h3>Nested Documents ({% firstof note.children.count "0" %})</h3>
-    {% if note.children.all %}
-    <ul>
-        {% for child in note.children.all %}
-        <li>
-            <a href="{% url 'note-detail' child.id %}">{{ child.title }}</a>
-            {% if child.deadline %}
-            <small>⏰ {{ child.deadline|date:"M d" }}</small>
-            {% endif %}
-        </li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p class="note-empty-notice">
-        <small>No nested sub-notes present.</small>
-    </p>
-    {% endif %}
-</div>
-
-<div class="note-nested-section note-spaced-top">
-    <h3>Actionable Tasks ({% firstof note.sub_tasks.count "0" %})</h3>
-    {% if note.sub_tasks.all %}
-    <ul>
-        {% for task in note.sub_tasks.all %}
-        <li>
-            <strong>[{{ task.get_status_display }}]</strong>
-            <a href="{% url 'task-detail' note.workspace.id task.id %}">
-                {{ task.title }}
-            </a>
-            {% if task.deadline %}
-            <small>⏰ {{ task.deadline|date:"M d" }}</small>
-            {% endif %}
-        </li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p class="note-empty-notice">
-        <small>No action tasks embedded here yet.</small>
-    </p>
-    {% endif %}
-</div>
-
-<hr />
-
-<form action="{% url 'note-delete' note.id %}" method="post" id="secure-delete-form">
-    {% csrf_token %}
-    <button type="submit" class="btn-danger">
-        🗑️ Delete This Note
-    </button>
-</form>
 
 <script src="{% static 'js/inline_update.js' %}" defer></script>
 {% endblock %}

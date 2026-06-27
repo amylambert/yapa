@@ -1,8 +1,3 @@
-"""
-core/models/blueprint.py
-Defines the primary structural abstract archetype for multi-app model inheritance.
-"""
-
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models

@@ -1,0 +1,50 @@
+.app-layout-container {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.main-content-area {
+    flex: 1;
+    min-width: 0;
+}
+
+.note-window-modifier {
+    max-width: 650px;
+}
+
+.form-title-spacing {
+    margin: 10px 0 25px 0;
+    font-size: 1.5rem;
+}
+
+.note-textarea-expandable {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.2rem;
+    font-family: inherit;
+    background-color: #ffffff;
+    color: #000000;
+    border: 3px solid var(--border-thick);
+    outline: none;
+    resize: vertical;
+    min-height: 180px;
+}
+
+.note-textarea-expandable:focus {
+    outline: 4px dashed var(--border-thick);
+    outline-offset: 4px;
+}
+
+.text-centered-row {
+    text-align: center;
+    margin-top: 15px;
+}
+
+@media (max-width: 768px) {
+    .app-layout-container {
+        flex-direction: column;
+    }
+}
