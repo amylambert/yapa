@@ -11,14 +11,15 @@
     <span>Project Workspace Engine</span>
     <div class="titlebar-controls">
       <button type="button" class="control-button minimize">_</button>
-      <button type="button" class="control-button">❑</button>
+      <button type="button" class="control-button">⬖</button>
       <a href="{% url 'core:dashboard' %}" class="control-button">×</a>
     </div>
   </div>
 
   <div class="window-interior">
+
     <nav class="navigation-trail">
-      <a href="{% url 'core:dashboard' %}" class="navigation-link">
+      <a href="{% url 'core:dashboard' %}" class="action-button-link navigation-link">
         ← Back to Dashboard
       </a>
     </nav>
@@ -34,8 +35,9 @@
         data-url="{{ update_url }}">
         {{ project.description|default:"No description provided." }}
       </p>
-      <div>
-        <a href="{% url 'project-delete' project.id %}" class="submit-button delete-action">
+
+      <div class="header-actions-row">
+        <a href="{% url 'project-delete' project.id %}" class="submit-button delete-action-btn">
           🗑️ Delete Project
         </a>
       </div>

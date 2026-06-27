@@ -1,26 +1,19 @@
-/* ==========================================================================
-   Core Dashboard Grid Positioning Only
-   ========================================================================== */
-
-.dashboard-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-top: 15px;
-    box-sizing: border-box;
-}
+/* =====================================================================
+   Core Dashboard Grid Positioning
+   ===================================================================== */
 
 .main-body {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    flex-grow: 1;
+    padding: 12px;
 }
 
 .dashboard-header h1 {
     font-size: 1.4rem;
     text-transform: uppercase;
     letter-spacing: 0.02em;
+    color: var(--text-main);
 }
 
 .content-grid {
@@ -67,6 +60,7 @@
     display: flex;
     justify-content: space-between;
     font-weight: bold;
+    color: var(--text-main);
 }
 
 .list-item:last-child {
@@ -77,20 +71,22 @@
     display: none;
 }
 
-/* ==========================================================================
+.submit-button.mini-expand-btn {
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    margin-top: 12px;
+    margin-bottom: 0;
+    width: auto;
+    display: inline-block;
+}
+
+/* =====================================================================
    Desktop Layout Framework Bounds Overrides
-   ========================================================================== */
+   ===================================================================== */
 
-@media (min-width: 992px) {
-    .dashboard-wrapper {
-        flex-direction: row;
-        align-items: flex-start;
-        width: 100%;
-    }
-
-    .main-window {
-        flex-grow: 1;
-        min-width: 0; /* Contains child grid expansion leaks */
+@media (min-width: 768px) {
+    .main-body {
+        padding: 20px;
     }
 
     .content-grid {

@@ -5,61 +5,60 @@
 <link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}">
 <script src="{% static 'dashboard/js/dashboard.js' %}" defer></script>
 
-<div class="dashboard-wrapper">
-    {% include 'partials/_sidebar.html' %}
+<div class="window-frame">
 
-    <main class="main-window window-frame">
-        <div class="window-titlebar">
-            <span class="titlebar-text">YAPA - Main Terminal</span>
-            <div class="titlebar-controls">
-                <button class="control-button minimize" aria-label="Minimize">_</button>
-                <button class="control-button" aria-label="Maximize">⬖</button>
-                <button class="control-button" aria-label="Close">×</button>
-            </div>
+    <div class="window-titlebar">
+        <span class="titlebar-text">YAPA - Main Terminal</span>
+        <div class="titlebar-controls">
+            <button class="control-button minimize" aria-label="Minimize">_</button>
+            <button class="control-button" aria-label="Maximize">⬖</button>
+            <button class="control-button" aria-label="Close">×</button>
         </div>
+    </div>
 
-        <div class="main-body">
-            <header class="dashboard-header">
-                <h1>Welcome back, {{ request.user.username }}.</h1>
-            </header>
+    <div class="main-body">
+        <header class="dashboard-header">
+            <h1>Welcome back, {{ request.user.username }}.</h1>
+        </header>
 
-            <div class="content-grid">
-                <section class="dashboard-module calendar-module">
-                    <h2>System Calendar</h2>
-                    <div class="calendar-placeholder">
-                        [ Calendar Engine Will Render Here ]
-                    </div>
-                </section>
+        <div class="content-grid">
 
-                <section class="dashboard-module pinned-module">
-                    <h2>Pinned Objects</h2>
-                    <ul class="item-list">
-                        {% for item in pinned_items %}
-                        <li class="list-item">{{ item.title }}</li>
-                        {% empty %}
-                        <li class="empty-state">No pinned items.</li>
-                        {% endfor %}
-                    </ul>
-                </section>
+            <section class="dashboard-module calendar-module">
+                <h2>System Calendar</h2>
+                <div class="calendar-placeholder">
+                    [ Calendar Engine Will Render Here ]
+                </div>
+            </section>
 
-                <section class="dashboard-module deadline-module">
-                    <h2>Approaching Deadlines</h2>
-                    <ul class="item-list" id="deadline-list">
-                        {% for task in urgent_tasks %}
-                        <li class="list-item deadline-item">
-                            <span class="task-title">{{ task.title }}</span>
-                            <span class="task-date">{{ task.date }}</span>
-                        </li>
-                        {% empty %}
-                        <li class="empty-state">No urgent tasks.</li>
-                        {% endfor %}
-                    </ul>
-                    <button type="button" id="toggle-deadlines-btn" class="expand-btn hidden">
-                        Show More ↓
-                    </button>
-                </section>
-            </div>
+            <section class="dashboard-module pinned-module">
+                <h2>Pinned Objects</h2>
+                <ul class="item-list">
+                    {% for item in pinned_items %}
+                    <li class="list-item">{{ item.title }}</li>
+                    {% empty %}
+                    <li class="empty-state">No pinned items found.</li>
+                    {% endfor %}
+                </ul>
+            </section>
+
+            <section class="dashboard-module deadline-module">
+                <h2>Approaching Deadlines</h2>
+                <ul class="item-list" id="deadline-list">
+                    {% for task in urgent_tasks %}
+                    <li class="list-item deadline-item">
+                        <span class="task-title">{{ task.title }}</span>
+                        <span class="task-date">{{ task.date }}</span>
+                    </li>
+                    {% empty %}
+                    <li class="empty-state">No urgent tracks found.</li>
+                    {% endfor %}
+                </ul>
+                <button type="button" id="toggle-deadlines-btn" class="submit-button mini-expand-btn hidden">
+                    Show More ↓
+                </button>
+            </section>
+
         </div>
-    </main>
+    </div>
 </div>
 {% endblock %}
