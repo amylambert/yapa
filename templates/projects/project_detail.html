@@ -22,6 +22,9 @@
       <a href="{% url 'core:dashboard' %}" class="action-button-link navigation-link">
         ← Back to Dashboard
       </a>
+      <span class="editor-tooltip">
+        💡 Double-click fields to edit!
+      </span>
     </nav>
 
     {% url 'project-inline-update' project.id as update_url %}
@@ -35,6 +38,41 @@
         data-url="{{ update_url }}">
         {{ project.description|default:"No description provided." }}
       </p>
+
+      <div class="project-meta-grid">
+
+        <div class="meta-item">
+          <span class="meta-label">Priority:</span>
+          <span class="editable meta-value-field highlight-text" data-field="priority" data-type="select"
+            data-csrf="{{ csrf_token }}" data-url="{{ update_url }}">
+            {{ project.priority|default:"MEDIUM" }}
+          </span>
+        </div>
+
+        <div class="meta-item">
+          <span class="meta-label">Start Date:</span>
+          <span class="editable meta-value-field" data-field="start_date" data-type="date" data-csrf="{{ csrf_token }}"
+            data-url="{{ update_url }}">
+            {{ project.start_date|date:"Y-m-d"|default:"Not set" }}
+          </span>
+        </div>
+
+        <div class="meta-item">
+          <span class="meta-label">End Date:</span>
+          <span class="editable meta-value-field" data-field="end_date" data-type="date" data-csrf="{{ csrf_token }}"
+            data-url="{{ update_url }}">
+            {{ project.end_date|date:"Y-m-d"|default:"Not set" }}
+          </span>
+        </div>
+
+        <div class="meta-item">
+          <span class="meta-label">Created:</span>
+          <span class="static-meta-value">
+            {{ project.created_at|date:"M d, Y" }}
+          </span>
+        </div>
+
+      </div>
 
       <div class="header-actions-row">
         <a href="{% url 'project-delete' project.id %}" class="submit-button delete-action-btn">

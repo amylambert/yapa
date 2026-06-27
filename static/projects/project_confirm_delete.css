@@ -1,0 +1,95 @@
+/* =====================================================================
+   Project Destruction View Space Alignments
+   ===================================================================== */
+
+.delete-workspace-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.delete-workspace-body h2 {
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    color: var(--text-main);
+    letter-spacing: 0.02em;
+}
+
+.warning-prompt {
+    font-size: 1.1rem;
+    line-height: 1.4;
+    color: var(--text-main);
+}
+
+/* High visibility retro warn module */
+.retro-alert-box {
+    background-color: #ffffff;
+    border: 3px dashed #ff5252;
+    padding: 14px;
+    font-weight: bold;
+    color: #e64949;
+    font-family: monospace;
+    line-height: 1.4;
+}
+
+.delete-actions-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+/* Local flavor modifier for the global structural action token */
+.submit-button.destructive-confirm {
+    background-color: #ff6b6b;
+    color: #ffffff;
+    margin-bottom: 0;
+}
+
+.submit-button.destructive-confirm:hover {
+    background-color: #ff5252;
+}
+
+.submit-button.destructive-confirm:active {
+    background-color: #e64949;
+}
+
+/* Minimal escape route tracking link */
+.cancel-back-link {
+    font-weight: bold;
+    color: var(--text-main);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+    text-decoration: none;
+    padding: 12px;
+}
+
+.cancel-back-link:hover {
+    text-decoration: underline;
+}
+
+/* =====================================================================
+   Viewport Distribution Matrix Adaptations
+   ===================================================================== */
+
+@media (min-width: 768px) {
+    .delete-workspace-body {
+        padding: 24px;
+    }
+
+    .delete-actions-container {
+        flex-direction: row;
+        align-items: center;
+        gap: 24px;
+    }
+
+    .destruction-form {
+        flex: 1;
+    }
+
+    .cancel-back-link {
+        padding: 0 10px;
+    }
+}

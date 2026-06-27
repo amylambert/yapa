@@ -1,28 +1,53 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}
-Delete Project - YAPA
-{% endblock %}
+{% block title %}Delete Project - YAPA{% endblock %}
 
 {% block content %}
-<div class="window-frame basic-form-margin">
+<link rel="stylesheet" href="{% static 'projects/project_confirm_delete.css' %}">
+
+<div class="window-frame">
+
+  <!-- Standard OS Window Header Group -->
   <div class="window-titlebar">
-    <span class="titlebar-text">Confirm Destruction Sequence</span>
+    <span class="titlebar-text">System Core - Critical Request</span>
+    <div class="titlebar-controls">
+      <button class="control-button minimize" aria-label="Minimize">_</button>
+      <button class="control-button" aria-label="Maximize">⬖</button>
+      <button class="control-button" aria-label="Close">×</button>
+    </div>
   </div>
-  <div class="modal-body">
+
+  <!-- Focused Workspace Layout Core -->
+  <div class="delete-workspace-body">
     <h2>Delete Project</h2>
-    <p>Are you sure you want to delete <strong>{{ project.name }}</strong>?</p>
-    <blockquote>
-      Warning: This action is permanent and will remove all nested objects.
+
+    <p class="warning-prompt">
+      Are you sure you want to permanently execute deletion sequence for
+      <strong>{{ project.name }}</strong>?
+    </p>
+
+    <!-- Heavy contrast warning graphic card -->
+    <blockquote class="retro-alert-box">
+      WARNING: This action is absolute and permanent. Confirming this request
+      will purge all nested notes and tracking tasks from the register.
     </blockquote>
 
-    <form method="post">
-      {% csrf_token %}
-      <button type="submit" class="submit-button">Yes, Delete Permanently</button>
-    </form>
-    <p>
-      <a href="{% url 'project-detail' project.id %}">Cancel and Go Back</a>
-    </p>
+    <!-- Navigational Execution Blocks Group -->
+    <div class="delete-actions-container">
+      <form method="post" class="destruction-form">
+        {% csrf_token %}
+        <!-- Inherits all layout properties directly from global rules -->
+        <button type="submit" class="submit-button destructive-confirm">
+          Yes, Delete Permanently
+        </button>
+      </form>
+
+      <a href="{% url 'project-detail' project.id %}" class="cancel-back-link navigation-link">
+        Cancel and Go Back
+      </a>
+    </div>
+
   </div>
 </div>
 {% endblock %}

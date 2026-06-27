@@ -9,7 +9,7 @@ class ProjectDeleteView(LoginRequiredMixin, generic.DeleteView):
 
     model = Project
     template_name = "projects/project_confirm_delete.html"
-    success_url = reverse_lazy("dashboard")
+    success_url = reverse_lazy("core:dashboard")
 
     def get_queryset(self):
         """Ensure users can only delete their own projects."""
