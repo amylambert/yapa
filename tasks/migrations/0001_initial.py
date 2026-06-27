@@ -11,12 +11,14 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ('notes', '0001_initial'),
+        ('projects', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Project',
+            name='Task',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', core.models.fields.EncryptedTextField(max_length=255)),
@@ -25,10 +27,17 @@ class Migration(migrations.Migration):
                 ('start_date', models.DateField(blank=True, null=True)),
                 ('end_date', models.DateField(blank=True, null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('status', models.CharField(choices=[('TODO', 'To Do'), ('IN_PROGRESS', 'In Progress'), ('DONE', 'Done')], default='TODO', max_length=20)),
+                ('time_estimate', models.PositiveIntegerField(default=0, help_text='Estimated time to complete task in minutes.')),
+                ('time_spent', models.PositiveIntegerField(default=0, help_text='Actual time spent working on task in minutes.')),
+                ('updated_at', models.DateTimeField(auto_now=True)),
                 ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='%(app_label)s_%(class)s_related', to=settings.AUTH_USER_MODEL)),
+                ('parent', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='subtasks', to='tasks.task')),
+                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tasks', to='projects.project')),
+                ('related_note', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='sub_tasks', to='notes.note')),
             ],
             options={
-                'ordering': ['priority', 'end_date', '-created_at'],
+                'ordering': ['end_date', 'priority', '-created_at'],
             },
         ),
     ]

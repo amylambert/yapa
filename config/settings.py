@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     "accounts",
     "projects.apps.ProjectsConfig",
     "tasks.apps.TasksConfig",
-    #"notes.apps.NotesConfig",
+    "notes.apps.NotesConfig",
     "core.apps.CoreConfig"
 ]
 

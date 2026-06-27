@@ -14,6 +14,6 @@ urlpatterns = [
     path("", include("core.urls")),
     path("accounts/", include("accounts.urls")),    
     path("", include("projects.urls")),
-    #path("", include("tasks.urls")),
-    #path("", include("notes.urls")),
+    path("", include("tasks.urls")),
+    path("", include("notes.urls")),
 ]
