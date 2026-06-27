@@ -16,10 +16,35 @@
     margin: 0;
 }
 
+/* --- Animated Retro Checkerboard Background Engine --- */
+@keyframes scroll-grid {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 60px 60px;
+    }
+}
+
 body {
     width: 100%;
     min-height: 100vh;
     background-color: var(--page-bg);
+
+    /* Subtle synthwave secondary shade (#21143a) 
+       maintains high contrast readability for cards 
+    */
+    background-image: conic-gradient(
+        #21143a 25%,
+        transparent 25% 50%,
+        #21143a 50% 75%,
+        transparent 75%
+    );
+    background-size: 60px 60px;
+    background-attachment: fixed;
+
+    /* Slow, uniform vector translation */
+    animation: scroll-grid 12s linear infinite;
     font-family: "MS Sans Serif", Tahoma, Arial, sans-serif;
     padding: 15px;
 }
