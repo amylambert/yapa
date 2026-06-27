@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "accounts",
     "projects.apps.ProjectsConfig",
-    #"tasks.apps.TasksConfig",
+    "tasks.apps.TasksConfig",
     #"notes.apps.NotesConfig",
     "core.apps.CoreConfig"
 ]

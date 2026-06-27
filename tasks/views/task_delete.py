@@ -12,11 +12,11 @@ class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
 
     def get_queryset(self):
         """Ensure users can only delete tasks within owned spaces."""
-        return Task.objects.filter(workspace__owner=self.request.user)
+        return Task.objects.filter(project__owner=self.request.user)
 
     def get_success_url(self):
-        """Redirect back to workspace detail page after deletion."""
+        """Redirect back to project detail page after deletion."""
         return reverse(
-            "workspace-detail",
-            kwargs={"pk": self.kwargs["workspace_pk"]},
+            "project-detail",
+            kwargs={"pk": self.kwargs["project_pk"]},
         )

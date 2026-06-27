@@ -11,12 +11,11 @@ class TaskDetailView(LoginRequiredMixin, generic.DetailView):
     context_object_name = "task"
 
     def get_queryset(self):
-        """Ensure users can only view tasks inside their owned workspaces."""
-        return Task.objects.filter(workspace__owner=self.request.user)
+        """Ensure users can only view tasks inside their owned projects."""
+        return Task.objects.filter(project__owner=self.request.user)
 
     def get_context_data(self, **kwargs):
         """Inject sub-tasks and separate them from parent-level nodes."""
         context = super().get_context_data(**kwargs)
-        # Fetch pre-related subtasks using our model related_name
         context["subtasks"] = self.object.subtasks.all()
         return context

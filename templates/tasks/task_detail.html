@@ -2,135 +2,144 @@
 {% load static %}
 
 {% block title %}
-{{ task.title }} - Task Control Panel
+{{ task.name }} - Task Control Panel
 {% endblock %}
 
 {% block content %}
-<div>
-  <p>
-    <a href="{% url 'workspace-detail' task.workspace.pk %}">
-      &larr; Back to {{ task.workspace.title }}
-    </a>
-    {% if task.parent %}
-    |
-    <a href="{% url 'task-detail' task.workspace.pk task.parent.pk %}">
-      &uarr; Up to Parent: {{ task.parent.title }}
-    </a>
-    {% endif %}
-  </p>
+<link rel="stylesheet" href="{% static 'css/project_form.css' %}" />
 
-  {# Pre-compute main routes to guarantee lines stay under 80 characters #}
-  {% url 'task-inline-update' task.workspace.pk task.pk as main_url %}
-
-  <div class="task-title-container">
-    {# Node-level split isolates attributes from formatter line wrapping #}
-    {% if task.status == 'DONE' %}
-    <input type="checkbox" class="status-toggle main-task-toggle" data-url="{{ main_url }}" data-csrf="{{ csrf_token }}"
-      checked />
-    {% else %}
-    <input type="checkbox" class="status-toggle main-task-toggle" data-url="{{ main_url }}"
-      data-csrf="{{ csrf_token }}" />
-    {% endif %}
-
-    <h1 class="editable" data-field="title" data-type="text" data-csrf="{{ csrf_token }}" data-url="{{ main_url }}">
-      {{ task.title }}
-    </h1>
+<div class="window-frame">
+  <div class="window-titlebar">
+    <span class="titlebar-text">Task Operational Console</span>
+    <div class="titlebar-controls">
+      <button type="button" class="control-button minimize">_</button>
+      <button type="button" class="control-button">❑</button>
+      <a href="{% url 'workspace-detail' task.workspace.pk %}" class="control-button close-link-anchor">×</a>
+    </div>
   </div>
 
-  <div>
-    <h3>Description</h3>
-    <p class="editable" data-field="description" data-type="textarea" data-csrf="{{ csrf_token }}"
-      data-url="{{ main_url }}">
-      {{ task.description|default:"No description. Double click to add." }}
+  <div class="modal-body">
+    <p>
+      <a href="{% url 'workspace-detail' task.workspace.pk %}" class="navigation-link">
+        &larr; Back to {{ task.workspace.title }}
+      </a>
+      {% if task.parent %}
+      |
+      <a href="{% url 'task-detail' task.workspace.pk task.parent.pk %}" class="navigation-link">
+        &uarr; Up to Parent: {{ task.parent.name }}
+      </a>
+      {% endif %}
     </p>
-  </div>
 
-  <div>
-    <h2>Contained Items</h2>
+    {% url 'task-inline-update' task.workspace.pk task.pk as main_url %}
 
-    <div class="actions-hub" style="margin-bottom: 20px;">
-      <a href="{% url 'task-create' task.workspace.id %}?parent={{ task.id }}">
-        ✅ Create Sub-Task
-      </a>
-      &nbsp;|&nbsp;
-      <a href="{% url 'note-create' task.workspace.id %}?task_parent={{ task.id }}">
-        📝 Create Sub-Note Documentation
-      </a>
-    </div>
-
-    <!-- Category A: Sub-Tasks Breakdown -->
-    <div class="nested-section">
-      <h3>Sub-Tasks Breakdown ({% firstof task.subtasks.count "0" %})</h3>
-      {% if task.subtasks.all %}
-      <ul>
-        {% for sub in task.subtasks.all %}
-        <li>
-          <strong>[{{ sub.get_status_display }}]</strong>
-          <a href="{% url 'task-detail' task.workspace.id sub.id %}">{{ sub.title }}</a>
-        </li>
-        {% endfor %}
-      </ul>
+    <div class="task-title-container">
+      {% if task.status == 'DONE' %}
+      <input type="checkbox" class="status-toggle main-task-toggle" data-url="{{ main_url }}"
+        data-csrf="{{ csrf_token }}" checked />
       {% else %}
-      <p style="color: gray;"><small>No nested sub-tasks track mapped.</small></p>
+      <input type="checkbox" class="status-toggle main-task-toggle" data-url="{{ main_url }}"
+        data-csrf="{{ csrf_token }}" />
       {% endif %}
+
+      <h1 class="editable" data-field="name" data-type="text" data-csrf="{{ csrf_token }}" data-url="{{ main_url }}">
+        {{ task.name }}
+      </h1>
     </div>
 
-    <!-- Category B: Connected Context Sub-Notes Documentation -->
-    <div class="nested-section" style="margin-top: 20px;">
-      <h3>Linked Support Documentation ({% firstof task.sub_notes.count "0" %})</h3>
-      {% if task.sub_notes.all %}
-      <ul>
-        {% for document in task.sub_notes.all %}
-        <li>
-          <a href="{% url 'note-detail' document.id %}">{{ document.title }}</a>
-        </li>
-        {% endfor %}
-      </ul>
-      {% else %}
-      <p style="color: gray;"><small>No attached documentation notes found.</small></p>
-      {% endif %}
+    <div class="task-description-wrapper">
+      <h3>Description</h3>
+      <p class="editable" data-field="description" data-type="textarea" data-csrf="{{ csrf_token }}"
+        data-url="{{ main_url }}">
+        {{ task.description|default:"No description. Double click to add." }}
+      </p>
     </div>
 
-    <form method="post" action="{% url 'subtask-create' task.workspace.pk task.pk %}">
-      {% csrf_token %}
-      <input type="text" name="title" placeholder="Add sub-task..." required />
-      <button type="submit">Add Sub-task</button>
-    </form>
-  </div>
+    <div class="nested-items-hub">
+      <h2>Contained Items</h2>
 
-  <hr />
-
-  <div>
-    <h3>Metadata & Actions (Double click value to edit)</h3>
-    <ul>
-      <li>
-        <strong>Status:</strong>
-        <span class="editable main-task-status" data-field="status" data-type="select" data-csrf="{{ csrf_token }}"
-          data-url="{{ main_url }}" data-options='{"TODO":"To Do","IN_PROGRESS":"In Progress","DONE":"Done"}'>
-          {{ task.get_status_display }}
-        </span>
-      </li>
-      <li>
-        <strong>Priority:</strong>
-        <span class="editable" data-field="priority" data-type="select" data-csrf="{{ csrf_token }}"
-          data-url="{{ main_url }}" data-options='{"LOW":"Low","MEDIUM":"Medium","HIGH":"High"}'>
-          {{ task.get_priority_display }}
-        </span>
-      </li>
-      <li><strong>Due Date:</strong> {{ task.due_date|default:"None" }}</li>
-      <li><strong>Estimated Time:</strong> {{ task.time_estimate }} mins</li>
-      <li><strong>Time Spent:</strong> {{ task.time_spent }} mins</li>
-      <li>
-        <strong>Actions:</strong>
-        <a href="{% url 'task-delete' task.workspace.pk task.pk %}">
-          🗑️ Delete Task Permanently
+      <div class="actions-hub">
+        <a href="{% url 'task-create' task.workspace.id %}?parent={{ task.id }}" class="navigation-link">
+          ✅ Create Sub-Task
         </a>
-      </li>
-    </ul>
+        &nbsp;|&nbsp;
+        <a href="{% url 'note-create' task.workspace.id %}?task_parent={{ task.id }}" class="navigation-link">
+          📝 Create Sub-Note Documentation
+        </a>
+      </div>
+
+      <div class="nested-section">
+        <h3>Sub-Tasks Breakdown ({% firstof task.subtasks.count "0" %})</h3>
+        {% if task.subtasks.all %}
+        <ul>
+          {% for sub in task.subtasks.all %}
+          <li>
+            <strong>[{{ sub.get_status_display }}]</strong>
+            <a href="{% url 'task-detail' task.workspace.id sub.id %}">{{ sub.name }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="empty-context-text"><small>No nested sub-tasks track mapped.</small></p>
+        {% endif %}
+      </div>
+
+      <div class="nested-section structural-spacer-top">
+        <h3>Linked Support Documentation ({% firstof task.sub_notes.count "0" %})</h3>
+        {% if task.sub_notes.all %}
+        <ul>
+          {% for document in task.sub_notes.all %}
+          <li>
+            <a href="{% url 'note-detail' document.id %}">{{ document.title }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="empty-context-text"><small>No attached documentation notes found.</small></p>
+        {% endif %}
+      </div>
+
+      <form method="get" action="{% url 'task-create' task.project.pk %}"
+        class="interactive-form structural-spacer-top">
+        <input type="hidden" name="parent" value="{{ task.id }}" />
+        <button type="submit" class="submit-button">Add Sub-task</button>
+      </form>
+    </div>
+
+    <hr class="section-divider" />
+
+    <div class="metadata-dashboard-list">
+      <h3>Metadata & Actions (Double click value to edit)</h3>
+      <ul>
+        <li>
+          <strong>Status:</strong>
+          <span class="editable main-task-status" data-field="status" data-type="select" data-csrf="{{ csrf_token }}"
+            data-url="{{ main_url }}" data-options='{"TODO":"To Do","IN_PROGRESS":"In Progress","DONE":"Done"}'>
+            {{ task.get_status_display }}
+          </span>
+          </td>
+        <li>
+          <strong>Priority:</strong>
+          <span class="editable" data-field="priority" data-type="select" data-csrf="{{ csrf_token }}"
+            data-url="{{ main_url }}" data-options='{"LOW":"Low","MEDIUM":"Medium","HIGH":"High"}'>
+            {{ task.get_priority_display }}
+          </span>
+          </td>
+        <li><strong>Start Date:</strong> {{ task.start_date|default:"None" }}</li>
+        <li><strong>Due Date:</strong> {{ task.end_date|default:"None" }}</li>
+        <li><strong>Estimated Time:</strong> {{ task.time_estimate }} mins</li>
+        <li><strong>Time Spent:</strong> {{ task.time_spent }} mins</li>
+        <li class="structural-spacer-top">
+          <strong>Actions:</strong>
+          <a href="{% url 'task-delete' task.workspace.pk task.pk %}" class="navigation-link structural-delete-trigger">
+            🗑️ Delete Task Permanently
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>
 
 <script src="{% static 'js/inline_update.js' %}" defer></script>
-
 <script src="{% static 'tasks/js/task_status_toggle.js' %}" defer></script>
 {% endblock %}

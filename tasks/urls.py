@@ -2,33 +2,27 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # Task creation
+    # Universal Task / Sub-Task Creation Entrypoint
     path(
-        "workspaces/<int:workspace_pk>/tasks/new/",
+        "projects/<int:project_pk>/tasks/new/",
         views.TaskCreateView.as_view(),
         name="task-create",
     ),
-    # Task detail view
+    # Central Task Detail Dashboard Interface
     path(
-        "workspaces/<int:workspace_pk>/tasks/<int:pk>/",
+        "projects/<int:project_pk>/tasks/<int:pk>/",
         views.TaskDetailView.as_view(),
         name="task-detail",
     ),
-    # Sub-task creation linked to parent task
+    # Asynchronous Partial Updates Interface Hook
     path(
-        "workspaces/<int:workspace_pk>/tasks/<int:parent_pk>/subtasks/new/",
-        views.SubTaskCreateView.as_view(),
-        name="subtask-create",
-    ),
-    # Inline asynchronous partial task updates
-    path(
-        "workspaces/<int:workspace_pk>/tasks/<int:pk>/update/",
+        "projects/<int:project_pk>/tasks/<int:pk>/update/",
         views.TaskInlineUpdateView.as_view(),
         name="task-inline-update",
     ),
     # Permanent destruction confirmation of tasks
     path(
-        "workspaces/<int:workspace_pk>/tasks/<int:pk>/delete/",
+        "projects/<int:project_pk>/tasks/<int:pk>/delete/",
         views.TaskDeleteView.as_view(),
         name="task-delete",
     ),

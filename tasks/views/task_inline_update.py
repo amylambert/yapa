@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.views import generic
 from django.shortcuts import get_object_or_404
-from django.utils.dateparse import parse_datetime
+from django.utils.dateparse import parse_date
 from ..models import Task
 
 
@@ -15,31 +15,30 @@ class TaskInlineUpdateView(LoginRequiredMixin, generic.View):
         task = get_object_or_404(
             Task,
             pk=self.kwargs["pk"],
-            workspace__owner=request.user,
+            project__owner=request.user,
         )
 
         field = request.POST.get("field")
         value = request.POST.get("value", "").strip()
 
-        # Expand whitelist to fully match all editable template fields securely
         if field not in [
-            "title",
+            "name",
             "status",
             "description",
             "priority",
-            "deadline",
+            "start_date",
+            "end_date",
         ]:
             return JsonResponse(
                 {"error": "Target attribute modification restricted."},
                 status=400,
             )
 
-        # Sanitize empty datetime values for database compatibility
-        if field == "deadline":
-            if not value or value.startswith("No"):
+        if field in ["start_date", "end_date"]:
+            if not value or value.startswith("No") or value == "None":
                 value = None
             else:
-                value = parse_datetime(value)
+                value = parse_date(value)
 
         try:
             setattr(task, field, value)

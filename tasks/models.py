@@ -1,10 +1,10 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-from core.models.schedulable import SchedulableModel
-from workspaces.models import Workspace
+from core.models.blueprint import ComponentBlueprint
+from projects.models import Project
 
 
-class Task(SchedulableModel):
+class Task(ComponentBlueprint):
     """Represents an actionable task or nested note within a workspace."""
 
     STATUS_CHOICES = [
@@ -13,17 +13,12 @@ class Task(SchedulableModel):
         ("DONE", "Done"),
     ]
 
-    PRIORITY_CHOICES = [
-        ("LOW", "Low"),
-        ("MEDIUM", "Medium"),
-        ("HIGH", "High"),
-    ]
-
-    workspace = models.ForeignKey(
-        Workspace,
+    project = models.ForeignKey(
+        Project,
         on_delete=models.CASCADE,
         related_name="tasks",
     )
+    
     # Self-referential key allowing tasks to contain nested sub-tasks
     parent = models.ForeignKey(
         "self",
@@ -32,6 +27,7 @@ class Task(SchedulableModel):
         blank=True,
         related_name="subtasks",
     )
+    
     # Cross-relational reference enabling notes to contain sub-tasks
     related_note = models.ForeignKey(
         "notes.Note",
@@ -41,19 +37,11 @@ class Task(SchedulableModel):
         related_name="sub_tasks",
     )
 
-    title = models.CharField(max_length=200)
-    description = models.TextField(blank=True, null=True)
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
         default="TODO",
     )
-    priority = models.CharField(
-        max_length=20,
-        choices=PRIORITY_CHOICES,
-        default="MEDIUM",
-    )
-    due_date = models.DateField(blank=True, null=True)
 
     # Time tracking metrics mapped in total minutes
     time_estimate = models.PositiveIntegerField(
@@ -65,42 +53,39 @@ class Task(SchedulableModel):
         help_text="Actual time spent working on task in minutes.",
     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        """Metadata configuration options for the Task entity."""
-
-        ordering = ["due_date", "priority"]
+        """Metadata configurations inheriting baseline sorting frameworks."""
+        app_label = "tasks"
+        ordering = ["end_date", "priority", "-created_at"]
 
     def __str__(self) -> str:
-        return str(self.title)
+        return str(self.name)
 
     def clean(self):
         """Ensure task deadlines fit within workspace macro schedules."""
         super().clean()
 
-        # Safely resolve workspace context during form validation stages
-        workspace = None
+        # Safely resolve workspace context during validation stages
+        project_instance = None
         try:
-            workspace = self.workspace
-        except Task.workspace.RelatedObjectDoesNotExist:
-            # Fallback to the parent task's workspace if creating a subtask
+            project_instance = self.project
+        except Project.DoesNotExist:
             try:
-                workspace = self.parent.workspace if self.parent else None
-            except Task.parent.RelatedObjectDoesNotExist:
-                workspace = None
+                project_instance = self.parent.project if self.parent else None
+            except AttributeError:
+                project_instance = None
 
-        # Only run boundary validations if the workspace context is available
-        if workspace and getattr(self, "deadline", None):
-            task_date = self.deadline.date()
-            if workspace.start_date and task_date < workspace.start_date:
+        # Validate chronological context mapping boundaries
+        if project_instance and self.end_date:
+            if project_instance.start_date and self.end_date < project_instance.start_date:
                 raise ValidationError(
-                    {"deadline": "Task cannot precede workspace start."}
+                    {"end_date": "Task target cannot precede project start."}
                 )
-            if workspace.end_date and task_date > workspace.end_date:
+            if project_instance.end_date and self.end_date > project_instance.end_date:
                 raise ValidationError(
-                    {"deadline": "Task cannot exceed workspace end."}
+                    {"end_date": "Task target cannot exceed project lifecycle."}
                 )
 
     def save(self, *args, **kwargs):
