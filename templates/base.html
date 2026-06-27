@@ -10,7 +10,23 @@
 </head>
 
 <body>
-  <main>{% block content %} {% endblock %}</main>
+  <div class="
+    {% if user.is_authenticated %}
+      app-layout-container
+    {% else %}
+      solo-layout-container
+    {% endif %}
+  ">
+
+    {% if user.is_authenticated %}
+    {% include 'partials/_sidebar.html' %}
+    {% endif %}
+
+    <main class="main-content-area">
+      {% block content %}{% endblock %}
+    </main>
+
+  </div>
 </body>
 
 </html>

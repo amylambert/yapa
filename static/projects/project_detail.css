@@ -1,0 +1,210 @@
+/* --- Global Grid structural flex normalization --- */
+.app-layout-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.main-content-area {
+    width: 100%;
+}
+
+.window-interior {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* --- Project Summary Typography Blocks --- */
+.project-header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.project-title {
+    font-size: 2rem;
+    line-height: 1.1;
+}
+
+.project-desc {
+    font-size: 1.1rem;
+    white-space: pre-wrap;
+}
+
+.section-divider {
+    border: none;
+    border-top: 4px solid var(--border-thick);
+}
+
+/* --- Core Buttons Adjustments --- */
+.submit-button.delete-action {
+    background-color: #ff6b6b;
+    color: #ffffff;
+    display: inline-block;
+    width: auto;
+}
+
+.submit-button.mini-action-btn {
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    margin-bottom: 0;
+    width: auto;
+    display: inline-block;
+}
+
+/* --- Multi-Column Workspace Matrix Flow --- */
+.workspace-split-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.workspace-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.column-header-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* --- Embedded Card Nodes --- */
+.cards-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.data-node-card {
+    background-color: #ffffff;
+    border: 3px solid var(--border-thick);
+    padding: 12px;
+    box-shadow: 4px 4px 0 0 var(--border-thick);
+}
+
+.data-node-card a {
+    color: var(--text-main);
+    text-decoration: none;
+}
+
+.data-node-card a:hover {
+    text-decoration: underline;
+}
+
+.card-excerpt {
+    margin: 6px 0;
+}
+
+.card-meta {
+    font-family: monospace;
+    color: #555555;
+}
+
+/* --- Checkboxes & Lists Frames --- */
+.checklist-frame {
+    background-color: #ffffff;
+    border: 3px solid var(--border-thick);
+    box-shadow: 4px 4px 0 0 var(--border-thick);
+}
+
+.checklist-title {
+    background-color: var(--border-thick);
+    color: #ffffff;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.interactive-checklist {
+    list-style: none;
+    padding: 0;
+}
+
+.checklist-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    border-bottom: 2px solid var(--border-thick);
+}
+
+.checklist-row:last-child {
+    border-bottom: none;
+}
+
+.task-native-checkbox {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--header-bg);
+    cursor: pointer;
+    margin-top: 2px;
+}
+
+.task-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.task-content a {
+    color: var(--text-main);
+    text-decoration: none;
+}
+
+.empty-state {
+    font-style: italic;
+    opacity: 0.7;
+}
+
+/* --- Media Queries: Responsive Flex Realignment --- */
+@media (min-width: 768px) {
+    .app-layout-container {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    /* Lock the global layout sidebar column constraints safely */
+    .app-layout-container > aside,
+    .app-layout-container > .sidebar,
+    .app-layout-container > nav {
+        width: 260px;
+        flex-shrink: 0;
+    }
+
+    /* Primary space engine allocations */
+    .main-content-area {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .window-interior {
+        padding: 20px;
+    }
+
+    .column-header-row {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .workspace-split-grid {
+        flex-direction: row;
+    }
+
+    .workspace-column {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .task-content {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+    }
+}
