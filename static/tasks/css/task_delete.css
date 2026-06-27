@@ -1,0 +1,40 @@
+.app-layout-container {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.main-content-area {
+    flex: 1;
+    min-width: 0;
+}
+
+.delete-window-modifier {
+    max-width: 550px;
+}
+
+.delete-content-padding {
+    padding: 15px;
+}
+
+.warning-callout-box {
+    border: 3px solid var(--border-thick);
+    background-color: #ffffff;
+    padding: 14px;
+    margin: 20px 0;
+    font-weight: bold;
+    letter-spacing: 0.02em;
+}
+
+.footer-action-return {
+    text-align: center;
+    margin-top: 15px;
+}
+
+@media (max-width: 768px) {
+    .app-layout-container {
+        flex-direction: column;
+    }
+}

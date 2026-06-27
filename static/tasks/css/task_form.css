@@ -1,0 +1,109 @@
+/* Sidebar layout alignment container */
+.app-layout-container {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.main-content-area {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Local wizard sizing restriction */
+.task-window-modifier {
+    max-width: 600px;
+}
+
+.form-header-spacing {
+    margin: 10px 0 20px 0;
+    font-size: 1.4rem;
+}
+
+/* Select element layout wrapping */
+.select-wrapper-styled {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+}
+
+.custom-select-element {
+    width: 100%;
+    padding: 14px 40px 14px 14px;
+    font-size: 1.2rem;
+    font-family: inherit;
+    font-weight: bold;
+    background-color: #ffffff;
+    color: #000000;
+    border: 3px solid var(--border-thick);
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    outline: none;
+}
+
+.custom-select-element:focus {
+    outline: 4px dashed var(--border-thick);
+    outline-offset: 4px;
+}
+
+.select-wrapper-styled::after {
+    content: "▼";
+    font-size: 0.8rem;
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--text-main);
+}
+
+/* Side-by-side native date pickers */
+.form-row-split-dates {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+}
+
+.split-field-item {
+    flex: 1;
+}
+
+/* Textarea wrapper using base form specs */
+.task-textarea-styled {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.2rem;
+    font-family: inherit;
+    background-color: #ffffff;
+    color: #000000;
+    border: 3px solid var(--border-thick);
+    outline: none;
+    resize: vertical;
+    min-height: 100px;
+}
+
+.task-textarea-styled:focus {
+    outline: 4px dashed var(--border-thick);
+    outline-offset: 4px;
+}
+
+.footer-cancel-row {
+    text-align: center;
+    margin-top: 15px;
+}
+
+/* Screen collapse breakpoint overrides */
+@media (max-width: 768px) {
+    .app-layout-container {
+        flex-direction: column;
+    }
+    .form-row-split-dates {
+        flex-direction: column;
+        gap: 0;
+    }
+}
