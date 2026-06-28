@@ -2,6 +2,7 @@
 
 <link rel="stylesheet" href="{% static 'partials/css/sidebar.css' %}">
 <script src="{% static 'partials/js/sidebar.js' %}" defer></script>
+<script src="{% static 'partials/js/sidebar_timer.js' %}" defer></script>
 
 <div class="mobile-system-window window-frame">
     <div class="window-titlebar">
@@ -31,8 +32,6 @@
             </button>
         </nav>
 
-        <hr class="separator">
-
         <nav class="view-links">
             <a href="{% url 'task-list' %}" class="submit-button link-btn-fix">▶ Task View</a>
             <a href="{% url 'note-list' %}" class="submit-button link-btn-fix">▶ Notes View</a>
@@ -56,6 +55,30 @@
                 <li class="empty-state">No active projects loaded.</li>
                 {% endfor %}
             </ul>
+        </div>
+
+        <hr class="separator">
+
+        <div class="timer-hardware-module">
+            <h3>Focus Monitor</h3>
+            <div class="timer-readout-row">
+                <button type="button" id="timer-dec-btn" class="timer-arrow-btn" aria-label="Decrease time">▼</button>
+                <div id="timer-clock-display" class="digital-readout-panel">25:00</div>
+                <button type="button" id="timer-inc-btn" class="timer-arrow-btn" aria-label="Increase time">▲</button>
+            </div>
+
+            <div class="timer-action-row">
+                <button type="button" id="timer-toggle-btn" class="submit-button mini-action-btn">START</button>
+                <button type="button" id="timer-reset-btn" class="submit-button mini-action-btn">RESET</button>
+            </div>
+
+            <div class="timer-presets-grid">
+                <button type="button" class="preset-macro-btn" data-work="25" data-break="5">25/5</button>
+                <button type="button" class="preset-macro-btn" data-work="50" data-break="10">50/10</button>
+            </div>
+            <div id="timer-status-indicator" class="timer-mode-label">
+                System Idle
+            </div>
         </div>
 
         <div class="user-settings-anchor">
