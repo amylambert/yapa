@@ -1,38 +1,51 @@
-.app-layout-container {
-    display: flex;
-    gap: 20px;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.main-content-area {
-    flex: 1;
-    min-width: 0;
-}
+/* =====================================================================
+   Documentation Form Workspace Configurations
+   ===================================================================== */
 
 .note-window-modifier {
     max-width: 650px;
+    margin: 10px auto 0 auto;
+}
+
+.modal-interior-padding {
+    padding: 14px;
 }
 
 .form-title-spacing {
     margin: 10px 0 25px 0;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
 }
 
+/* --- Form Input Component Extenders (Parity with global inputs) --- */
+.custom-select-element,
 .note-textarea-expandable {
-    width: 100%;
     padding: 14px;
     font-size: 1.2rem;
     font-family: inherit;
     background-color: #ffffff;
     color: #000000;
     border: 3px solid var(--border-thick);
+    width: 100%;
     outline: none;
+    box-sizing: border-box;
+}
+
+.note-textarea-expandable {
     resize: vertical;
     min-height: 180px;
 }
 
+/* --- Mobile First Split Component Rows System --- */
+.form-row-split-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* --- Universal Keyboard Control Focus Target Highlights --- */
+.custom-select-element:focus,
 .note-textarea-expandable:focus {
     outline: 4px dashed var(--border-thick);
     outline-offset: 4px;
@@ -40,11 +53,21 @@
 
 .text-centered-row {
     text-align: center;
-    margin-top: 15px;
+    margin-top: 20px;
+    margin-bottom: 10px;
 }
 
-@media (max-width: 768px) {
-    .app-layout-container {
-        flex-direction: column;
+/* =====================================================================
+   Responsive Side-by-Side Field Grid Realignment Breakpoints
+   ===================================================================== */
+
+@media (min-width: 576px) {
+    .form-row-split-dates {
+        flex-direction: row;
+        gap: 16px;
+    }
+
+    .form-row-split-dates .split-field-group {
+        flex: 1;
     }
 }

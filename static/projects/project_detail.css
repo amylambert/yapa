@@ -1,9 +1,24 @@
-/* --- Document Header Container Elements --- */
+/* =====================================================================
+   Shared Graphic Structural Framework
+   ===================================================================== */
+
+/* Combined to guarantee layout efficiency and prevent rule duplication */
+.project-meta-grid,
+.checklist-frame,
+.note-accordion-card {
+    background-color: #ffffff;
+    border: 3px solid var(--border-thick);
+    box-shadow: 4px 4px 0 0 var(--border-thick);
+}
+
 .header-actions-row {
     margin-top: 4px;
 }
 
-/* --- Action Links Styled as Secondary Retro Buttons --- */
+/* =====================================================================
+   Action Links & Context Button Modifiers
+   ===================================================================== */
+
 .action-button-link {
     background-color: #ffffff;
     color: var(--text-main);
@@ -19,7 +34,6 @@
 }
 
 .action-button-link:hover {
-    text-decoration: none;
     background-color: #fff4fe;
 }
 
@@ -28,7 +42,6 @@
     transform: translate(2px, 2px);
 }
 
-/* --- Context-Specific Compact Destructive Button Modifier --- */
 .submit-button.delete-action-btn {
     display: inline-block;
     width: auto;
@@ -36,8 +49,6 @@
     font-size: 0.9rem;
     background-color: #ff6b6b;
     color: #ffffff;
-
-    /* Explicit clearance layout margins */
     margin: 20px 0 25px 0;
 }
 
@@ -45,23 +56,21 @@
     background-color: #ff5252;
 }
 
-/* --- Navigation Focus Indicator Rings --- */
-.action-button-link:focus,
+/* Specific focus overrides for non-standard native layout nodes */
 .submit-button.delete-action-btn:focus {
     outline: 3px dashed var(--border-thick);
     outline-offset: 3px;
 }
 
-/* --- Project Metadata Panel Grid System --- */
+/* =====================================================================
+   Project Metadata Profile Grid
+   ===================================================================== */
+
 .project-meta-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
     gap: 12px;
-    background-color: #ffffff;
-    border: 3px solid var(--border-thick);
     padding: 12px;
-    box-sizing: border-box;
-    box-shadow: 4px 4px 0 0 var(--border-thick);
     margin: 8px 0;
 }
 
@@ -92,27 +101,15 @@
     text-transform: uppercase;
 }
 
-/* --- Notes & Tasks Lists Shared Panels --- */
-.workspace-split-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.note-card,
-.checklist-frame {
-    background-color: #ffffff;
-    border: 3px solid var(--border-thick);
-    padding: 14px;
-    box-shadow: 4px 4px 0 0 var(--border-thick);
-    margin-bottom: 15px;
-}
+/* =====================================================================
+   Tasks Checklist Layout
+   ===================================================================== */
 
 .checklist-title {
     background-color: var(--border-thick);
     color: var(--surface-bg);
     padding: 6px 12px;
-    margin: -14px -14px 12px -14px; /* Pulls header flush to card edges */
+    margin: -14px -14px 12px -14px;
     font-size: 0.9rem;
     text-transform: uppercase;
 }
@@ -134,19 +131,181 @@
     border-bottom: none;
 }
 
-/* --- Media Breakpoint Adjustment Normalizers --- */
+/* =====================================================================
+   State-Driven Accordion Notes Directory Trees
+   ===================================================================== */
+
+.notes-directory-tree {
+    width: 100%;
+}
+
+.note-toggle-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border: none;
+    padding: 12px 14px;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 1.05rem;
+    text-align: left;
+    cursor: pointer;
+    color: var(--text-main);
+    outline: none;
+}
+
+.note-toggle-trigger:hover {
+    background-color: #fff4fe;
+}
+
+.note-toggle-trigger:focus-visible {
+    outline: 3px dashed var(--border-thick);
+    outline-offset: -3px;
+}
+
+/* --- Retro Graphic Directory Direction Vectors --- */
+.directory-vector-arrow {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 8px solid var(--border-thick);
+    margin-right: 10px;
+    transform: rotate(0deg);
+    transition: transform 0.1s steps(2);
+}
+
+/* --- Core State Rule Hooks Toggled via JavaScript --- */
+
+.note-accordion-content {
+    display: none;
+    padding: 14px;
+    background-color: #ffffff;
+}
+
+.note-accordion-card.is-open .note-accordion-content {
+    display: block;
+}
+
+.note-accordion-card.is-open .directory-vector-arrow {
+    transform: rotate(90deg);
+}
+
+.note-accordion-card.is-open {
+    box-shadow: 4px 4px 0 0 var(--accent-shadow);
+}
+
+.note-accordion-card.is-open .note-toggle-trigger {
+    border-bottom: 3px solid var(--border-thick);
+    background-color: #fef0ff;
+}
+
+/* --- Internal Core Panel Elements --- */
+.sub-item-badge {
+    margin-left: auto;
+    font-family: monospace;
+    font-size: 0.8rem;
+    background-color: var(--border-thick);
+    color: #ffffff;
+    padding: 2px 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.card-excerpt {
+    font-size: 0.95rem;
+    color: #333333;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.note-card-actions {
+    margin-bottom: 14px;
+}
+
+.action-button-link.mini-link {
+    font-size: 0.75rem;
+    padding: 5px 10px;
+    border-width: 2px;
+}
+
+/* --- Nested Sub-Document Directory Dropdown Trays --- */
+.sub-notes-tray {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 3px dashed var(--border-thick);
+}
+
+.tray-title {
+    font-family: monospace;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: #555555;
+    margin-bottom: 8px;
+    letter-spacing: 0.03em;
+}
+
+.sub-notes-list {
+    list-style: none;
+    padding: 0;
+}
+
+.sub-note-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px;
+    border: 2px solid transparent;
+    background-color: #fcf6ff;
+    margin-bottom: 4px;
+}
+
+.sub-note-row:hover {
+    border-color: var(--border-thick);
+    background-color: var(--surface-bg);
+}
+
+.sub-note-link {
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.sub-note-link:hover {
+    text-decoration: underline;
+}
+
+.sub-note-date {
+    font-family: monospace;
+    color: #666666;
+    font-size: 0.8rem;
+}
+
+/* =====================================================================
+   Split Layout Adaptive Breakpoint Rules
+   ===================================================================== */
+
+.project-split-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
 @media (min-width: 768px) {
     .project-meta-grid {
         padding: 16px;
         gap: 20px;
     }
 
-    .workspace-split-grid {
+    .project-split-grid {
         flex-direction: row;
         gap: 30px;
     }
 
-    .workspace-split-grid > * {
+    .project-split-grid > * {
         flex: 1;
         min-width: 0;
     }

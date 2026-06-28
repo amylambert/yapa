@@ -26,7 +26,9 @@ class Note(ComponentBlueprint):
     def clean(self):
         """Ensure note scheduling matches macro project parameters."""
         super().clean()
-        if not self.project:
+        
+        # Check DB column identifier directly to avoid descriptor crashes
+        if not self.project_id:
             return
 
         proj = self.project

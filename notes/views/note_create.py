@@ -14,16 +14,21 @@ class NoteCreateView(LoginRequiredMixin, generic.CreateView):
     fields = ["name", "description", "priority", "start_date", "end_date"]
     template_name = "notes/note_form.html"
 
-    def form_valid(self, form):
-        """Bind relational objects and process custom metadata tags."""
+    def get_form(self, form_class=None):
+        """Pre-populate relational objects before validation occurs."""
+        form = super().get_form(form_class)
+        
         project_instance = get_object_or_404(
             Project,
             pk=self.kwargs["project_id"],
             owner=self.request.user,
         )
+        
+        # Inject relational fields ahead of form.is_valid() loops
         form.instance.project = project_instance
         form.instance.owner = self.request.user
 
+        # Safely assign optional hierarchical structures
         parent_id = self.request.GET.get("parent")
         if parent_id:
             form.instance.parent = get_object_or_404(
@@ -36,6 +41,10 @@ class NoteCreateView(LoginRequiredMixin, generic.CreateView):
                 Task, pk=task_parent_id, project=project_instance
             )
 
+        return form
+
+    def form_valid(self, form):
+        """Process metadata tags after successful validation."""
         response = super().form_valid(form)
 
         # Collect custom tag inputs straight from POST stream

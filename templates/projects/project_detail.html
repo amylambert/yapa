@@ -8,7 +8,7 @@
 
 <div class="window-frame">
   <div class="window-titlebar">
-    <span>Project Workspace Engine</span>
+    <span>Project Details Engine</span>
     <div class="titlebar-controls">
       <button type="button" class="control-button minimize">_</button>
       <button type="button" class="control-button">⬖</button>
@@ -83,9 +83,9 @@
 
     <hr class="section-divider" />
 
-    <div class="workspace-split-grid">
+    <div class="project-split-grid">
 
-      <section class="workspace-column">
+      <section class="project-column">
         <div class="column-header-row">
           <h2>Notes</h2>
           <a href="{% url 'note-create' project.id %}" class="submit-button mini-action-btn">
@@ -94,19 +94,52 @@
         </div>
 
         {% if project.root_notes %}
-        <div class="cards-stack">
+        <div class="notes-directory-tree">
           {% for note in project.root_notes %}
-          <article class="data-node-card">
-            <h3>
-              <a href="{% url 'note-detail' note.id %}">{{ note.title }}</a>
-            </h3>
-            <p class="card-excerpt">
-              {{ note.content|truncatewords:30|linebreaksbr }}
-            </p>
-            <footer class="card-meta">
-              <small>Updated: {{ note.updated_at|date:"M d, Y" }}</small>
-            </footer>
-          </article>
+
+          <div class="note-accordion-card">
+            <button type="button" class="note-toggle-trigger" aria-expanded="false"
+              aria-controls="note-pane-{{ note.id }}">
+              <span class="directory-vector-arrow"></span>
+              <span class="note-title-text">{{ note.name }}</span>
+              <span class="sub-item-badge">
+                Nodes: {{ note.children.count }}
+              </span>
+            </button>
+
+            <div id="note-pane-{{ note.id }}" class="note-accordion-content" hidden>
+
+              <p class="card-excerpt">
+                {{ note.description|truncatewords:25|linebreaksbr }}
+              </p>
+
+              <div class="note-card-actions">
+                <a href="{% url 'note-detail' project.id note.id %}" class="action-button-link mini-link">
+                  Open Document Node
+                </a>
+              </div>
+
+              {% if note.children.all %}
+              <div class="sub-notes-tray">
+                <h4 class="tray-title">Sub-Layer Documentation</h4>
+                <ul class="sub-notes-list">
+                  {% for child in note.children.all %}
+                  <li class="sub-note-row">
+                    <a href="{% url 'note-detail' project.id child.id %}" class="sub-note-link">
+                      📂 {{ child.name }}
+                    </a>
+                    <small class="sub-note-date">
+                      {{ child.updated_at|date:"M d" }}
+                    </small>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+              {% endif %}
+
+            </div>
+          </div>
+
           {% endfor %}
         </div>
         {% else %}
@@ -114,7 +147,7 @@
         {% endif %}
       </section>
 
-      <section class="workspace-column">
+      <section class="project-column">
         <div class="column-header-row">
           <h2>Tasks</h2>
           <a href="{% url 'task-create' project.id %}" class="submit-button mini-action-btn">
@@ -129,7 +162,7 @@
             {% for task in project.root_tasks %}
             <li class="checklist-row">
               <input type="checkbox" class="status-toggle task-native-checkbox"
-                data-url="{% url 'task-inline-update' project.pk task.pk %}" data-csrf="{{ csrf_token }}"
+                data-url="{% url 'task-inline-update' project.pk task.pk %}" data-csrf="{{ csrf_token }}" 
                 {% if task.status == 'DONE' %}checked{% endif %} />
               <div class="task-content">
                 <a href="{% url 'task-detail' project.pk task.pk %}">
@@ -153,4 +186,5 @@
 </div>
 
 <script src="{% static 'global/js/inline_update.js' %}" defer></script>
+<script src="{% static 'projects/js/notes_tree.js' %}" defer></script>
 {% endblock %}
