@@ -1,21 +1,45 @@
-/* Local detail view configurations unique to task nodes */
+/* =====================================================================
+   Task Detail System - Local Component Overrides & Extensions
+   ===================================================================== */
 
-.detail-body-container {
+.window-interior {
     padding: 10px;
 }
 
-.breadcrumb-nav-links {
+.navigation-trail {
     display: flex;
-    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
     margin-bottom: 20px;
+}
+
+.editor-tooltip {
+    font-size: 0.85rem;
+    color: #555555;
     font-weight: bold;
 }
 
+.project-header {
+    margin-bottom: 20px;
+}
+
+.project-title {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+.project-desc {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+
+/* --- Status Checkbox Row Layout --- */
 .task-title-alignment-row {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 22px;
+    gap: 14px;
+    margin-bottom: 12px;
 }
 
 .task-title-alignment-row input[type="checkbox"] {
@@ -25,31 +49,181 @@
     border: 3px solid var(--border-thick);
 }
 
-.section-block-spacing {
-    margin: 24px 0;
+/* --- Metadata Metric Dashboard Grid --- */
+.project-meta-grid {
+    background-color: #ffffff;
+    border: 3px solid var(--border-thick);
+    box-shadow: 4px 4px 0 0 var(--border-thick);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    padding: 12px;
+    margin: 16px 0 8px 0;
 }
 
-.dashed-section-divider {
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.meta-label {
+    font-family: monospace;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: #555555;
+    font-weight: bold;
+    letter-spacing: 0.03em;
+}
+
+.meta-value-field,
+.static-meta-value {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--text-main);
+}
+
+.meta-value-field.highlight-text {
+    color: #8e44ad;
+    text-transform: uppercase;
+}
+
+/* --- Navigation Links --- */
+.action-button-link {
+    background-color: #ffffff;
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    border: 2px solid var(--border-thick);
+    box-shadow: 2px 2px 0 0 var(--border-thick);
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.action-button-link:hover {
+    background-color: #fff4fe;
+}
+
+.action-button-link:active {
+    box-shadow: 0 0 0 0 var(--border-thick);
+    transform: translate(2px, 2px);
+}
+
+/* --- Global Button Scaling Overrides --- */
+.submit-button.delete-action-btn {
+    display: inline-block !important;
+    width: auto !important;
+    max-width: max-content;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    background-color: #ff6b6b;
+    color: #ffffff;
+    margin: 20px 0 25px 0;
+}
+
+.submit-button.delete-action-btn:hover {
+    background-color: #ff5252;
+}
+
+.submit-button.mini-action-btn {
+    display: inline-block !important;
+    width: auto !important;
+    max-width: max-content;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    margin: 0;
+    box-shadow: 2px 2px 0 0 var(--border-thick);
+}
+
+.submit-button.mini-action-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 0 var(--border-thick);
+}
+
+.section-divider {
     border: none;
     border-top: 3px dashed var(--border-thick);
-    margin: 20px 0;
+    margin: 25px 0;
 }
 
-.subtask-list {
-    padding-left: 20px;
+/* --- Dual-Column Execution Cards --- */
+.column-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
 }
 
-.metadata-layout-grid {
+.sub-notes-tray {
+    width: 100%;
+}
+
+.sub-notes-list {
     list-style: none;
     padding: 0;
 }
 
-.metadata-layout-grid li {
-    margin-bottom: 12px;
-    font-size: 1.1rem;
+.sub-note-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border: 2px solid var(--border-thick);
+    background-color: #ffffff;
+    margin-bottom: 8px;
+    box-shadow: 2px 2px 0 0 var(--border-thick);
 }
 
-.danger-action-link {
-    color: #ff3333;
+.sub-note-row:hover {
+    background-color: var(--surface-bg);
+}
+
+.sub-note-link {
+    font-size: 0.95rem;
+    color: var(--text-main);
+    text-decoration: none;
     font-weight: bold;
+}
+
+.sub-note-link:hover {
+    text-decoration: underline;
+}
+
+.sub-note-date {
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: #555555;
+}
+
+.empty-state {
+    font-size: 0.9rem;
+    color: #555555;
+    font-style: italic;
+}
+
+/* --- Adaptive Flex Resizing Engine --- */
+.project-split-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+@media (min-width: 768px) {
+    .project-meta-grid {
+        padding: 16px;
+        gap: 20px;
+    }
+
+    .project-split-grid {
+        flex-direction: row;
+        gap: 30px;
+    }
+
+    .project-split-grid > * {
+        flex: 1;
+        min-width: 0;
+    }
 }

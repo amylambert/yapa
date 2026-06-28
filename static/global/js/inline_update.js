@@ -1,14 +1,12 @@
 /**
  * Unified Inline Update Engine
  *
- * Handles double-click event streams to transform plain text elements into
- * actionable form elements, processing database changes asynchronously.
+ * Handles double-click event streams to transform elements into
+ * form components, processing database modifications asynchronously.
  */
 
-// Initialize event listeners across all designated editable text zones
 document.querySelectorAll(".editable").forEach((element) => {
     element.addEventListener("dblclick", function () {
-        // Halt processing if an input field is already actively rendered
         if (this.querySelector("input, textarea, select")) return;
 
         const currentText = this.innerText.trim();
@@ -71,9 +69,14 @@ function createInputElement(type, text, el) {
     } else {
         input = document.createElement("input");
         input.type = type;
+
+        // Enforce integer constraints for numeric model data
+        if (type === "number") {
+            input.min = "0";
+            input.step = "1";
+        }
     }
 
-    // Clean out default template display placeholders safely
     const isFallback = text.startsWith("No ") || text.includes("Empty");
     input.value = isFallback ? "" : text.replace(" ", "T");
     return input;
@@ -90,14 +93,19 @@ function createInputElement(type, text, el) {
  * @param {string} token - CSRF structural protection value.
  */
 function sendUpdate(el, input, oldText, field, url, token) {
-    const newValue = input.value.trim();
+    let newValue = input.value.trim();
+
+    // Fallback to "0" for numeric fields to prevent backend clean crashes
+    if (input.type === "number" && newValue === "") {
+        newValue = "0";
+    }
+
     let display = newValue;
 
     if (input.tagName === "SELECT") {
         display = input.options[input.selectedIndex].text;
     }
 
-    // Stop execution if no content was changed or added
     if (newValue === "" || display === oldText) {
         el.textContent = oldText;
         return;
@@ -124,7 +132,6 @@ function sendUpdate(el, input, oldText, field, url, token) {
         });
 }
 
-// Global contextual confirmation dialog for structural delete actions
 document.addEventListener("DOMContentLoaded", () => {
     const deleteForm = document.getElementById("secure-delete-form");
     if (deleteForm) {
