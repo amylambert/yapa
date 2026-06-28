@@ -1,29 +1,29 @@
 /* =====================================================================
-   Project Destruction View Space Alignments
+   Note Destruction View Space Alignments (Matches style of target layout)
    ===================================================================== */
 
-.delete-workspace-body {
+.destructive-modal-padding {
     padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
-.delete-workspace-body h2 {
+.destructive-modal-padding h2 {
     font-size: 1.4rem;
     text-transform: uppercase;
     color: var(--text-main);
     letter-spacing: 0.02em;
 }
 
-.warning-prompt {
+.destructive-modal-padding > p {
     font-size: 1.1rem;
     line-height: 1.4;
     color: var(--text-main);
 }
 
-/* High visibility retro warn module */
-.retro-alert-box {
+/* Styled to match red dashed warning configuration in image_245d1c.png */
+.warning-callout-panel {
     background-color: #ffffff;
     border: 3px dashed #ff5252;
     padding: 14px;
@@ -31,32 +31,39 @@
     color: #e64949;
     font-family: monospace;
     line-height: 1.4;
+    margin: 0;
 }
 
-.delete-actions-container {
+.actions-flex-container {
     display: flex;
     flex-direction: column;
     gap: 12px;
     margin-top: 10px;
 }
 
-/* Local flavor modifier for the global structural action token */
-.submit-button.destructive-confirm {
+/* Local flavor modifier mapping onto your global structural action token */
+.submit-button.custom-delete-btn {
     background-color: #ff6b6b;
     color: #ffffff;
     margin-bottom: 0;
 }
 
-.submit-button.destructive-confirm:hover {
+.submit-button.custom-delete-btn:hover {
     background-color: #ff5252;
 }
 
-.submit-button.destructive-confirm:active {
+.submit-button.custom-delete-btn:active {
     background-color: #e64949;
 }
 
-/* Minimal escape route tracking link */
-.cancel-back-link {
+.cancel-center-link {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cancel-center-link .navigation-link {
     font-weight: bold;
     color: var(--text-main);
     text-transform: uppercase;
@@ -64,22 +71,23 @@
     text-align: center;
     text-decoration: none;
     padding: 12px;
+    white-space: nowrap;
 }
 
-.cancel-back-link:hover {
+.cancel-center-link .navigation-link:hover {
     text-decoration: underline;
 }
 
 /* =====================================================================
-   Viewport Distribution Matrix Adaptations
+   Responsive Viewport Distribution Realignment Matrix
    ===================================================================== */
 
 @media (min-width: 768px) {
-    .delete-workspace-body {
+    .destructive-modal-padding {
         padding: 24px;
     }
 
-    .delete-actions-container {
+    .actions-flex-container {
         flex-direction: row;
         align-items: center;
         gap: 24px;
@@ -89,7 +97,7 @@
         flex: 1;
     }
 
-    .cancel-back-link {
+    .cancel-center-link .navigation-link {
         padding: 0 10px;
     }
 }

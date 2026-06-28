@@ -1,16 +1,8 @@
-.app-layout-container {
-    display: flex;
-    gap: 20px;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-}
+/* =====================================================================
+   Note Deletion Engine - Local Form Modifiers & Window Bounding Box
+   ===================================================================== */
 
-.main-content-area {
-    flex: 1;
-    min-width: 0;
-}
-
+/* Constrains confirmation window width inside the main grid canvas */
 .window-width-bound {
     max-width: 540px;
 }
@@ -19,6 +11,7 @@
     padding: 16px;
 }
 
+/* Distinct localized retro callout component layout elements */
 .warning-callout-panel {
     border: 3px solid var(--border-thick);
     background-color: #ffffff;
@@ -31,10 +24,4 @@
 .cancel-center-link {
     text-align: center;
     margin-top: 15px;
-}
-
-@media (max-width: 768px) {
-    .app-layout-container {
-        flex-direction: column;
-    }
 }

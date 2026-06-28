@@ -90,12 +90,9 @@
             </div>
 
             <div class="header-actions-row">
-                <form id="secure-delete-form" action="{% url 'note-delete' note.project.id note.id %}" method="POST">
-                    {% csrf_token %}
-                    <button type="submit" class="submit-button delete-action-btn">
-                        🗑️ Delete This Note
-                    </button>
-                </form>
+                <a href="{% url 'note-delete' note.project.id note.id %}" class="submit-button delete-action-btn">
+                    🗑️ Delete This Note
+                </a>
             </div>
         </header>
 

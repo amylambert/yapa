@@ -4,43 +4,48 @@
 {% block title %}Delete Document - YAPA{% endblock %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/note_delete.css' %}" />
+<link rel="stylesheet" href="{% static 'notes/note_delete.css' %}" />
 
-<div class="app-layout-container">
-    {% include 'partials/_sidebar.html' %}
+<div class="window-frame">
 
-    <main class="main-content-area">
-        <div class="window-frame window-width-bound">
-            <div class="window-titlebar">
-                <span class="titlebar-text">Document Destruction Terminal</span>
-                <div class="titlebar-controls">
-                    <button type="button" class="control-button minimize">_</button>
-                    <button type="button" class="control-button">❑</button>
-                    <a href="{% url 'note-detail' note.project.id note.id %}" class="control-button">×</a>
-                </div>
-            </div>
-
-            <div class="destructive-modal-padding">
-                <h2>Delete Note</h2>
-                <p>Are you sure you want to completely erase <strong>{{ note.title }}</strong>?</p>
-
-                <div class="warning-callout-panel">
-                    Warning: This operations is fully terminal. Any child notes nested below this document structural
-                    node will be broken or purged.
-                </div>
-
-                <form method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="submit-button">Yes, Wipe Document Node</button>
-                </form>
-
-                <p class="cancel-center-link">
-                    <a href="{% url 'note-detail' note.project.id note.id %}" class="navigation-link">
-                        Abort Action
-                    </a>
-                </p>
-            </div>
+    <div class="window-titlebar">
+        <span class="titlebar-text">System Core - Critical Request</span>
+        <div class="titlebar-controls">
+            <button type="button" class="control-button minimize">_</button>
+            <button type="button" class="control-button">⬖</button>
+            <a href="{% url 'note-detail' note.project.id note.id %}" class="control-button">×</a>
         </div>
-    </main>
+    </div>
+
+    <div class="destructive-modal-padding">
+        <h2>Delete Note</h2>
+        <p>
+            Are you sure you want to permanently execute deletion sequence for
+            <strong>{{ note.name }}</strong>?
+        </p>
+
+        <div class="warning-callout-panel">
+            WARNING: This action is absolute and permanent. Confirming this
+            request will purge all nested notes and tracking tasks from the
+            register.
+        </div>
+
+        <!-- Layout container to handle responsive alignment of triggers -->
+        <div class="actions-flex-container">
+            <form method="post" class="destruction-form">
+                {% csrf_token %}
+                <button type="submit" class="submit-button custom-delete-btn">
+                    Yes, Wipe Document Node
+                </button>
+            </form>
+
+            <p class="cancel-center-link">
+                <a href="{% url 'note-detail' note.project.id note.id %}" class="navigation-link">
+                    Abort Action
+                </a>
+            </p>
+        </div>
+    </div>
+
 </div>
 {% endblock %}
