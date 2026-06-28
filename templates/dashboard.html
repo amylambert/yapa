@@ -31,13 +31,22 @@
                 </div>
             </section>
 
-            <section class="dashboard-module pinned-module">
-                <h2>Pinned Objects</h2>
+            <section class="dashboard-module notes-module">
+                <h2>Latest Notes</h2>
                 <ul class="item-list">
-                    {% for item in pinned_items %}
-                    <li class="list-item">{{ item.title }}</li>
+                    {% for note in latest_notes %}
+                    <li class="list-item">
+                        <span class="note-title">
+                            <a href="{% url 'note-detail' note.project.id note.id %}">
+                                {{ note.name }}
+                            </a>
+                        </span>
+                        <span class="task-date">
+                            {{ note.project.name|default:"Global Node" }}
+                        </span>
+                    </li>
                     {% empty %}
-                    <li class="empty-state">No pinned items found.</li>
+                    <li class="empty-state">No recent notes found.</li>
                     {% endfor %}
                 </ul>
             </section>

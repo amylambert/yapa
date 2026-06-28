@@ -8,9 +8,12 @@ from .tag import Tag
 class Note(ComponentBlueprint):
     """Represents an atomic document supporting hierarchical nesting."""
 
+    # Allowed null and blank states to support standalone global notes
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
         related_name="notes",
     )
     parent = models.ForeignKey(
