@@ -26,4 +26,15 @@ urlpatterns = [
         views.TaskDeleteView.as_view(),
         name="task-delete",
     ),
+    path("tasks/", views.TaskListView.as_view(), name="task-list"),
+    path(
+        "tasks/<int:pk>/",
+        views.TaskDetailView.as_view(),
+        name="global-task-detail",
+    ),
+    path(
+    "tasks/<int:pk>/delete/",
+    views.TaskDeleteView.as_view(),
+    name="global-task-delete",
+),
 ]

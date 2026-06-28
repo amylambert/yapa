@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tasks Registry - YAPA{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'lists/css/list_views.css' %}">
+
+<div class="window-frame">
+    <div class="window-titlebar">
+        <span class="titlebar-text">SYS_TRACK: GLOBAL_TASKS</span>
+    </div>
+
+    <div class="list-wrapper">
+        {% for task in tasks %}
+        <div class="list-item-card">
+            <div>
+                <span class="priority-badge badge-{{ task.priority|lower }}">
+                    [{{ task.priority }}]
+                </span>
+                {% if task.project %}
+                <a href="{% url 'task-detail' task.project.id task.id %}">
+                    {{ task.name }}
+                </a>
+                {% else %}
+                <a href="{% url 'global-task-detail' task.id %}">
+                    {{ task.name }}
+                </a>
+                {% endif %}
+            </div>
+            <div class="item-meta-line">
+                DIR: {{ task.project.name|default:"GLOBAL" }} |
+                DEADLINE: {{ task.end_date|date:"Y-m-d"|default:"NONE" }}
+            </div>
+        </div>
+        {% empty %}
+        <p class="empty-log-state">NO ACTIVE TASK STRINGS DETECTED.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

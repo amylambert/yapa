@@ -1,7 +1,8 @@
 # config/urls.py
-from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import RedirectView
+from notes.views import NoteCreateView
+from tasks.views import TaskCreateView
 
 urlpatterns = [
     path(
@@ -16,4 +17,14 @@ urlpatterns = [
     path("", include("projects.urls")),
     path("", include("tasks.urls")),
     path("", include("notes.urls")),
+    path(
+        "tasks/create/", 
+        TaskCreateView.as_view(), 
+        name="global-task-create"
+    ),
+    path(
+        "notes/create/", 
+        NoteCreateView.as_view(), 
+        name="global-note-create"
+    ),
 ]

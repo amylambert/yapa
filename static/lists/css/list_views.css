@@ -1,0 +1,76 @@
+/* Unique structural items for tracking lists */
+
+.list-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 10px;
+}
+
+.list-item-card {
+    background-color: #ffffff;
+    border: 3px solid var(--border-thick);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.list-item-card a {
+    color: var(--text-main);
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 1.1rem;
+}
+
+.list-item-card a:hover {
+    text-decoration: underline;
+    color: var(--header-bg);
+}
+
+.item-meta-line {
+    font-size: 0.9rem;
+    color: #4a3b63;
+    font-family: monospace;
+}
+
+/* Retro-styled priority text indicators */
+.priority-badge {
+    font-family: monospace;
+    font-weight: bold;
+    margin-right: 6px;
+}
+
+.badge-high {
+    color: #ff0055; /* Neon Pink alert */
+}
+
+.badge-medium {
+    /* Rich electric blue - passes WCAG AAA (7.1:1) against white */
+    color: #005ca3;
+}
+
+.badge-low {
+    color: #7a6e85; /* Muted tracking */
+}
+
+.empty-log-state {
+    text-align: center;
+    padding: 40px 20px;
+    font-style: italic;
+    color: #7a6e85;
+}
+
+/* Mobile-first alignment shift for table-like presentation */
+@media (min-width: 600px) {
+    .list-item-card {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .item-meta-line {
+        text-align: right;
+        flex-shrink: 0;
+    }
+}

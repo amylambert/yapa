@@ -34,8 +34,8 @@
         <hr class="separator">
 
         <nav class="view-links">
-            <a href="#" class="submit-button link-btn-fix">▶ Task View</a>
-            <a href="#" class="submit-button link-btn-fix">▶ Notes View</a>
+            <a href="{% url 'task-list' %}" class="submit-button link-btn-fix">▶ Task View</a>
+            <a href="{% url 'note-list' %}" class="submit-button link-btn-fix">▶ Notes View</a>
         </nav>
 
         <hr class="separator">
@@ -80,8 +80,13 @@
         <div class="modal-body">
             <p class="modal-instruction">SELECT CREATION TARGET DIRECTORY:</p>
             <div class="modal-actions-grid">
-                <button type="button" class="submit-button link-btn-fix">☑ TASK</button>
-                <button type="button" class="submit-button link-btn-fix">🖹 NOTE</button>
+                <a href="{% url 'global-task-create' %}" class="submit-button link-btn-fix">
+                    ☑ TASK
+                </a>
+
+                <a href="{% url 'global-note-create' %}" class="submit-button link-btn-fix">
+                    🖹 NOTE
+                </a>
 
                 <a href="{% url 'project-create' %}" class="submit-button link-btn-fix">
                     ⬡ PROJECT

@@ -7,13 +7,16 @@
 <link rel="stylesheet" href="{% static 'notes/note_delete.css' %}" />
 
 <div class="window-frame">
-
     <div class="window-titlebar">
         <span class="titlebar-text">System Core - Critical Request</span>
         <div class="titlebar-controls">
             <button type="button" class="control-button minimize">_</button>
             <button type="button" class="control-button">⬖</button>
+            {% if note.project %}
             <a href="{% url 'note-detail' note.project.id note.id %}" class="control-button">×</a>
+            {% else %}
+            <a href="{% url 'global-note-detail' note.id %}" class="control-button">×</a>
+            {% endif %}
         </div>
     </div>
 
@@ -30,7 +33,6 @@
             register.
         </div>
 
-        <!-- Layout container to handle responsive alignment of triggers -->
         <div class="actions-flex-container">
             <form method="post" class="destruction-form">
                 {% csrf_token %}
@@ -40,12 +42,17 @@
             </form>
 
             <p class="cancel-center-link">
+                {% if note.project %}
                 <a href="{% url 'note-detail' note.project.id note.id %}" class="navigation-link">
                     Abort Action
                 </a>
+                {% else %}
+                <a href="{% url 'global-note-detail' note.id %}" class="navigation-link">
+                    Abort Action
+                </a>
+                {% endif %}
             </p>
         </div>
     </div>
-
 </div>
 {% endblock %}

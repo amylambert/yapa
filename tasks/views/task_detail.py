@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.views import generic
 from ..models import Task
 
@@ -11,8 +12,11 @@ class TaskDetailView(LoginRequiredMixin, generic.DetailView):
     context_object_name = "task"
 
     def get_queryset(self):
-        """Ensure users can only view tasks inside their owned projects."""
-        return Task.objects.filter(project__owner=self.request.user)
+        """Ensure users can view tasks they own or inside owned projects."""
+        return Task.objects.filter(
+            Q(owner=self.request.user) | 
+            Q(project__owner=self.request.user)
+        ).distinct()
 
     def get_context_data(self, **kwargs):
         """Inject sub-tasks and separate them from parent-level nodes."""

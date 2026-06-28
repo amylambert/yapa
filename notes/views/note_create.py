@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
-from django.views import generic
 from django.urls import reverse
+from django.views import generic
 from projects.models import Project
 from tasks.models import Task
 from ..models import Note, Tag
@@ -17,38 +17,36 @@ class NoteCreateView(LoginRequiredMixin, generic.CreateView):
     def get_form(self, form_class=None):
         """Pre-populate relational objects before validation occurs."""
         form = super().get_form(form_class)
-        
-        project_instance = get_object_or_404(
-            Project,
-            pk=self.kwargs["project_id"],
-            owner=self.request.user,
-        )
-        
-        # Inject relational fields ahead of form.is_valid() loops
-        form.instance.project = project_instance
         form.instance.owner = self.request.user
+        project_id = self.kwargs.get("project_id")
 
-        # Safely assign optional hierarchical structures
-        parent_id = self.request.GET.get("parent")
-        if parent_id:
-            form.instance.parent = get_object_or_404(
-                Note, pk=parent_id, project=project_instance
+        if project_id:
+            project_instance = get_object_or_404(
+                Project,
+                pk=project_id,
+                owner=self.request.user,
             )
+            form.instance.project = project_instance
 
-        task_parent_id = self.request.GET.get("task_parent")
-        if task_parent_id:
-            form.instance.related_task = get_object_or_404(
-                Task, pk=task_parent_id, project=project_instance
-            )
+            parent_id = self.request.GET.get("parent")
+            if parent_id:
+                form.instance.parent = get_object_or_404(
+                    Note, pk=parent_id, project=project_instance
+                )
+
+            task_parent_id = self.request.GET.get("task_parent")
+            if task_parent_id:
+                form.instance.related_task = get_object_or_404(
+                    Task, pk=task_parent_id, project=project_instance
+                )
 
         return form
 
     def form_valid(self, form):
         """Process metadata tags after successful validation."""
         response = super().form_valid(form)
-
-        # Collect custom tag inputs straight from POST stream
         tag_data = self.request.POST.get("custom_tags", "")
+        
         if tag_data:
             tag_names = [
                 t.strip().lower()
@@ -65,13 +63,18 @@ class NoteCreateView(LoginRequiredMixin, generic.CreateView):
 
     def get_success_url(self):
         """Redirect back to the correct macro structural context."""
-        project_id = self.kwargs["project_id"]
-        
+        project_id = self.kwargs.get("project_id")
+        if not project_id:
+            return reverse("core:dashboard")
+
         task_parent_id = self.request.GET.get("task_parent")
         if task_parent_id:
             return reverse(
                 "task-detail",
-                kwargs={"project_pk": project_id, "pk": task_parent_id},
+                kwargs={
+                    "project_pk": project_id, 
+                    "pk": task_parent_id
+                },
             )
 
         parent_id = self.request.GET.get("parent")

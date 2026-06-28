@@ -14,26 +14,47 @@
     <div class="titlebar-controls">
       <button type="button" class="control-button minimize">_</button>
       <button type="button" class="control-button">⬖</button>
+      {% if task.project %}
       <a href="{% url 'project-detail' task.project.pk %}" class="control-button close-link-anchor">×</a>
+      {% else %}
+      <a href="{% url 'task-list' %}" class="control-button close-link-anchor">×</a>
+      {% endif %}
     </div>
   </div>
 
   <div class="window-interior">
     <nav class="navigation-trail">
+      {% if task.project %}
       <a href="{% url 'project-detail' task.project.pk %}" class="action-button-link navigation-link">
         ← Back to Dashboard
       </a>
+      {% else %}
+      <a href="{% url 'task-list' %}" class="action-button-link navigation-link">
+        ← Back to Registry
+      </a>
+      {% endif %}
+
       {% if task.parent %}
+      {% if task.project %}
       <a href="{% url 'task-detail' task.project.pk task.parent.pk %}" class="action-button-link navigation-link">
         ↑ Up to Parent
       </a>
+      {% else %}
+      <a href="{% url 'global-task-detail' task.parent.pk %}" class="action-button-link navigation-link">
+        ↑ Up to Parent
+      </a>
+      {% endif %}
       {% endif %}
       <span class="editor-tooltip">
         💡 Double-click fields to edit!
       </span>
     </nav>
 
+    {% if task.project %}
     {% url 'task-inline-update' task.project.pk task.pk as main_url %}
+    {% else %}
+    {% url 'global-task-inline-update' task.pk as main_url %}
+    {% endif %}
 
     <header class="project-header">
       <div class="task-title-alignment-row">
@@ -53,9 +74,8 @@
       <div class="project-meta-grid">
         <div class="meta-item">
           <span class="meta-label">Status:</span>
-          <span class="editable meta-value-field main-task-status 
-                       highlight-text" data-field="status" data-type="select" data-csrf="{{ csrf_token }}"
-            data-url="{{ main_url }}" data-options='{"TODO":"To Do","DONE":"Done"}'>
+          <span class="editable meta-value-field main-task-status highlight-text" data-field="status" data-type="select"
+            data-csrf="{{ csrf_token }}" data-url="{{ main_url }}" data-options='{"TODO":"To Do","DONE":"Done"}'>
             {{ task.get_status_display }}
           </span>
         </div>
@@ -102,9 +122,15 @@
       </div>
 
       <div class="header-actions-row">
+        {% if task.project %}
         <a href="{% url 'task-delete' task.project.pk task.pk %}" class="submit-button delete-action-btn">
           🗑️ Delete This Task
         </a>
+        {% else %}
+        <a href="{% url 'global-task-delete' task.pk %}" class="submit-button delete-action-btn">
+          🗑️ Delete This Task
+        </a>
+        {% endif %}
       </div>
     </header>
 
@@ -114,9 +140,15 @@
       <section class="project-column">
         <div class="column-header-row">
           <h2>Sub-Tasks</h2>
+          {% if task.project %}
           <a href="{% url 'task-create' task.project.pk %}?parent={{ task.id }}" class="submit-button mini-action-btn">
             ✅ Nest Sub-Task
           </a>
+          {% else %}
+          <a href="{% url 'global-task-create' %}?parent={{ task.id }}" class="submit-button mini-action-btn">
+            ✅ Nest Sub-Task
+          </a>
+          {% endif %}
         </div>
 
         {% if subtasks %}
@@ -124,9 +156,15 @@
           <ul class="sub-notes-list">
             {% for sub in subtasks %}
             <li class="sub-note-row">
+              {% if task.project %}
               <a href="{% url 'task-detail' task.project.pk sub.id %}" class="sub-note-link">
                 📂 {{ sub.name }}
               </a>
+              {% else %}
+              <a href="{% url 'global-task-detail' sub.id %}" class="sub-note-link">
+                📂 {{ sub.name }}
+              </a>
+              {% endif %}
               <small class="sub-note-date">
                 ⏰ {{ sub.get_status_display }}
               </small>
@@ -144,9 +182,15 @@
       <section class="project-column">
         <div class="column-header-row">
           <h2>Linked Notes</h2>
+          {% if task.project %}
           <a href="{% url 'note-create' task.project.pk %}?task={{ task.id }}" class="submit-button mini-action-btn">
             📝 Add Note
           </a>
+          {% else %}
+          <a href="{% url 'global-note-create' %}?task={{ task.id }}" class="submit-button mini-action-btn">
+            📝 Add Note
+          </a>
+          {% endif %}
         </div>
 
         {% if subnotes %}
@@ -154,9 +198,15 @@
           <ul class="sub-notes-list">
             {% for note in subnotes %}
             <li class="sub-note-row">
+              {% if task.project %}
               <a href="{% url 'note-detail' task.project.pk note.id %}" class="sub-note-link">
                 📝 {{ note.name }}
               </a>
+              {% else %}
+              <a href="{% url 'global-note-detail' note.id %}" class="sub-note-link">
+                📝 {{ note.name }}
+              </a>
+              {% endif %}
               {% if note.end_date %}
               <small class="sub-note-date">
                 ⏰ {{ note.end_date|date:"M d" }}

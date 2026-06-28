@@ -12,7 +12,11 @@
     <div class="titlebar-controls">
       <button type="button" class="control-button minimize">_</button>
       <button type="button" class="control-button">⬖</button>
+      {% if task.project %}
       <a href="{% url 'task-detail' task.project.pk task.pk %}" class="control-button">×</a>
+      {% else %}
+      <a href="{% url 'global-task-detail' task.pk %}" class="control-button">×</a>
+      {% endif %}
     </div>
   </div>
 
@@ -38,9 +42,15 @@
       </form>
 
       <p class="cancel-center-link footer-action-return">
+        {% if task.project %}
         <a href="{% url 'task-detail' task.project.pk task.pk %}" class="navigation-link">
           Abort Action
         </a>
+        {% else %}
+        <a href="{% url 'global-task-detail' task.pk %}" class="navigation-link">
+          Abort Action
+        </a>
+        {% endif %}
       </p>
     </div>
   </div>
