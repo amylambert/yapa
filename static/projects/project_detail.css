@@ -2,9 +2,7 @@
    Shared Graphic Structural Framework
    ===================================================================== */
 
-/* Combined to guarantee layout efficiency and prevent rule duplication */
 .project-meta-grid,
-.checklist-frame,
 .note-accordion-card {
     background-color: #ffffff;
     border: 3px solid var(--border-thick);
@@ -56,7 +54,6 @@
     background-color: #ff5252;
 }
 
-/* Specific focus overrides for non-standard native layout nodes */
 .submit-button.delete-action-btn:focus {
     outline: 3px dashed var(--border-thick);
     outline-offset: 3px;
@@ -102,48 +99,32 @@
 }
 
 /* =====================================================================
-   Tasks Checklist Layout
+   State-Driven Accordion Document & Task Directory Trees
    ===================================================================== */
 
-.checklist-title {
-    background-color: var(--border-thick);
-    color: var(--surface-bg);
-    padding: 6px 12px;
-    margin: -14px -14px 12px -14px;
-    font-size: 0.9rem;
-    text-transform: uppercase;
+.directory-tree {
+    width: 100%;
 }
 
-.interactive-checklist {
-    list-style: none;
-    padding: 0;
-}
-
-.checklist-row {
+.accordion-header-row {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 8px 0;
-    border-bottom: 2px solid var(--border-thick);
+    background-color: #ffffff;
+    padding-left: 14px;
 }
 
-.checklist-row:last-child {
-    border-bottom: none;
-}
-
-/* =====================================================================
-   State-Driven Accordion Notes Directory Trees
-   ===================================================================== */
-
-.notes-directory-tree {
-    width: 100%;
+.accordion-header-row .task-native-checkbox {
+    margin: 0;
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
 }
 
 .note-toggle-trigger {
-    width: 100%;
+    flex: 1;
     display: flex;
     align-items: center;
-    background: #ffffff;
+    background: transparent;
     border: none;
     padding: 12px 14px;
     font-family: inherit;
@@ -164,7 +145,6 @@
     outline-offset: -3px;
 }
 
-/* --- Retro Graphic Directory Direction Vectors --- */
 .directory-vector-arrow {
     display: inline-block;
     width: 0;
@@ -176,8 +156,6 @@
     transform: rotate(0deg);
     transition: transform 0.1s steps(2);
 }
-
-/* --- Core State Rule Hooks Toggled via JavaScript --- */
 
 .note-accordion-content {
     display: none;
@@ -197,12 +175,11 @@
     box-shadow: 4px 4px 0 0 var(--accent-shadow);
 }
 
-.note-accordion-card.is-open .note-toggle-trigger {
+.note-accordion-card.is-open .accordion-header-row {
     border-bottom: 3px solid var(--border-thick);
     background-color: #fef0ff;
 }
 
-/* --- Internal Core Panel Elements --- */
 .sub-item-badge {
     margin-left: auto;
     font-family: monospace;
@@ -231,7 +208,10 @@
     border-width: 2px;
 }
 
-/* --- Nested Sub-Document Directory Dropdown Trays --- */
+/* =====================================================================
+   Nested Sub-Document Directory Dropdown Trays
+   ===================================================================== */
+
 .sub-notes-tray {
     margin-top: 14px;
     padding-top: 12px;

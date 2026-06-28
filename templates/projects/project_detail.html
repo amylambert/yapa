@@ -20,7 +20,7 @@
 
     <nav class="navigation-trail">
       <a href="{% url 'core:dashboard' %}" class="action-button-link navigation-link">
-        ← Back to Dashboard
+        &larr; Back to Dashboard
       </a>
       <span class="editor-tooltip">
         💡 Double-click fields to edit!
@@ -40,12 +40,15 @@
       </p>
 
       <div class="project-meta-grid">
-
         <div class="meta-item">
           <span class="meta-label">Priority:</span>
-          <span class="editable meta-value-field highlight-text" data-field="priority" data-type="select"
-            data-csrf="{{ csrf_token }}" data-url="{{ update_url }}">
-            {{ project.priority|default:"MEDIUM" }}
+          <span class="editable meta-value-field highlight-text" 
+                data-field="priority" 
+                data-type="select"
+                data-options='{"LOW":"Low","MEDIUM":"Medium","HIGH":"High"}'
+                data-csrf="{{ csrf_token }}" 
+                data-url="{{ update_url }}">
+            {{ project.get_priority_display|default:"Medium" }}
           </span>
         </div>
 
@@ -71,7 +74,6 @@
             {{ project.created_at|date:"M d, Y" }}
           </span>
         </div>
-
       </div>
 
       <div class="header-actions-row">
@@ -94,27 +96,27 @@
         </div>
 
         {% if project.root_notes %}
-        <div class="notes-directory-tree">
+        <div class="directory-tree">
           {% for note in project.root_notes %}
-
           <div class="note-accordion-card">
-            <button type="button" class="note-toggle-trigger" aria-expanded="false"
-              aria-controls="note-pane-{{ note.id }}">
-              <span class="directory-vector-arrow"></span>
-              <span class="note-title-text">{{ note.name }}</span>
-              <span class="sub-item-badge">
-                Nodes: {{ note.children.count }}
-              </span>
-            </button>
+            <div class="accordion-header-row">
+              <button type="button" class="note-toggle-trigger" aria-expanded="false"
+                aria-controls="note-pane-{{ note.pk }}">
+                <span class="directory-vector-arrow"></span>
+                <span class="note-title-text">{{ note.name }}</span>
+                <span class="sub-item-badge">
+                  Nodes: {{ note.children.count }}
+                </span>
+              </button>
+            </div>
 
-            <div id="note-pane-{{ note.id }}" class="note-accordion-content" hidden>
-
+            <div id="note-pane-{{ note.pk }}" class="note-accordion-content" hidden>
               <p class="card-excerpt">
                 {{ note.description|truncatewords:25|linebreaksbr }}
               </p>
 
               <div class="note-card-actions">
-                <a href="{% url 'note-detail' project.id note.id %}" class="action-button-link mini-link">
+                <a href="{% url 'note-detail' project.id note.pk %}" class="action-button-link mini-link">
                   Open Document Node
                 </a>
               </div>
@@ -125,7 +127,7 @@
                 <ul class="sub-notes-list">
                   {% for child in note.children.all %}
                   <li class="sub-note-row">
-                    <a href="{% url 'note-detail' project.id child.id %}" class="sub-note-link">
+                    <a href="{% url 'note-detail' project.id child.pk %}" class="sub-note-link">
                       📂 {{ child.name }}
                     </a>
                     <small class="sub-note-date">
@@ -136,10 +138,8 @@
                 </ul>
               </div>
               {% endif %}
-
             </div>
           </div>
-
           {% endfor %}
         </div>
         {% else %}
@@ -156,25 +156,63 @@
         </div>
 
         {% if project.root_tasks %}
-        <div class="checklist-frame">
-          <h3 class="checklist-title">Execution Targets</h3>
-          <ul class="interactive-checklist">
-            {% for task in project.root_tasks %}
-            <li class="checklist-row">
+        <div class="directory-tree">
+          {% for task in project.root_tasks %}
+          <div class="note-accordion-card">
+            <div class="accordion-header-row">
               <input type="checkbox" class="status-toggle task-native-checkbox"
                 data-url="{% url 'task-inline-update' project.pk task.pk %}" data-csrf="{{ csrf_token }}" 
                 {% if task.status == 'DONE' %}checked{% endif %} />
-              <div class="task-content">
-                <a href="{% url 'task-detail' project.pk task.pk %}">
-                  <strong>{{ task.title }}</strong>
-                </a>
-                <span class="status-badge">
-                  - {{ task.get_status_display }}
+
+              <button type="button" class="note-toggle-trigger" aria-expanded="false"
+                aria-controls="task-pane-{{ task.pk }}">
+                <span class="directory-vector-arrow"></span>
+                <span class="note-title-text">{{ task.name }}</span>
+                <span class="sub-item-badge">
+                  Tasks: {{ task.subtasks.count }}
                 </span>
+              </button>
+            </div>
+
+            <div id="task-pane-{{ task.pk }}" class="note-accordion-content" hidden>
+              <p class="card-excerpt">
+                <strong>Status:</strong>
+                <span class="live-status-text">
+                  {{ task.get_status_display }}
+                </span>
+                <br />
+                <strong>End Date:</strong>
+                {{ task.end_date|date:"Y-m-d"|default:"Not set" }}
+                <br /><br />
+                {{ task.description|truncatewords:25|linebreaksbr }}
+              </p>
+
+              <div class="note-card-actions">
+                <a href="{% url 'task-detail' project.pk task.pk %}" class="action-button-link mini-link">
+                  Open Task Control Panel
+                </a>
               </div>
-            </li>
-            {% endfor %}
-          </ul>
+
+              {% if task.subtasks.all %}
+              <div class="sub-notes-tray">
+                <h4 class="tray-title">Sub-Layer Tasks Track</h4>
+                <ul class="sub-notes-list">
+                  {% for child in task.subtasks.all %}
+                  <li class="sub-note-row">
+                    <a href="{% url 'task-detail' project.pk child.pk %}" class="sub-note-link">
+                      ✅ {{ child.name }}
+                    </a>
+                    <small class="sub-note-date">
+                      {{ child.get_status_display }}
+                    </small>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
         </div>
         {% else %}
         <p class="empty-state">No targets designated for this channel.</p>
@@ -186,5 +224,6 @@
 </div>
 
 <script src="{% static 'global/js/inline_update.js' %}" defer></script>
-<script src="{% static 'projects/js/notes_tree.js' %}" defer></script>
+<script src="{% static 'projects/js/directory_tree.js' %}" defer></script>
+<script src="{% static 'tasks/js/task_status_toggle.js' %}" defer></script>
 {% endblock %}

@@ -35,7 +35,7 @@
 
     <div class="task-title-alignment-row">
       <input type="checkbox" class="status-toggle main-task-toggle" data-url="{{ main_url }}"
-        data-csrf="{{ csrf_token }}" {% if task.status=='DONE' %}checked{% endif %} />
+        data-csrf="{{ csrf_token }}" {% if task.status == 'DONE' %}checked{% endif %} />
       <h1 class="editable" data-field="name" data-type="text" data-csrf="{{ csrf_token }}" data-url="{{ main_url }}">
         {{ task.name }}
       </h1>
