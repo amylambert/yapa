@@ -8,38 +8,41 @@
 
 <div class="window-frame delete-window-modifier">
   <div class="window-titlebar">
-    <span class="titlebar-text">Destruction Warning</span>
+    <span class="titlebar-text">System Core - Critical Request</span>
     <div class="titlebar-controls">
       <button type="button" class="control-button minimize">_</button>
-      <button type="button" class="control-button">❑</button>
-      <a href="{% url 'task-detail' task.project.pk task.id %}" class="control-button close-link-anchor">×</a>
+      <button type="button" class="control-button">⬖</button>
+      <a href="{% url 'task-detail' task.project.pk task.pk %}" class="control-button">×</a>
     </div>
   </div>
 
-  <div class="delete-content-padding">
+  <div class="destructive-modal-padding delete-content-padding">
     <h2>Delete Task</h2>
-    <p class="section-block-spacing">
-      Are you sure you want to delete
+    <p>
+      Are you sure you want to permanently execute deletion sequence for
       <strong>{{ task.name }}</strong>?
     </p>
 
-    <div class="warning-callout-box">
-      Warning: This action is permanent and will remove all
-      nested sub-tasks.
+    <div class="warning-callout-panel warning-callout-box">
+      WARNING: This action is absolute and permanent. Confirming this
+      request will purge this task node and all nested sub-tasks from the
+      register.
     </div>
 
-    <form method="post" class="interactive-form">
-      {% csrf_token %}
-      <button type="submit" class="submit-button">
-        Yes, Delete Permanently
-      </button>
-    </form>
+    <div class="actions-flex-container">
+      <form method="post" class="destruction-form">
+        {% csrf_token %}
+        <button type="submit" class="submit-button custom-delete-btn">
+          YES, WIPE TASK NODE
+        </button>
+      </form>
 
-    <p class="footer-action-return">
-      <a href="{% url 'task-detail' task.project.pk task.id %}" class="navigation-link">
-        Cancel and Go Back
-      </a>
-    </p>
+      <p class="cancel-center-link footer-action-return">
+        <a href="{% url 'task-detail' task.project.pk task.pk %}" class="navigation-link">
+          Abort Action
+        </a>
+      </p>
+    </div>
   </div>
 </div>
 {% endblock %}

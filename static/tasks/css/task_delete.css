@@ -1,24 +1,37 @@
 /* Local task confirmation layout rule extensions */
 
-.delete-window-modifier {
-    max-width: 550px;
-    margin: 0 auto;
-}
-
 .delete-content-padding {
-    padding: 15px;
+    padding: 20px;
 }
 
 .warning-callout-box {
-    border: 3px solid var(--border-thick);
+    border: 3px solid var(--border-thick, #000000);
     background-color: #ffffff;
     padding: 14px;
     margin: 20px 0;
     font-weight: bold;
     letter-spacing: 0.02em;
+    line-height: 1.4;
+}
+
+.actions-flex-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.destruction-form {
+    width: 100%;
+}
+
+.custom-delete-btn {
+    width: 100%;
+    text-transform: uppercase;
 }
 
 .footer-action-return {
     text-align: center;
-    margin-top: 15px;
+    margin: 5px 0 0 0;
 }
