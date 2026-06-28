@@ -4,84 +4,86 @@
 {% block title %}Add Task - YAPA{% endblock %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/task_form.css' %}" />
+<link rel="stylesheet" href="{% static 'tasks/css/task_form.css' %}" />
 
-<div class="app-layout-container">
-  {% include 'partials/_sidebar.html' %}
+<div class="window-frame task-window-modifier">
+  <div class="window-titlebar">
+    <span class="titlebar-text">Task Registration Wizard</span>
+    <div class="titlebar-controls">
+      <button type="button" class="control-button minimize">_</button>
+      <button type="button" class="control-button">❑</button>
+      <a href="javascript:history.back()" class="control-button close-link-anchor">×</a>
+    </div>
+  </div>
 
-  <main class="main-content-area">
-    <div class="window-frame task-window-modifier">
-      <div class="window-titlebar">
-        <span class="titlebar-text">Task Registration Wizard</span>
-        <div class="titlebar-controls">
-          <button type="button" class="control-button minimize">_</button>
-          <button type="button" class="control-button">❑</button>
-          <a href="javascript:history.back()" class="control-button close-link-anchor">×</a>
-        </div>
-      </div>
+  <div class="form-body-padding">
+    <h2 class="form-header-spacing">
+      Add Task to Project Framework
+    </h2>
 
-      <div class="modal-interior-padding">
-        <h2 class="form-header-spacing">Add Task to Project Framework</h2>
+    <form method="post" class="interactive-form">
+      {% csrf_token %}
 
-        <form method="post" class="interactive-form">
-          {% csrf_token %}
+      <p>
+        <label for="id_name">Task Name:</label>
+        <input type="text" name="name" id="id_name" required />
+      </p>
 
-          <p>
-            <label for="id_name">Task Name:</label>
-            <input type="text" name="name" id="id_name" required />
-          </p>
+      <p>
+        <label for="id_description">Description:</label>
+        <textarea name="description" id="id_description" rows="4" class="task-textarea-styled"></textarea>
+      </p>
 
-          <p>
-            <label for="id_description">Description:</label>
-            <textarea name="description" id="id_description" rows="4" class="task-textarea-styled"></textarea>
-          </p>
+      <p>
+        <label for="id_priority">Priority:</label>
+        <span class="select-wrapper-styled">
+          <select name="priority" id="id_priority" class="custom-select-element">
+            <option value="LOW">Low</option>
+            <option value="MEDIUM" selected>Medium</option>
+            <option value="HIGH">High</option>
+          </select>
+        </span>
+      </p>
 
-          <p>
-            <label for="id_priority">Priority:</label>
-            <span class="select-wrapper-styled">
-              <select name="priority" id="id_priority" class="custom-select-element">
-                <option value="LOW">Low</option>
-                <option value="MEDIUM" selected>Medium</option>
-                <option value="HIGH">High</option>
-              </select>
-            </span>
-          </p>
+      <p>
+        <label for="id_status">Status:</label>
+        <span class="select-wrapper-styled">
+          <select name="status" id="id_status" class="custom-select-element">
+            <option value="TODO" selected>To Do</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="DONE">Done</option>
+          </select>
+        </span>
+      </p>
 
-          <p>
-            <label for="id_status">Status:</label>
-            <span class="select-wrapper-styled">
-              <select name="status" id="id_status" class="custom-select-element">
-                <option value="TODO" selected>To Do</option>
-                <option value="IN_PROGRESS">In Progress</option>
-                <option value="DONE">Done</option>
-              </select>
-            </span>
-          </p>
-
-          <div class="form-row-split-dates">
-            <p class="split-field-item">
-              <label for="id_start_date">Start Date:</label>
-              <input type="date" name="start_date" id="id_start_date" />
-            </p>
-            <p class="split-field-item">
-              <label for="id_end_date">End Date:</label>
-              <input type="date" name="end_date" id="id_end_date" />
-            </p>
-          </div>
-
-          <p>
-            <label for="id_time_estimate">Estimated Time (Minutes):</label>
-            <input type="number" name="time_estimate" id="id_time_estimate" min="0" value="0" />
-          </p>
-
-          <button type="submit" class="submit-button">Create Task</button>
-        </form>
-
-        <p class="footer-cancel-row">
-          <a href="javascript:history.back()" class="navigation-link">Cancel and Return</a>
+      <div class="form-row-split-dates">
+        <p class="split-field-item">
+          <label for="id_start_date">Start Date:</label>
+          <input type="date" name="start_date" id="id_start_date" />
+        </p>
+        <p class="split-field-item">
+          <label for="id_end_date">End Date:</label>
+          <input type="date" name="end_date" id="id_end_date" />
         </p>
       </div>
-    </div>
-  </main>
+
+      <p>
+        <label for="id_time_estimate">
+          Estimated Time (Minutes):
+        </label>
+        <input type="number" name="time_estimate" id="id_time_estimate" min="0" value="0" />
+      </p>
+
+      <button type="submit" class="submit-button">
+        Create Task
+      </button>
+    </form>
+
+    <p class="footer-cancel-row">
+      <a href="javascript:history.back()" class="navigation-link">
+        Cancel and Return
+      </a>
+    </p>
+  </div>
 </div>
 {% endblock %}

@@ -1,18 +1,8 @@
-.app-layout-container {
-    display: flex;
-    gap: 20px;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.main-content-area {
-    flex: 1;
-    min-width: 0;
-}
+/* Local task confirmation layout rule extensions */
 
 .delete-window-modifier {
     max-width: 550px;
+    margin: 0 auto;
 }
 
 .delete-content-padding {
@@ -31,10 +21,4 @@
 .footer-action-return {
     text-align: center;
     margin-top: 15px;
-}
-
-@media (max-width: 768px) {
-    .app-layout-container {
-        flex-direction: column;
-    }
 }

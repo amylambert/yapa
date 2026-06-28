@@ -4,119 +4,124 @@
 {% block title %}{{ task.name }} - Task Control Panel{% endblock %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/task_detail.css' %}" />
+<link rel="stylesheet" href="{% static 'tasks/css/task_detail.css' %}" />
 
-<div class="app-layout-container">
-  {% include 'partials/_sidebar.html' %}
+<div class="window-frame">
+  <div class="window-titlebar">
+    <span class="titlebar-text">
+      Task Node Console [ID: {{ task.pk }}]
+    </span>
+    <div class="titlebar-controls">
+      <button type="button" class="control-button minimize">_</button>
+      <button type="button" class="control-button">❑</button>
+      <a href="{% url 'project-detail' task.project.pk %}" class="control-button close-link-anchor">×</a>
+    </div>
+  </div>
 
-  <main class="main-content-area">
-    <div class="window-frame">
-      <div class="window-titlebar">
-        <span class="titlebar-text">Task Node Console [ID: {{ task.pk }}]</span>
-        <div class="titlebar-controls">
-          <button type="button" class="control-button minimize">_</button>
-          <button type="button" class="control-button">❑</button>
-          <a href="{% url 'project-detail' task.project.pk %}" class="control-button close-link-anchor">×</a>
-        </div>
+  <div class="detail-body-container">
+    <div class="breadcrumb-nav-links">
+      <a href="{% url 'project-detail' task.project.pk %}" class="navigation-link">
+        &larr; Back to {{ task.project.name }}
+      </a>
+      {% if task.parent %}
+      <span>|</span>
+      <a href="{% url 'task-detail' task.project.pk task.parent.pk %}" class="navigation-link">
+        &uarr; Up to Parent: {{ task.parent.name }}
+      </a>
+      {% endif %}
+    </div>
+
+    {% url 'task-inline-update' task.project.pk task.pk as main_url %}
+
+    <div class="task-title-alignment-row">
+      <input type="checkbox" class="status-toggle main-task-toggle" data-url="{{ main_url }}"
+        data-csrf="{{ csrf_token }}" {% if task.status=='DONE' %}checked{% endif %} />
+      <h1 class="editable" data-field="name" data-type="text" data-csrf="{{ csrf_token }}" data-url="{{ main_url }}">
+        {{ task.name }}
+      </h1>
+    </div>
+
+    <div class="section-block-spacing">
+      <h3>Description (Double click to edit)</h3>
+      <p class="editable" data-field="description" data-type="textarea" data-csrf="{{ csrf_token }}"
+        data-url="{{ main_url }}">
+        {{ task.description|default:"No description." }}
+      </p>
+    </div>
+
+    <div class="section-block-spacing">
+      <h2>Contained Structural Sub-Items</h2>
+
+      <div class="section-block-spacing">
+        <a href="{% url 'task-create' task.project.pk %}?parent={{ task.id }}" class="navigation-link">
+          ✅ Create Sub-Task
+        </a>
       </div>
 
-      <div class="detail-body-container">
-        <div class="breadcrumb-nav-links">
-          <a href="{% url 'project-detail' task.project.pk %}" class="navigation-link">
-            &larr; Back to {{ task.project.name }}
-          </a>
-          {% if task.parent %}
-          <span>|</span>
-          <a href="{% url 'task-detail' task.project.pk task.parent.pk %}" class="navigation-link">
-            &uarr; Up to Parent: {{ task.parent.name }}
-          </a>
-          {% endif %}
-        </div>
-
-        {% url 'task-inline-update' task.project.pk task.pk as main_url %}
-
-        <div class="task-title-alignment-row">
-          {% if task.status == 'DONE' %}
-          <input type="checkbox" class="status-toggle main-task-toggle" data-url="{{ main_url }}"
-            data-csrf="{{ csrf_token }}" checked />
-          {% else %}
-          <input type="checkbox" class="status-toggle main-task-toggle" data-url="{{ main_url }}"
-            data-csrf="{{ csrf_token }}" />
-          {% endif %}
-          <h1 class="editable" data-field="name" data-type="text" data-csrf="{{ csrf_token }}"
-            data-url="{{ main_url }}">
-            {{ task.name }}
-          </h1>
-        </div>
-
-        <div class="section-block-spacing">
-          <h3>Description (Double click to edit)</h3>
-          <p class="editable" data-field="description" data-type="textarea" data-csrf="{{ csrf_token }}"
-            data-url="{{ main_url }}">
-            {{ task.description|default:"No description. Double click to add." }}
-          </p>
-        </div>
-
-        <div class="section-block-spacing">
-          <h2>Contained Structural Sub-Items</h2>
-
-          <div class="section-block-spacing">
-            <a href="{% url 'task-create' task.project.pk %}?parent={{ task.id }}" class="navigation-link">
-              ✅ Create Sub-Task
+      <div class="section-block-spacing">
+        <h3>Sub-Tasks Breakdown ({{ subtasks.count }})</h3>
+        {% if subtasks %}
+        <ul class="subtask-list">
+          {% for sub in subtasks %}
+          <li>
+            <strong>[{{ sub.get_status_display }}]</strong>
+            <a href="{% url 'task-detail' task.project.pk sub.id %}" class="navigation-link">
+              {{ sub.name }}
             </a>
-          </div>
-
-          <div class="section-block-spacing">
-            <h3>Sub-Tasks Breakdown ({{ subtasks.count }})</h3>
-            {% if subtasks %}
-            <ul>
-              {% for sub in subtasks %}
-              <li>
-                <strong>[{{ sub.get_status_display }}]</strong>
-                <a href="{% url 'task-detail' task.project.pk sub.id %}" class="navigation-link">{{ sub.name }}</a>
-              </li>
-              {% endfor %}
-            </ul>
-            {% else %}
-            <p><small>No nested sub-tasks track mapped.</small></p>
-            {% endif %}
-          </div>
-        </div>
-
-        <hr class="dashed-section-divider" />
-
-        <div class="section-block-spacing">
-          <h3>Metadata Profiles</h3>
-          <ul class="metadata-layout-grid">
-            <li>
-              <strong>Status:</strong>
-              <span class="editable main-task-status" data-field="status" data-type="select"
-                data-csrf="{{ csrf_token }}" data-url="{{ main_url }}"
-                data-options='{"TODO":"To Do","IN_PROGRESS":"In Progress","DONE":"Done"}'>
-                {{ task.get_status_display }}
-              </span>
-            </li>
-            <li>
-              <strong>Priority:</strong>
-              <span class="editable" data-field="priority" data-type="select" data-csrf="{{ csrf_token }}"
-                data-url="{{ main_url }}" data-options='{"LOW":"Low","MEDIUM":"Medium","HIGH":"High"}'>
-                {{ task.get_priority_display }}
-              </span>
-            </li>
-            <li><strong>Start Date:</strong> {{ task.start_date|default:"None" }}</li>
-            <li><strong>End Date:</strong> {{ task.end_date|default:"None" }}</li>
-            <li><strong>Estimated Tracking:</strong> {{ task.time_estimate }} mins</li>
-            <li><strong>Logged Execution Time:</strong> {{ task.time_spent }} mins</li>
-            <li class="section-block-spacing">
-              <a href="{% url 'task-delete' task.project.pk task.pk %}" class="navigation-link danger-action-link">
-                🗑️ Delete Task permanently
-              </a>
-            </li>
-          </ul>
-        </div>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p>
+          <small>No nested sub-tasks track mapped.</small>
+        </p>
+        {% endif %}
       </div>
     </div>
-  </main>
+
+    <hr class="dashed-section-divider" />
+
+    <div class="section-block-spacing">
+      <h3>Metadata Profiles</h3>
+      <ul class="metadata-layout-grid">
+        <li>
+          <strong>Status:</strong>
+          <span class="editable main-task-status" data-field="status" data-type="select" data-csrf="{{ csrf_token }}"
+            data-url="{{ main_url }}" data-options='{"TODO":"To Do","DONE":"Done"}'>
+            {{ task.get_status_display }}
+          </span>
+        </li>
+        <li>
+          <strong>Priority:</strong>
+          <span class="editable" data-field="priority" data-type="select" data-csrf="{{ csrf_token }}"
+            data-url="{{ main_url }}" data-options='{"LOW":"Low","HIGH":"High"}'>
+            {{ task.get_priority_display }}
+          </span>
+        </li>
+        <li>
+          <strong>Start Date:</strong>
+          {{ task.start_date|default:"None" }}
+        </li>
+        <li>
+          <strong>End Date:</strong>
+          {{ task.end_date|default:"None" }}
+        </li>
+        <li>
+          <strong>Estimated Tracking:</strong>
+          {{ task.time_estimate }} mins
+        </li>
+        <li>
+          <strong>Logged Execution Time:</strong>
+          {{ task.time_spent }} mins
+        </li>
+        <li class="section-block-spacing">
+          <a href="{% url 'task-delete' task.project.pk task.pk %}" class="navigation-link danger-action-link">
+            🗑️ Delete Task permanently
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
 </div>
 
 <script src="{% static 'js/inline_update.js' %}" defer></script>

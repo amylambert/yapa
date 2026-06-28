@@ -1,20 +1,12 @@
-/* Sidebar layout alignment container */
-.app-layout-container {
-    display: flex;
-    gap: 20px;
-    width: 100%;
-    max-width: 1200px;
+/* Local custom form controls and wizard modifiers */
+
+.task-window-modifier {
+    max-width: 600px;
     margin: 0 auto;
 }
 
-.main-content-area {
-    flex: 1;
-    min-width: 0;
-}
-
-/* Local wizard sizing restriction */
-.task-window-modifier {
-    max-width: 600px;
+.form-body-padding {
+    padding: 15px;
 }
 
 .form-header-spacing {
@@ -22,7 +14,6 @@
     font-size: 1.4rem;
 }
 
-/* Select element layout wrapping */
 .select-wrapper-styled {
     display: inline-block;
     position: relative;
@@ -62,7 +53,6 @@
     color: var(--text-main);
 }
 
-/* Side-by-side native date pickers */
 .form-row-split-dates {
     display: flex;
     gap: 16px;
@@ -73,7 +63,6 @@
     flex: 1;
 }
 
-/* Textarea wrapper using base form specs */
 .task-textarea-styled {
     width: 100%;
     padding: 14px;
@@ -97,11 +86,7 @@
     margin-top: 15px;
 }
 
-/* Screen collapse breakpoint overrides */
 @media (max-width: 768px) {
-    .app-layout-container {
-        flex-direction: column;
-    }
     .form-row-split-dates {
         flex-direction: column;
         gap: 0;

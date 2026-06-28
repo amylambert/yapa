@@ -4,44 +4,42 @@
 {% block title %}Delete Task - YAPA{% endblock %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/task_delete.css' %}" />
+<link rel="stylesheet" href="{% static 'tasks/css/task_delete.css' %}" />
 
-<div class="app-layout-container">
-  {% include 'partials/_sidebar.html' %}
-
-  <main class="main-content-area">
-    <div class="window-frame delete-window-modifier">
-      <div class="window-titlebar">
-        <span class="titlebar-text">Destruction Warning</span>
-        <div class="titlebar-controls">
-          <button type="button" class="control-button minimize">_</button>
-          <button type="button" class="control-button">❑</button>
-          <a href="{% url 'task-detail' task.project.pk task.id %}" class="control-button close-link-anchor">×</a>
-        </div>
-      </div>
-
-      <div class="delete-content-padding">
-        <h2>Delete Task</h2>
-        <p class="section-block-spacing">
-          Are you sure you want to delete <strong>{{ task.name }}</strong>?
-        </p>
-
-        <div class="warning-callout-box">
-          Warning: This action is permanent and will remove all nested sub-tasks.
-        </div>
-
-        <form method="post">
-          {% csrf_token %}
-          <button type="submit" class="submit-button">Yes, Delete Permanently</button>
-        </form>
-
-        <p class="footer-action-return">
-          <a href="{% url 'task-detail' task.project.pk task.id %}" class="navigation-link">
-            Cancel and Go Back
-          </a>
-        </p>
-      </div>
+<div class="window-frame delete-window-modifier">
+  <div class="window-titlebar">
+    <span class="titlebar-text">Destruction Warning</span>
+    <div class="titlebar-controls">
+      <button type="button" class="control-button minimize">_</button>
+      <button type="button" class="control-button">❑</button>
+      <a href="{% url 'task-detail' task.project.pk task.id %}" class="control-button close-link-anchor">×</a>
     </div>
-  </main>
+  </div>
+
+  <div class="delete-content-padding">
+    <h2>Delete Task</h2>
+    <p class="section-block-spacing">
+      Are you sure you want to delete
+      <strong>{{ task.name }}</strong>?
+    </p>
+
+    <div class="warning-callout-box">
+      Warning: This action is permanent and will remove all
+      nested sub-tasks.
+    </div>
+
+    <form method="post" class="interactive-form">
+      {% csrf_token %}
+      <button type="submit" class="submit-button">
+        Yes, Delete Permanently
+      </button>
+    </form>
+
+    <p class="footer-action-return">
+      <a href="{% url 'task-detail' task.project.pk task.id %}" class="navigation-link">
+        Cancel and Go Back
+      </a>
+    </p>
+  </div>
 </div>
 {% endblock %}
