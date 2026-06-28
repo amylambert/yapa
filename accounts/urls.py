@@ -1,9 +1,9 @@
-# accounts/urls.py
 from django.contrib.auth import views as auth_views
 from django.urls import path
-from .views import RegisterView
+from .views.register import RegisterView
+from .views.settings import SettingsView
+from .views.account_update import AccountUpdateView
 
-# Django uses this to build the namespaced routing map
 app_name = "accounts"
 
 urlpatterns = [
@@ -16,7 +16,6 @@ urlpatterns = [
     ),
     path(
         "logout/",
-        # Explicitly pass the namespaced target to prevent default lookups
         auth_views.LogoutView.as_view(next_page="accounts:login"),
         name="logout",
     ),
@@ -24,5 +23,15 @@ urlpatterns = [
         "register/",
         RegisterView.as_view(),
         name="register",
+    ),
+    path(
+        "settings/",
+        SettingsView.as_view(),
+        name="settings",
+    ),
+    path(
+        "settings/update/",
+        AccountUpdateView.as_view(),
+        name="update-account",
     ),
 ]

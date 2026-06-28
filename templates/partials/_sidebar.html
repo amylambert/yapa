@@ -82,7 +82,7 @@
         </div>
 
         <div class="user-settings-anchor">
-            <a href="#" class="submit-button link-btn-fix settings-btn">
+            <a href="{% url 'accounts:settings' %}" class="submit-button link-btn-fix settings-btn">
                 <span class="user-name-txt">User: {{ request.user.username }}</span>
                 <span>⚙️</span>
             </a>

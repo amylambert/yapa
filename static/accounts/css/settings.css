@@ -1,0 +1,44 @@
+/* Account control layout mobile-first subsystem styling sheet */
+
+.settings-window-spacing {
+    margin-bottom: 25px;
+}
+
+.settings-form-body {
+    padding: 15px;
+}
+
+.settings-display-node {
+    display: block;
+    padding: 12px;
+    background-color: #ffffff;
+    border: 3px solid var(--border-thick);
+    font-weight: bold;
+}
+
+.settings-alert-success {
+    background-color: #e2fbe4;
+    border: 3px solid var(--border-thick);
+    padding: 10px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.settings-alert-error {
+    background-color: #fbe4e4;
+    border: 3px solid var(--border-thick);
+    padding: 10px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.settings-help-text {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    margin-top: 4px;
+    display: block;
+}
+
+.settings-submit-spacing {
+    margin-top: 15px;
+}

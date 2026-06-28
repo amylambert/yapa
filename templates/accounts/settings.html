@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Account Control Panel - YAPA{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'accounts/css/settings.css' %}" />
+
+<div class="solo-layout-container">
+
+    <div class="window-frame settings-window-spacing">
+        <div class="window-titlebar">
+            <span class="titlebar-text">System Settings - Identity Registry</span>
+        </div>
+
+        <div class="interactive-form settings-form-body">
+            <p>
+                <label>System Account Username (Double-Click to Edit)</label>
+                <span class="editable settings-display-node" data-field="username" data-type="text"
+                    data-url="{% url 'accounts:update-account' %}" data-csrf="{{ csrf_token }}">
+                    {{ request.user.username}}</span>
+            </p>
+
+            <p>
+                <label>Communications Email Node (Double-Click to Edit)</label>
+                <span class="editable settings-display-node" data-field="email" data-type="email"
+                    data-url="{% url 'accounts:update-account' %}" data-csrf="{{ csrf_token }}">
+                    {% if request.user.email%}{{ request.user.email }}{% else %}No email configured{% endif %}</span>
+            </p>
+        </div>
+    </div>
+
+    <div class="window-frame">
+        <div class="window-titlebar">
+            <span class="titlebar-text">Security Management - Keys Upgrade</span>
+        </div>
+
+        <form method="post" class="interactive-form settings-form-body">
+            {% csrf_token %}
+
+            {% if messages %}
+            <div class="settings-alert-success">
+                {% for message in messages %}{{ message }}{% endfor %}
+            </div>
+            {% endif %}
+
+            {% if password_form.errors %}
+            <div class="settings-alert-error">
+                Key generation validation failed. Verify input rules.
+            </div>
+            {% endif %}
+
+            {% for field in password_form %}
+            <p>
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <input type="password" name="{{ field.html_name }}" id="{{ field.id_for_label }}" required>
+                {% if field.help_text %}
+                <span class="settings-help-text">{{ field.help_text }}</span>
+                {% endif %}
+            </p>
+            {% endfor %}
+
+            <button type="submit" class="submit-button settings-submit-spacing">
+                Execute Security Keys Rewrite
+            </button>
+        </form>
+    </div>
+
+</div>
+
+<script src="{% static 'global/js/inline_update.js' %}" defer></script>
+{% endblock %}
