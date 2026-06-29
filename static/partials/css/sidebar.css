@@ -293,7 +293,8 @@
    ========================================================================== */
 
 .timer-hardware-module {
-    margin: 5px 0;
+    /* 4px right margin prevents parent layout container from clipping shadow */
+    margin: 5px 4px 5px 0;
     padding: 8px;
     background-color: rgba(255, 255, 255, 0.4);
     border: 3px solid var(--border-thick);
