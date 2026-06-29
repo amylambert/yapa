@@ -183,11 +183,12 @@
         <div class="column-header-row">
           <h2>Linked Notes</h2>
           {% if task.project %}
-          <a href="{% url 'note-create' task.project.pk %}?task={{ task.id }}" class="submit-button mini-action-btn">
+          <a href="{% url 'note-create' task.project.pk %}?task_parent={{ task.id }}"
+            class="submit-button mini-action-btn">
             📝 Add Note
           </a>
           {% else %}
-          <a href="{% url 'global-note-create' %}?task={{ task.id }}" class="submit-button mini-action-btn">
+          <a href="{% url 'global-note-create' %}?task_parent={{ task.id }}" class="submit-button mini-action-btn">
             📝 Add Note
           </a>
           {% endif %}

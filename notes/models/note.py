@@ -23,6 +23,13 @@ class Note(ComponentBlueprint):
         blank=True,
         related_name="children",
     )
+    related_task = models.ForeignKey(
+        "tasks.Task",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="linked_notes",
+    )
     tags = models.ManyToManyField(Tag, blank=True, related_name="notes")
     updated_at = models.DateTimeField(auto_now=True)
 

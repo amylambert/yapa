@@ -27,7 +27,7 @@ class TaskCreateView(LoginRequiredMixin, generic.CreateView):
         project_id = self.kwargs.get("project_pk")
         form.instance.owner = self.request.user
 
-        # Safely capture project mapping chains only if parameters exist
+        # Context A: Task is built inside an explicit project container
         if project_id:
             project_instance = get_object_or_404(
                 Project,
@@ -48,23 +48,55 @@ class TaskCreateView(LoginRequiredMixin, generic.CreateView):
                     Note, pk=note_parent_id, project=project_instance
                 )
 
+        # Context B: Task is standalone but nested under a standalone note
+        else:
+            note_parent_id = self.request.GET.get("note_parent")
+            if note_parent_id:
+                form.instance.related_note = get_object_or_404(
+                    Note, pk=note_parent_id, owner=self.request.user
+                )
+
+            parent_id = self.request.GET.get("parent")
+            if parent_id:
+                form.instance.parent = get_object_or_404(
+                    Task, pk=parent_id, owner=self.request.user
+                )
+
         return super().form_valid(form)
 
     def get_success_url(self):
         """Redirect the user back to the correct context page."""
         project_id = self.kwargs.get("project_pk")
-        if not project_id:
-            return reverse("core:dashboard")
-
         note_parent_id = self.request.GET.get("note_parent")
+        parent_id = self.request.GET.get("parent")
+
+        # ------------------------------------------------------------------
+        # BRANCH 1: Project-Nested Route Redirections
+        # ------------------------------------------------------------------
+        if project_id:
+            if note_parent_id:
+                return reverse(
+                    "note-detail",
+                    kwargs={"project_id": project_id, "pk": note_parent_id},
+                )
+            if parent_id:
+                return reverse(
+                    "task-detail",
+                    kwargs={"project_pk": project_id, "pk": parent_id},
+                )
+            return reverse("project-detail", kwargs={"pk": project_id})
+
+        # ------------------------------------------------------------------
+        # BRANCH 2: Standalone Route Redirections (Outside Projects)
+        # ------------------------------------------------------------------
         if note_parent_id:
+            # NOTE: If your standalone note route uses an app namespace,
+            # change this string to 'notes:note-detail'
             return reverse("note-detail", kwargs={"pk": note_parent_id})
 
-        parent_id = self.request.GET.get("parent")
         if parent_id:
-            return reverse(
-                "task-detail",
-                kwargs={"project_pk": project_id, "pk": parent_id},
-            )
+            # NOTE: Change to 'tasks:task-detail' if namespaced
+            return reverse("task-detail", kwargs={"pk": parent_id})
 
-        return reverse("project-detail", kwargs={"pk": project_id})
+        # Fallback default for top-level standalone tasks
+        return reverse("task-list")

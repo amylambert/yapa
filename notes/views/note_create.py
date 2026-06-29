@@ -19,7 +19,9 @@ class NoteCreateView(LoginRequiredMixin, generic.CreateView):
         form = super().get_form(form_class)
         form.instance.owner = self.request.user
         project_id = self.kwargs.get("project_id")
+        task_parent_id = self.request.GET.get("task_parent")
 
+        # Context A: Note is within an explicit project container
         if project_id:
             project_instance = get_object_or_404(
                 Project,
@@ -34,10 +36,22 @@ class NoteCreateView(LoginRequiredMixin, generic.CreateView):
                     Note, pk=parent_id, project=project_instance
                 )
 
-            task_parent_id = self.request.GET.get("task_parent")
             if task_parent_id:
                 form.instance.related_task = get_object_or_404(
                     Task, pk=task_parent_id, project=project_instance
+                )
+
+        # Context B: Note is standalone (Outside projects)
+        else:
+            if task_parent_id:
+                form.instance.related_task = get_object_or_404(
+                    Task, pk=task_parent_id, owner=self.request.user
+                )
+
+            parent_id = self.request.GET.get("parent")
+            if parent_id:
+                form.instance.parent = get_object_or_404(
+                    Note, pk=parent_id, owner=self.request.user
                 )
 
         return form
@@ -46,12 +60,10 @@ class NoteCreateView(LoginRequiredMixin, generic.CreateView):
         """Process metadata tags after successful validation."""
         response = super().form_valid(form)
         tag_data = self.request.POST.get("custom_tags", "")
-        
+
         if tag_data:
             tag_names = [
-                t.strip().lower()
-                for t in tag_data.split(",")
-                if t.strip()
+                t.strip().lower() for t in tag_data.split(",") if t.strip()
             ]
             for name in tag_names:
                 tag_obj, _ = Tag.objects.get_or_create(
@@ -64,24 +76,30 @@ class NoteCreateView(LoginRequiredMixin, generic.CreateView):
     def get_success_url(self):
         """Redirect back to the correct macro structural context."""
         project_id = self.kwargs.get("project_id")
-        if not project_id:
-            return reverse("core:dashboard")
-
         task_parent_id = self.request.GET.get("task_parent")
-        if task_parent_id:
-            return reverse(
-                "task-detail",
-                kwargs={
-                    "project_pk": project_id, 
-                    "pk": task_parent_id
-                },
-            )
-
         parent_id = self.request.GET.get("parent")
-        if parent_id:
-            return reverse(
-                "note-detail",
-                kwargs={"project_id": project_id, "pk": parent_id},
-            )
 
-        return reverse("project-detail", kwargs={"pk": project_id})
+        # Project redirections
+        if project_id:
+            if task_parent_id:
+                return reverse(
+                    "task-detail",
+                    kwargs={
+                        "project_pk": project_id,
+                        "pk": task_parent_id,
+                    },
+                )
+            if parent_id:
+                return reverse(
+                    "note-detail",
+                    kwargs={"project_id": project_id, "pk": parent_id},
+                )
+            return reverse("project-detail", kwargs={"pk": project_id})
+
+        # Standalone redirections
+        if task_parent_id:
+            return reverse("task-detail", kwargs={"pk": task_parent_id})
+        if parent_id:
+            return reverse("note-detail", kwargs={"pk": parent_id})
+
+        return reverse("core:dashboard")
