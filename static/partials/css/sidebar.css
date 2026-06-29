@@ -208,19 +208,19 @@
     .sidebar-window {
         position: static;
         width: 260px;
-        /* Matches layout canvas exactly without spilling outside browser heights */
+        /* Matches layout canvas exactly without spilling outside 
+           browser heights */
         height: calc(100vh - 50px);
         transform: none;
         flex-shrink: 0;
     }
 
     .sidebar-body {
-        /* Prevents the internal body nodes from expanding the outer frame bounds */
+        /* Prevents the internal body nodes from expanding 
+           the outer frame bounds */
         max-height: calc(100% - 40px);
     }
 }
-
-/* Update these targeting blocks inside static/partials/css/sidebar.css */
 
 .projects-container {
     flex-grow: 1;
@@ -400,4 +400,16 @@
     border-top: 2px dashed var(--border-thick);
     padding-top: 4px;
     margin-top: 4px;
+}
+
+/* Secure Logout Layout Alignments */
+.logout-inline-form {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.logout-btn-fix {
+    font-size: 0.9rem;
+    padding: 2px 6px;
 }
