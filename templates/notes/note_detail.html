@@ -139,21 +139,21 @@
                 </div>
 
                 {% if subnotes %}
-                <div class="sub-notes-tray">
-                    <ul class="sub-notes-list">
+                <div class="linked-items-tray">
+                    <ul class="linked-items-list">
                         {% for child in subnotes %}
-                        <li class="sub-note-row">
+                        <li class="linked-item-row">
                             {% if note.project %}
-                            <a href="{% url 'note-detail' note.project.id child.id %}" class="sub-note-link">
+                            <a href="{% url 'note-detail' note.project.id child.id %}" class="linked-item-link">
                                 📂 {{ child.name }}
                             </a>
                             {% else %}
-                            <a href="{% url 'global-note-detail' child.id %}" class="sub-note-link">
-                                📂 {{ child.name }}
+                            <a href="{% url 'global-note-detail' child.id %}" class="linked-item-link">
+                                📂 {{ child.id }}
                             </a>
                             {% endif %}
                             {% if child.end_date %}
-                            <small class="sub-note-date">
+                            <small class="linked-item-meta">
                                 ⏰ {{ child.end_date|date:"M d" }}
                             </small>
                             {% endif %}
@@ -162,7 +162,9 @@
                     </ul>
                 </div>
                 {% else %}
-                <p class="empty-state">No sub-notes mapped to this location.</p>
+                <p class="empty-state">
+                    No sub-notes mapped to this location.
+                </p>
                 {% endif %}
             </section>
 
@@ -183,31 +185,30 @@
                 </div>
 
                 {% if subtasks %}
-                <div class="checklist-frame">
-                    <h3 class="checklist-title">Execution Targets</h3>
-                    <ul class="interactive-checklist">
+                <div class="linked-items-tray">
+                    <ul class="linked-items-list">
                         {% for task in subtasks %}
-                        <li class="checklist-row">
-                            <div class="task-content">
-                                {% if note.project %}
-                                <a href="{% url 'task-detail' note.project.id task.id %}">
-                                    <strong>{{ task.name }}</strong>
-                                </a>
-                                {% else %}
-                                <a href="{% url 'global-task-detail' task.id %}">
-                                    <strong>{{ task.name }}</strong>
-                                </a>
-                                {% endif %}
-                                <span class="status-badge">
-                                    - {{ task.get_status_display }}
-                                </span>
-                            </div>
+                        <li class="linked-item-row">
+                            {% if note.project %}
+                            <a href="{% url 'task-detail' note.project.id task.id %}" class="linked-item-link">
+                                ☑ {{ task.name }}
+                            </a>
+                            {% else %}
+                            <a href="{% url 'global-task-detail' task.id %}" class="linked-item-link">
+                                ☑ {{ task.name }}
+                            </a>
+                            {% endif %}
+                            <small class="linked-item-meta">
+                                ⏰ {{ task.get_status_display }}
+                            </small>
                         </li>
                         {% endfor %}
                     </ul>
                 </div>
                 {% else %}
-                <p class="empty-state">No targets designated for this channel.</p>
+                <p class="empty-state">
+                    No targets designated for this channel.
+                </p>
                 {% endif %}
             </section>
         </div>

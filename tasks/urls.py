@@ -32,9 +32,15 @@ urlpatterns = [
         views.TaskDetailView.as_view(),
         name="global-task-detail",
     ),
+    # Global Asynchronous Partial Updates Interface Hook
     path(
-    "tasks/<int:pk>/delete/",
-    views.TaskDeleteView.as_view(),
-    name="global-task-delete",
-),
+        "tasks/<int:pk>/update/",
+        views.TaskInlineUpdateView.as_view(),
+        name="global-task-inline-update",
+    ),
+    path(
+        "tasks/<int:pk>/delete/",
+        views.TaskDeleteView.as_view(),
+        name="global-task-delete",
+    ),
 ]

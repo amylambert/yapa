@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils.dateparse import parse_date
@@ -12,10 +13,11 @@ class NoteInlineUpdateView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         """Process field/value update payloads securely from clients."""
+        # Securely match standalone assets or project-scoped assets
         note = get_object_or_404(
             Note,
+            Q(owner=request.user) | Q(project__owner=request.user),
             pk=self.kwargs.get("pk"),
-            project__owner=request.user,
         )
 
         field = request.POST.get("field")
@@ -38,8 +40,9 @@ class NoteInlineUpdateView(LoginRequiredMixin, View):
                 value = None
             else:
                 value = parse_date(value)
-        else:
-            setattr(note, field, value)
+        
+        # Extracted out of else block to fix assignment engine breakdown
+        setattr(note, field, value)
 
         try:
             note.full_clean()

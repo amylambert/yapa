@@ -42,3 +42,17 @@
 .settings-submit-spacing {
     margin-top: 15px;
 }
+
+.action-button-link {
+    background-color: #ffffff;
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    border: 2px solid var(--border-thick);
+    box-shadow: 2px 2px 0 0 var(--border-thick);
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}

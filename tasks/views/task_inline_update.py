@@ -1,9 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 from django.http import JsonResponse
-from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.utils.dateparse import parse_date
+from django.views import generic
 from ..models import Task
 
 
@@ -12,10 +13,11 @@ class TaskInlineUpdateView(LoginRequiredMixin, generic.View):
 
     def post(self, request, *args, **kwargs):
         """Validate ownership rules and execute partial attribute updates."""
+        # Securely match standalone assets or project-scoped assets
         task = get_object_or_404(
             Task,
+            Q(owner=request.user) | Q(project__owner=request.user),
             pk=self.kwargs["pk"],
-            project__owner=request.user,
         )
 
         field = request.POST.get("field")

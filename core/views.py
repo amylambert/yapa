@@ -1,5 +1,6 @@
 import os
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.utils import timezone
 from django.views import generic
 from notes.models import Note
@@ -21,13 +22,14 @@ class DashboardView(LoginRequiredMixin, generic.TemplateView):
             "GOOGLE_CALENDAR_EMBED_URL", ""
         )
         
+        # Pull latest notes owned directly or via nested projects
         context["latest_notes"] = Note.objects.filter(
-            owner=user
+            Q(owner=user) | Q(project__owner=user)
         ).order_by("-id")[:5]
         
         # Pull 5 closest incomplete tasks with valid future deadlines
         context["urgent_tasks"] = Task.objects.filter(
-            owner=user,
+            Q(owner=user) | Q(project__owner=user),
             end_date__gte=today
         ).exclude(
             status="DONE"

@@ -98,8 +98,14 @@ class NoteCreateView(LoginRequiredMixin, generic.CreateView):
 
         # Standalone redirections
         if task_parent_id:
-            return reverse("task-detail", kwargs={"pk": task_parent_id})
+            return reverse(
+                "global-task-detail", 
+                kwargs={"pk": task_parent_id}
+            )
         if parent_id:
-            return reverse("note-detail", kwargs={"pk": parent_id})
+            return reverse(
+                "global-note-detail", 
+                kwargs={"pk": parent_id}
+            )
 
         return reverse("core:dashboard")

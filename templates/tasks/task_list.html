@@ -16,6 +16,12 @@
         </div>
     </div>
 
+    <nav class="navigation-trail">
+        <a href="{% url 'core:dashboard' %}" class="action-button-link navigation-link">
+            &larr; Back to Dashboard
+        </a>
+    </nav>
+
     <div class="list-wrapper">
         {% for task in tasks %}
         <div class="list-item-card">

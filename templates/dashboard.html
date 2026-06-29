@@ -36,18 +36,18 @@
                 <ul class="item-list">
                     {% for note in latest_notes %}
                     <li class="list-item">
-                        <span class="note-title">
-                            {% if note.project %}
-                            <a href="{% url 'note-detail' note.project.id note.id %}">
-                                {{ note.name }}
-                            </a>
+                        {% if note.project %}
+                        <a href="{% url 'note-detail' note.project.id note.id %}" class="row-link">
                             {% else %}
-                            {{ note.name }}
-                            {% endif %}
-                        </span>
-                        <span class="task-date">
-                            {{ note.project.name|default:"Global Node" }}
-                        </span>
+                            <a href="{% url 'global-note-detail' note.id %}" class="row-link">
+                                {% endif %}
+                                <span class="note-title">
+                                    {{ note.name }}
+                                </span>
+                                <span class="task-date">
+                                    {{ note.project.name|default:"Global Node" }}
+                                </span>
+                            </a>
                     </li>
                     {% empty %}
                     <li class="empty-state">No recent notes found.</li>
@@ -60,18 +60,18 @@
                 <ul class="item-list" id="deadline-list">
                     {% for task in urgent_tasks %}
                     <li class="list-item deadline-item">
-                        <span class="task-title">
-                            {% if task.project %}
-                            <a href="{% url 'task-detail' task.project.id task.id %}">
-                                {{ task.name }}
-                            </a>
+                        {% if task.project %}
+                        <a href="{% url 'task-detail' task.project.id task.id %}" class="row-link">
                             {% else %}
-                            {{ task.name }}
-                            {% endif %}
-                        </span>
-                        <span class="task-date">
-                            {{ task.end_date|date:"Y-m-d" }}
-                        </span>
+                            <a href="{% url 'global-task-detail' task.id %}" class="row-link">
+                                {% endif %}
+                                <span class="task-title">
+                                    {{ task.name }}
+                                </span>
+                                <span class="task-date">
+                                    {{ task.end_date|date:"Y-m-d" }}
+                                </span>
+                            </a>
                     </li>
                     {% empty %}
                     <li class="empty-state">No urgent tracks found.</li>

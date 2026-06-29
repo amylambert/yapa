@@ -29,8 +29,13 @@ urlpatterns = [
         name="global-note-detail",
     ),
     path(
-    "notes/<int:pk>/delete/",
-    views.NoteDeleteView.as_view(),
-    name="global-note-delete",
-),
+        "notes/<int:pk>/inline-update/",
+        views.NoteInlineUpdateView.as_view(),
+        name="global-note-inline-update",
+    ),
+    path(
+        "notes/<int:pk>/delete/",
+        views.NoteDeleteView.as_view(),
+        name="global-note-delete",
+    ),
 ]

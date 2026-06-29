@@ -199,7 +199,7 @@
    Desktop Grid Engine Conversions
    ========================================================================== */
 
-@media (min-width: 992px) {
+@media (min-width: 768px) {
     .mobile-system-window,
     .sidebar-overlay {
         display: none !important;
@@ -352,18 +352,18 @@
     margin-bottom: 6px;
 }
 
-/* Miniature tactical overrides matching system input button standards */
-.timer-action-row .mini-action-btn {
+/* Isolated tactical overrides matching system hardware standards */
+.timer-action-row .timer-action-btn {
     flex: 1;
     margin-bottom: 0;
     padding: 6px 4px;
     font-size: 0.8rem;
     width: auto;
-    box-shrink: 0;
+    flex-shrink: 0;
     box-shadow: 2px 2px 0 0 var(--border-thick);
 }
 
-.timer-action-row .mini-action-btn:active {
+.timer-action-row .timer-action-btn:active {
     box-shadow: 0 0 0 0 var(--border-thick);
     transform: translate(2px, 2px);
 }

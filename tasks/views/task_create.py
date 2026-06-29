@@ -65,38 +65,35 @@ class TaskCreateView(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        """Redirect the user back to the correct context page."""
-        project_id = self.kwargs.get("project_pk")
+        """Redirect back to structural parent asset contexts."""
+        project_pk = self.kwargs.get("project_pk")
         note_parent_id = self.request.GET.get("note_parent")
         parent_id = self.request.GET.get("parent")
 
-        # ------------------------------------------------------------------
-        # BRANCH 1: Project-Nested Route Redirections
-        # ------------------------------------------------------------------
-        if project_id:
+        # Project redirections
+        if project_pk:
             if note_parent_id:
                 return reverse(
                     "note-detail",
-                    kwargs={"project_id": project_id, "pk": note_parent_id},
+                    kwargs={"project_id": project_pk, "pk": note_parent_id},
                 )
             if parent_id:
                 return reverse(
                     "task-detail",
-                    kwargs={"project_pk": project_id, "pk": parent_id},
+                    kwargs={"project_pk": project_pk, "pk": parent_id},
                 )
-            return reverse("project-detail", kwargs={"pk": project_id})
+            return reverse("project-detail", kwargs={"pk": project_pk})
 
-        # ------------------------------------------------------------------
-        # BRANCH 2: Standalone Route Redirections (Outside Projects)
-        # ------------------------------------------------------------------
+        # Standalone redirections
         if note_parent_id:
-            # NOTE: If your standalone note route uses an app namespace,
-            # change this string to 'notes:note-detail'
-            return reverse("note-detail", kwargs={"pk": note_parent_id})
-
+            return reverse(
+                "global-note-detail", 
+                kwargs={"pk": note_parent_id}
+            )
         if parent_id:
-            # NOTE: Change to 'tasks:task-detail' if namespaced
-            return reverse("task-detail", kwargs={"pk": parent_id})
+            return reverse(
+                "global-task-detail",
+                kwargs={"pk": parent_id}
+            )
 
-        # Fallback default for top-level standalone tasks
         return reverse("task-list")

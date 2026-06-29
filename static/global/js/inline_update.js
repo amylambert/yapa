@@ -20,7 +20,12 @@ document.querySelectorAll(".editable").forEach((element) => {
         this.replaceChildren(input);
         input.focus();
 
+        // Transaction lock to prevent simultaneous Enter/Blur execution
+        let isSaving = false;
+
         const save = () => {
+            if (isSaving) return;
+            isSaving = true;
             sendUpdate(this, input, currentText, field, url, token);
         };
 
@@ -70,7 +75,6 @@ function createInputElement(type, text, el) {
         input = document.createElement("input");
         input.type = type;
 
-        // Enforce integer constraints for numeric model data
         if (type === "number") {
             input.min = "0";
             input.step = "1";
@@ -95,7 +99,6 @@ function createInputElement(type, text, el) {
 function sendUpdate(el, input, oldText, field, url, token) {
     let newValue = input.value.trim();
 
-    // Fallback to "0" for numeric fields to prevent backend clean crashes
     if (input.type === "number" && newValue === "") {
         newValue = "0";
     }
@@ -121,14 +124,25 @@ function sendUpdate(el, input, oldText, field, url, token) {
         body: formData,
         headers: { "X-Requested-With": "XMLHttpRequest" },
     })
-        .then((res) => res.json())
-        .then((data) => {
-            el.textContent = data.status === "success" ? display : oldText;
-            if (data.status !== "success") alert("Error saving changes.");
+        .then((res) => {
+            const ct = res.headers.get("content-type");
+            if (!res.ok || !ct || !ct.includes("application/json")) {
+                throw new Error("Expected JSON response from server.");
+            }
+            return res.json();
         })
-        .catch(() => {
+        .then((data) => {
+            if (data.status === "success") {
+                el.textContent = display;
+            } else {
+                el.textContent = oldText;
+                alert("Error saving changes.");
+            }
+        })
+        .catch((err) => {
             el.textContent = oldText;
-            alert("Connection failure.");
+            alert("Backend transaction failed or returned invalid format.");
+            console.error("System Engine Failure Context:", err);
         });
 }
 
